@@ -10,16 +10,26 @@ namespace StudentSquads.Controllers
     public class MembersController : Controller
     {
         // GET: Members
-
+        private ApplicationDbContext _context;
+        public MembersController()
+        {
+            _context = new ApplicationDbContext();
+        }
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
         public ActionResult ShowAll(int? pageIndex, string sortBy)
         {
             if (!pageIndex.HasValue)
                 pageIndex = 1;
             if (String.IsNullOrWhiteSpace(sortBy))
                 sortBy = "Squad";
-            var member = new Member() { ExitReason = "Не выдержал" };
-            return View(member);
+
+            var members = _context.Members.ToList();
+            return View(members);
             //return Content(String.Format("pageIndex={0}&sortBy={1}", pageIndex, sortBy));
         }
+        
     }
 }

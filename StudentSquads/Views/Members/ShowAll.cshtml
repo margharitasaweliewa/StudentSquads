@@ -1,8 +1,16 @@
-﻿@model StudentSquads.Models.Member
+﻿@model IEnumerable<StudentSquads.Models.Member>
+StudentSquads.Models.
 @{
 	ViewBag.Title = "ShowAll";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@Model.ExitReason</h2>
+<h2>Члены организации</h2>
+
+<ul>
+		@foreach (var member in Model)
+		{
+			<li>@member.ExitReason</li>
+		}
+	</ul>
 
