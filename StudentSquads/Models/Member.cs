@@ -10,7 +10,6 @@ namespace StudentSquads.Models
 {
     public class Member
     {
-        [Key]
         public Guid Id { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
@@ -24,8 +23,7 @@ namespace StudentSquads.Models
         public bool ApprovedByCommandStaff { get; set; }
         public string ExitReason { get; set; }
         public Squad Squad { get; set; }
-        [Key]
-        [ForeignKey("Squad")]
+
         public Guid? SquadId { get; set; }
         public string Status { get; set; }
         // public Status Status { get; set; }
