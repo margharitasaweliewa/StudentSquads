@@ -27,7 +27,7 @@ namespace StudentSquads.Controllers
             if (String.IsNullOrWhiteSpace(sortBy))
                 sortBy = "Squad";
 
-            var members = _context.Members.ToList();
+            var members = _context.Members.Include(m => m.Squad).ToList();
             return View(members);
             //return Content(String.Format("pageIndex={0}&sortBy={1}", pageIndex, sortBy));
         }

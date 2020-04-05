@@ -6,10 +6,23 @@
 
 <h2>Члены организации</h2>
 
-<ul>
+
+<table class="table table-bordered table-hover">
+	<thead>
+	<tr>
+		<th>ФИО</th>
+		<th>Отряд</th>
+	</tr>
+	</thead>
+	<tbody>
 		@foreach (var member in Model)
 		{
-			<li>@member.ExitReason</li>
+		<tr>
+			<td>@member.ExitReason</td>
+			<td>@member.Squad.Name</td>
+		</tr>
 		}
-	</ul>
+	</tbody>
+	
+</table>
 
