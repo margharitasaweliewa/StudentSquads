@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 
 namespace StudentSquads.Controllers
-{
+{[AllowAnonymous]
     public class HomeController : Controller
     {
         public ActionResult Index()
