@@ -1,0 +1,28 @@
+﻿@model IEnumerable<StudentSquads.Models.Member>
+@{
+	ViewBag.Title = "ShowAll";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Вид для руководителя отряда</h2>
+
+
+<table class="table table-bordered table-hover">
+	<thead>
+	<tr>
+		<th>ФИО</th>
+		<th>Отряд</th>
+	</tr>
+	</thead>
+	<tbody>
+		@foreach (var member in Model)
+		{
+		<tr>
+			<td>@member.ExitReason</td>
+			<td>@member.Squad.Name</td>
+		</tr>
+		}
+	</tbody>
+	
+</table>
+

@@ -20,17 +20,26 @@ namespace StudentSquads.Controllers
         {
             _context.Dispose();
         }
+        //Вот эту функцию можно будет удалить/(это для проверки ролей)
+        public ViewResult Index()
+        {
+            var members = _context.Members.Include(m => m.Squad).ToList();
+            if (User.IsInRole("SquadManager"))
+                return View("SquadManager",members);
+            else
+                return View("ShowAll", members);
+        }
         public ActionResult ShowAll(int? pageIndex, string sortBy)
         {
             if (!pageIndex.HasValue)
                 pageIndex = 1;
             if (String.IsNullOrWhiteSpace(sortBy))
                 sortBy = "Squad";
-
             var members = _context.Members.Include(m => m.Squad).ToList();
             return View(members);
+
             //return Content(String.Format("pageIndex={0}&sortBy={1}", pageIndex, sortBy));
         }
-        
+
     }
 }
