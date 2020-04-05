@@ -41,5 +41,6 @@ namespace StudentSquads.Models
         //false - из группы VK, true - сайт "Студотряды.рф"
         public bool? ApplicationFrom { get; set; }
 
+
     }
 }
