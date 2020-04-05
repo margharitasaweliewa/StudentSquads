@@ -22,10 +22,14 @@ namespace StudentSquads.Models
         public DateTime? DateofTransition { get; set; }
         public bool ApprovedByCommandStaff { get; set; }
         public string ExitReason { get; set; }
+        //Ссылка на отряд
         public Squad Squad { get; set; }
-
         public Guid? SquadId { get; set; }
         public string Status { get; set; }
+        //Ссылка на личность
+        public Person Person { get; set; }
+        public Guid PersonId { get; set; }
+
         // public Status Status { get; set; }
         //public int StatusId { get; set; }
     }
