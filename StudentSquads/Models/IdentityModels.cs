@@ -27,6 +27,7 @@ namespace StudentSquads.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Member> Members { get; set; }
+        public DbSet<FeePayment> FeePayments { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
