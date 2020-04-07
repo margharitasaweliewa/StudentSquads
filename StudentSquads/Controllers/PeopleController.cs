@@ -34,5 +34,15 @@ namespace StudentSquads.Controllers
             };
             return View(viewModel);
         }
+        [HttpPost]
+        public ActionResult Create(NewPersonViewModel newModel)
+        {
+            newModel.Person.Id = Guid.NewGuid();
+            _context.People.Add(newModel.Person);
+            _context.SaveChanges();
+            
+            return RedirectToAction("ShowAll","Members");
+        }
+
     }
 }

@@ -29,6 +29,7 @@ namespace StudentSquads.Models
         public DbSet<Member> Members { get; set; }
         public DbSet<FeePayment> FeePayments { get; set; }
         public DbSet<Squad> Squads { get; set; }
+        public DbSet<Person> People { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

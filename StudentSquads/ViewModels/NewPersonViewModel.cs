@@ -10,5 +10,6 @@ namespace StudentSquads.ViewModels
     {
         public IEnumerable<Squad> Squads { get; set; }
         public Person Person { get; set; }
+        public Member Member { get; set; }
     }
 }
