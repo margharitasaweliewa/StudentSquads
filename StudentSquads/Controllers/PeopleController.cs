@@ -48,13 +48,39 @@ namespace StudentSquads.Controllers
             };
         }
         [HttpPost]
-        public ActionResult Create(NewPersonViewModel newModel)
+        public ActionResult Save(NewPersonViewModel newModel)
         {
-            newModel.Person.Id = Guid.NewGuid();
-            _context.People.Add(newModel.Person);
-            //Добавь ещё код изменения User, чтобы он ссылался на Person
-            string id = User.Identity.GetUserId();
-            var personid = _context.Users.SingleOrDefault(u => u.Id == id).PersonId;
+            if (Convert.ToString(newModel.Person.Id)== "00000000-0000-0000-0000-000000000000")
+            {
+                //Добавляем новую личность с идентификатором
+                var personId = Guid.NewGuid();
+                newModel.Person.Id = personId;
+                _context.People.Add(newModel.Person);
+                //Получаем объект User, присваиваем ему PersonId
+                string id = User.Identity.GetUserId();
+                var user = _context.Users.SingleOrDefault(u => u.Id == id);
+                user.PersonId = personId;
+            }
+            else
+            {
+                var personInDb = _context.People.Single(p => p.Id == newModel.Person.Id);
+                //Изменяю поля персональных данных
+                personInDb.LastName = newModel.Person.LastName;
+                personInDb.FirstName = newModel.Person.FirstName;
+                personInDb.PatronymicName = newModel.Person.PatronymicName;
+                personInDb.PhoneNumber = newModel.Person.PhoneNumber;
+                personInDb.CityofBirth = newModel.Person.CityofBirth;
+                personInDb.DateofBirth = newModel.Person.DateofBirth;
+                personInDb.DateofIssue = newModel.Person.DateofIssue;
+                personInDb.DepartmentCode = newModel.Person.DepartmentCode;
+                personInDb.Email = newModel.Person.Email;
+                personInDb.INN = newModel.Person.INN;
+                personInDb.PasportSerie = newModel.Person.PasportSerie;
+                personInDb.PassportNumber = newModel.Person.PassportNumber;
+                personInDb.RegistrationPlace = newModel.Person.RegistrationPlace;
+                personInDb.Sex = newModel.Person.Sex;
+                personInDb.Snils = newModel.Person.Snils;
+            }
             _context.SaveChanges();
             
             return RedirectToAction("ShowAll","Members");

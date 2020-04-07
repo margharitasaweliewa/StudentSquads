@@ -6,9 +6,10 @@
 
 <h2>Личные данные</h2>
 
-@using (Html.BeginForm("Create", "People"))
+@using (Html.BeginForm("Save", "People"))
 {
 <button type="submit" class="btn btn-warning">Сохранить</button>
+@Html.HiddenFor(m => m.Person.Id)
 	@*<p>
 		@Html.ActionLink("Сохранить", "New", "Movies", null, new { @class = "btn btn-warning" })
 	</p>*@
@@ -81,15 +82,19 @@
 			@Html.LabelFor(m => m.Person.Email)
 			@Html.TextBoxFor(m => m.Person.Email, new { @class = "form-control" })
 		</div>
-		<div class="checkbox" id="alreadymember">
-			<label>
-				Уже член организации?
-			</label>
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Member.SquadId)
-			@Html.DropDownListFor(m => m.Member.SquadId, new SelectList(Model.Squads, "Id", "Name"), "Выберите отряд", new { @class = "form-control" })
-		</div>
+		@*Тут скорее надо заблокировать, чем не отображать*@
+		@*if (Model.Person is null) var read = "readonly"*@
+			<div class="checkbox" id="alreadymember">
+				<label disabled>
+					@Html.CheckBoxFor(m => m.Member.ApprovedByCommandStaff) Уже член организации?
+				</label>
+			</div>
+
+			<div class="form-group" disabled>
+				@Html.LabelFor(m => m.Member.SquadId)
+				@Html.DropDownListFor(m => m.Member.SquadId, new SelectList(Model.Squads, "Id", "Name"), "Выберите отряд", new { @class = "form-control" })
+			</div>
+		
 	</div>
 
 </div>
