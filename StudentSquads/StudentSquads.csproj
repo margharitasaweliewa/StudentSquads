@@ -274,7 +274,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Members\ShowAll.cshtml" />
     <Content Include="Views\Members\SquadManager.cshtml" />
-    <Content Include="Views\People\NewPerson.cshtml" />
+    <Content Include="Views\People\PersonForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
