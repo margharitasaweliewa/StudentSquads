@@ -39,6 +39,7 @@ namespace StudentSquads.Controllers
         {
             newModel.Person.Id = Guid.NewGuid();
             _context.People.Add(newModel.Person);
+            //Добавь ещё код изменения Usr, чтобы он ссылался на Person
             _context.SaveChanges();
             
             return RedirectToAction("ShowAll","Members");
