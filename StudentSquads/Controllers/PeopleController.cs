@@ -1,13 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using StudentSquads.Models;
+using StudentSquads.ViewModels;
 
 namespace StudentSquads.Controllers
 {
     public class PeopleController : Controller
     {
+        private ApplicationDbContext _context;
+        public PeopleController()
+        {
+            _context = new ApplicationDbContext();
+        }
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
         // GET: People
         public ActionResult Index()
         {
@@ -15,7 +27,12 @@ namespace StudentSquads.Controllers
         }
         public ActionResult NewPerson()
         {
-            return View();
+            var squads= _context.Squads.ToList();
+            var viewModel = new NewPersonViewModel
+            {
+                Squads = squads
+            };
+            return View(viewModel);
         }
     }
 }

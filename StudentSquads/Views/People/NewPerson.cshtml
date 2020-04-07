@@ -1,4 +1,4 @@
-﻿@model StudentSquads.Models.Person
+﻿@model StudentSquads.ViewModels.NewPersonViewModel
 @{
 	ViewBag.Title = "NewPerson";
 	Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,79 +12,83 @@
 	@*<p>
 		@Html.ActionLink("Сохранить", "New", "Movies", null, new { @class = "btn btn-warning" })
 	</p>*@
-	<div>
-		<div class="col-xs-4" float="left">
-			<div clss="form-group">
-				@Html.LabelFor(m => m.LastName)
-				@Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
-			</div>
-			<div clss="form-group">
-				@Html.LabelFor(m => m.FirstName)
-				@Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
-			</div>
-			<div clss="form-group">
-				@Html.LabelFor(m => m.PatronymicName)
-				@Html.TextBoxFor(m => m.PatronymicName, new { @class = "form-control" })
-			</div>
-			<div clss="form-group">
-				@Html.LabelFor(m => m.DateofBirth)
-				@Html.TextBoxFor(m => m.DateofBirth, new { @class = "form-control", @type = "date" })
-			</div>
-			@*Тут лучше поменять на что-то более стоящее*@
-			<div class="checkbox">
-				<label>
-					@Html.CheckBoxFor(m => m.Sex) Пол Ж(без отметки) М(с отметкой)
-				</label>
-			</div>
-
+<div>
+	<div class="col-xs-4" float="left">
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.LastName)
+			@Html.TextBoxFor(m => m.Person.LastName, new { @class = "form-control" })
 		</div>
-		<div class="col-xs-4" float="left">
-			<div clss="form-group">
-				@Html.LabelFor(m => m.INN)
-				@Html.TextBoxFor(m => m.INN, new { @class = "form-control" })
-			</div>
-			<div clss="form-group">
-				@Html.LabelFor(m => m.Snils)
-				@Html.TextBoxFor(m => m.Snils, new { @class = "form-control" })
-			</div>
-			<div clss="form-group">
-				@Html.LabelFor(m => m.PhoneNumber)
-				@Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
-			</div>
-			<div clss="form-group">
-				@Html.LabelFor(m => m.Email)
-				@Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-			</div>
-			<div clss="form-group">
-				@Html.LabelFor(m => m.CityofBirth)
-				@Html.TextBoxFor(m => m.CityofBirth, new { @class = "form-control" })
-			</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.FirstName)
+			@Html.TextBoxFor(m => m.Person.FirstName, new { @class = "form-control" })
 		</div>
-		<div class="col-xs-4" float="left">
-			<div clss="form-group">
-				@Html.LabelFor(m => m.PasportSerie)
-				@Html.TextBoxFor(m => m.PasportSerie, new { @class = "form-control" })
-			</div>
-			<div clss="form-group">
-				@Html.LabelFor(m => m.PassportNumber)
-				@Html.TextBoxFor(m => m.PassportNumber, new { @class = "form-control" })
-			</div>
-			<div clss="form-group">
-				@Html.LabelFor(m => m.DateofIssue)
-				@Html.TextBoxFor(m => m.DateofIssue, new { @class = "form-control" })
-			</div>
-			<div clss="form-group">
-				@Html.LabelFor(m => m.DepartmentCode)
-				@Html.TextBoxFor(m => m.DepartmentCode, new { @class = "form-control" })
-			</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.PatronymicName)
+			@Html.TextBoxFor(m => m.Person.PatronymicName, new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.DateofBirth)
+			@Html.TextBoxFor(m => m.Person.DateofBirth, new { @class = "form-control", @type = "date" })
+		</div>
+		@*Тут лучше поменять на что-то более стоящее*@
+		<div class="checkbox">
+			<label>
+				@Html.CheckBoxFor(m => m.Person.Sex) Пол Ж(без отметки) М(с отметкой)
+			</label>
+		</div>
 
-			<div clss="form-group">
-				@Html.LabelFor(m => m.RegistrationPlace)
-				@Html.TextBoxFor(m => m.RegistrationPlace, new { @class = "form-control" })
-			</div>
-
+	</div>
+	<div class="col-xs-4" float="left">
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.PasportSerie)
+			@Html.TextBoxFor(m => m.Person.PasportSerie, new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.PassportNumber)
+			@Html.TextBoxFor(m => m.Person.PassportNumber, new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.DateofIssue)
+			@Html.TextBoxFor(m => m.Person.DateofIssue, new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.DepartmentCode)
+			@Html.TextBoxFor(m => m.Person.DepartmentCode, new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.CityofBirth)
+			@Html.TextBoxFor(m => m.Person.CityofBirth, new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.RegistrationPlace)
+			@Html.TextBoxFor(m => m.Person.RegistrationPlace, new { @class = "form-control" })
 		</div>
 	</div>
+	<div class="col-xs-4" float="left">
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.INN)
+			@Html.TextBoxFor(m => m.Person.INN, new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.Snils)
+			@Html.TextBoxFor(m => m.Person.Snils, new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.PhoneNumber)
+			@Html.TextBoxFor(m => m.Person.PhoneNumber, new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Person.Email)
+			@Html.TextBoxFor(m => m.Person.Email, new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@*Html.LabelFor(m => m.Person.Email)*@
+			@Html.DropDownListFor(m => m.Person.Email,new SelectList(Model.Squads, "Id", "Name"), "Выберите отряд", new { @class = "form-control" })
+		</div>
+
+	</div>
+
+</div>
 
 
 

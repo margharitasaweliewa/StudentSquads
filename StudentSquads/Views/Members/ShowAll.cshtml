@@ -9,15 +9,17 @@
 
 <table class="table table-bordered table-hover">
 	<thead>
-	<tr>
-		<th>ФИО</th>
-		<th>Отряд</th>
-	</tr>
+		<tr>
+			<td></td>
+			<th>ФИО</th>
+			<th>Отряд</th>
+		</tr>
 	</thead>
 	<tbody>
 		@foreach (var member in Model)
 		{
 		<tr>
+			<td><input type="checkbox" id="@member.Id"></td>
 			<td>@member.ExitReason</td>
 			<td>@member.Squad.Name</td>
 		</tr>
