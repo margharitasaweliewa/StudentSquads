@@ -22,6 +22,10 @@ namespace StudentSquads.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? DateofBirth { get; set; }
+        [Display(Name = "Место обучения")]
+        public string PlaceofStudy { get; set; }
+        [Display(Name = "Форма обучения")]
+        public string FormofStudy { get; set; }
         [Display(Name = "ИНН")]
         public string INN { get; set; }
         [Display(Name = "СНИЛС")]
@@ -57,6 +61,8 @@ namespace StudentSquads.Models
         //null - зарегистрирован в системе,
         //false - из группы VK, true - сайт "Студотряды.рф"
         public bool? ApplicationFrom { get; set; }
+        [Display(Name = "ФИО")]
+        public string FIO { get; set; }
 
 
     }

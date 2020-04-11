@@ -25,7 +25,9 @@ namespace StudentSquads.Models
         //Ссылка на отряд
         public Squad Squad { get; set; }
         public Guid? SquadId { get; set; }
-        public string Status { get; set; }
+        //Ссылка на статус в отряде
+        public Status Status { get; set; }
+        public int? StatusId { get; set; }
         //Ссылка на личность
         public Person Person { get; set; }
         public Guid PersonId { get; set; }

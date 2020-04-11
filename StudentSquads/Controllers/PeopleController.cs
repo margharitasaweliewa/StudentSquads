@@ -7,6 +7,8 @@ using System.Web.Mvc;
 using StudentSquads.Models;
 using StudentSquads.ViewModels;
 using Microsoft.AspNet.Identity;
+using System.Dynamic;
+using System.ComponentModel;
 
 namespace StudentSquads.Controllers
 {
@@ -22,9 +24,42 @@ namespace StudentSquads.Controllers
             _context.Dispose();
         }
         // GET: People
-        public ActionResult Index()
+        public ActionResult AllPeople(int? pageIndex, string sortBy)
         {
-            return View();
+            if (!pageIndex.HasValue)
+                pageIndex = 1;
+            if (String.IsNullOrWhiteSpace(sortBy))
+                sortBy = "FIO";
+            //Тут нужно получить запись (Person+(Member+Squad+Status)*необязательно)
+            dynamic model = new ExpandoObject();
+            var query = _context.People.Join(_context.Members.Include(m => m.Squad).Include(m => m.Status),
+                p => p.Id,
+                m => m.PersonId,
+                (p, m) => new
+                {
+                    p.FIO,
+                    p.DateofBirth,
+                    p.PhoneNumber,
+                    p.MembershipNumber,
+                    SquadName = m.Squad.Name,
+                    StatusName = m.Status.Name
+
+                });
+            List<ExpandoObject> joinData = new List<ExpandoObject>();
+
+            foreach (var item in query)
+            {
+                IDictionary<string, object> itemExpando = new ExpandoObject();
+                foreach (PropertyDescriptor property
+                         in
+                         TypeDescriptor.GetProperties(item.GetType()))
+                {
+                    itemExpando.Add(property.Name, property.GetValue(item));
+                }
+                joinData.Add(itemExpando as ExpandoObject);
+                model.JoinData = joinData;
+            }
+            return View(model);
         }
         public ActionResult PersonForm()
         {
@@ -55,6 +90,7 @@ namespace StudentSquads.Controllers
                 //Добавляем новую личность с идентификатором
                 var personId = Guid.NewGuid();
                 newModel.Person.Id = personId;
+                newModel.Person.FIO= Convert.ToString(newModel.Person.LastName + ' ' + newModel.Person.FirstName + ' ' + newModel.Person.PatronymicName);
                 _context.People.Add(newModel.Person);
                 //Получаем объект User, присваиваем ему PersonId
                 string id = User.Identity.GetUserId();
@@ -68,6 +104,8 @@ namespace StudentSquads.Controllers
                 personInDb.LastName = newModel.Person.LastName;
                 personInDb.FirstName = newModel.Person.FirstName;
                 personInDb.PatronymicName = newModel.Person.PatronymicName;
+                personInDb.PlaceofStudy = newModel.Person.PlaceofStudy;
+                personInDb.FormofStudy = newModel.Person.FormofStudy;
                 personInDb.PhoneNumber = newModel.Person.PhoneNumber;
                 personInDb.CityofBirth = newModel.Person.CityofBirth;
                 personInDb.DateofBirth = newModel.Person.DateofBirth;
@@ -80,23 +118,11 @@ namespace StudentSquads.Controllers
                 personInDb.RegistrationPlace = newModel.Person.RegistrationPlace;
                 personInDb.Sex = newModel.Person.Sex;
                 personInDb.Snils = newModel.Person.Snils;
+                personInDb.FIO = Convert.ToString(newModel.Person.LastName +' '+ newModel.Person.FirstName+' '+ newModel.Person.PatronymicName);
             }
             _context.SaveChanges();
             
             return RedirectToAction("ShowAll","Members");
-        }
-        public ActionResult Edit(Guid id)
-        {
-            var person = _context.People.SingleOrDefault(p => p.Id == id);
-            if (person == null)
-                return HttpNotFound();
-            var viewModel = new NewPersonViewModel
-            {
-                Person = person,
-                Squads = _context.Squads.ToList()
-
-            };
-            return View("NewPerson", viewModel);
         }
 
     }

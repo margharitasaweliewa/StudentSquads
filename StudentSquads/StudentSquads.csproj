@@ -203,6 +203,18 @@
     <Compile Include="Migrations\202004051732059_ChangedNamesandSexNullable.Designer.cs">
       <DependentUpon>202004051732059_ChangedNamesandSexNullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004111126079_NewFieldsInPerson.cs" />
+    <Compile Include="Migrations\202004111126079_NewFieldsInPerson.Designer.cs">
+      <DependentUpon>202004111126079_NewFieldsInPerson.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004111129174_AddFormofStudy.cs" />
+    <Compile Include="Migrations\202004111129174_AddFormofStudy.Designer.cs">
+      <DependentUpon>202004111129174_AddFormofStudy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004111208115_AddedStatus.cs" />
+    <Compile Include="Migrations\202004111208115_AddedStatus.Designer.cs">
+      <DependentUpon>202004111208115_AddedStatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FeePayment.cs" />
@@ -211,6 +223,7 @@
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Squad.cs" />
+    <Compile Include="Models\Status.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\NewPersonViewModel.cs" />
@@ -275,6 +288,7 @@
     <Content Include="Views\Members\ShowAll.cshtml" />
     <Content Include="Views\Members\SquadManager.cshtml" />
     <Content Include="Views\People\PersonForm.cshtml" />
+    <Content Include="Views\People\AllPeople.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -313,6 +327,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004051732059_ChangedNamesandSexNullable.resx">
       <DependentUpon>202004051732059_ChangedNamesandSexNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004111126079_NewFieldsInPerson.resx">
+      <DependentUpon>202004111126079_NewFieldsInPerson.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004111129174_AddFormofStudy.resx">
+      <DependentUpon>202004111129174_AddFormofStudy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004111208115_AddedStatus.resx">
+      <DependentUpon>202004111208115_AddedStatus.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

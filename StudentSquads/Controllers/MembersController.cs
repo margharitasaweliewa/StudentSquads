@@ -35,7 +35,7 @@ namespace StudentSquads.Controllers
                 pageIndex = 1;
             if (String.IsNullOrWhiteSpace(sortBy))
                 sortBy = "Squad";
-            var members = _context.Members.Include(m => m.Squad).ToList();
+            var members = _context.Members.Include(m => m.Squad).Include(m => m.Status).ToList();
             return View(members);
 
             //return Content(String.Format("pageIndex={0}&sortBy={1}", pageIndex, sortBy));
