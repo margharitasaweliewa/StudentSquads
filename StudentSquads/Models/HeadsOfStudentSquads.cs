@@ -13,6 +13,9 @@ namespace StudentSquads.Models
         public Guid Id { get; set; }
         [Display(Name = "Должность")]
         public string Position { get; set; }
+        public MainPosition MainPosition { get; set; }
+        [Display(Name = "Основная должность")]
+        public int? MainPositionId { get; set; }
         public Squad Squad { get; set; }
         public Guid? SquadId { get; set; }
         public Person Person { get; set; }

@@ -92,16 +92,30 @@
 			@Html.TextBoxFor(m => m.Person.Email, new { @class = "form-control" })
 		</div>
 		@*Тут скорее надо заблокировать, чем не отображать*@
-		@*if (Model.Person is null) var read = "readonly"*@
-			<div class="checkbox" id="alreadymember">
+		@if (Model.Person is null)
+		{<div class="checkbox" id="alreadymember">
 				<label disabled>
-					@Html.CheckBoxFor(m => m.Member.ApprovedByCommandStaff) Уже являетесь членом ЛСО?
+					@Html.CheckBoxFor(m => m.Member.ApprovedByCommandStaff) Уже являетесь членом организации?
 				</label>
 			</div>
 			<div class="form-group" disabled>
 				@Html.LabelFor(m => m.Member.SquadId)
-				@Html.DropDownListFor(m => m.Member.SquadId, new SelectList(Model.Squads, "Id", "Name"), "Выберите отряд", new { @class = "form-control" })
+				@Html.DropDownListFor(m => m.Member.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control" })
 			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.MembershipNumber)
+				@Html.TextBoxFor(m => m.Person.MembershipNumber, new { @class = "form-control" })
+			</div>
+			<div class="checkbox" id="ishead">
+				<label disabled>
+					@Html.CheckBoxFor(m => m.Member.ApprovedByCommandStaff) Являетесь членом ком. состава ЛСО?
+				</label>
+			</div>
+			<div class="form-group" disabled>
+				@Html.LabelFor(m => m.HeadsOfStudentSquads.MainPositionId)
+				@Html.DropDownListFor(m => m.HeadsOfStudentSquads.MainPositionId, new SelectList(Model.MainPositions, "Id", "Name"), "", new { @class = "form-control" })
+			</div>
+		}
 	</div>
 
 </div>

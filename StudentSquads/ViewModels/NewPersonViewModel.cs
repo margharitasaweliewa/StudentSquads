@@ -11,5 +11,7 @@ namespace StudentSquads.ViewModels
         public IEnumerable<Squad> Squads { get; set; }
         public Person Person { get; set; }
         public Member Member { get; set; }
+        public IEnumerable<MainPosition> MainPositions { get; set; }
+        public HeadsOfStudentSquads HeadsOfStudentSquads { get; set; }
     }
 }

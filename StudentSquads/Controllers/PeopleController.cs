@@ -9,6 +9,7 @@ using StudentSquads.ViewModels;
 using Microsoft.AspNet.Identity;
 using System.Dynamic;
 using System.ComponentModel;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace StudentSquads.Controllers
 {
@@ -79,11 +80,13 @@ namespace StudentSquads.Controllers
             return View(model);
         }
         public ActionResult PersonForm()
-        {
+        {//Определяем вид для отображения
             var squads = _context.Squads.ToList();
+            var mainpositions = _context.MainPositions.ToList();
             var viewModel = new NewPersonViewModel
             {
-                Squads = squads
+                Squads = squads,
+                MainPositions = mainpositions
             };
             string id = User.Identity.GetUserId();
             var personid = _context.Users.SingleOrDefault(u => u.Id == id).PersonId;
@@ -101,17 +104,39 @@ namespace StudentSquads.Controllers
         [HttpPost]
         public ActionResult Save(NewPersonViewModel newModel)
         {
+            //Проверяем, есть ли личность у пользователя. Если нет, добавляем
             if (Convert.ToString(newModel.Person.Id)== "00000000-0000-0000-0000-000000000000")
             {
                 //Добавляем новую личность с идентификатором
                 var personId = Guid.NewGuid();
                 newModel.Person.Id = personId;
                 newModel.Person.FIO= Convert.ToString(newModel.Person.LastName + ' ' + newModel.Person.FirstName + ' ' + newModel.Person.PatronymicName);
-                _context.People.Add(newModel.Person);
                 //Получаем объект User, присваиваем ему PersonId
                 string id = User.Identity.GetUserId();
                 var user = _context.Users.SingleOrDefault(u => u.Id == id);
                 user.PersonId = personId;
+                //Если является членом организации, сразу проставляем дату вступления
+                if (newModel.Person.MembershipNumber != null) newModel.Person.DateOfEnter = DateTime.Now;
+                //Если является членом отряда, создаем запись в таблице "Member"
+                if (newModel.Member.SquadId != null)
+                {
+                    newModel.Member.PersonId = personId;
+                    newModel.Member.DateofEnter = DateTime.Now;
+                    newModel.Member.ApprovedByCommandStaff = true;
+                    _context.Members.Add(newModel.Member);
+                    //Если является ком. составом отряда,создаем запись в таблице "HeadsofStudentSquads"
+                    if (newModel.HeadsOfStudentSquads.MainPositionId != null)
+                    {
+                        newModel.HeadsOfStudentSquads.PersonId = personId;
+                        newModel.HeadsOfStudentSquads.SquadId = newModel.Member.SquadId;
+                        newModel.HeadsOfStudentSquads.DateofBegin = DateTime.Now;
+                        _context.HeadsOfStudentSquads.Add(newModel.HeadsOfStudentSquads);
+                        //И добавляем пользователю Роль "Руководитель отряда"
+
+                    }
+                }
+                _context.People.Add(newModel.Person);
+
             }
             else
             {

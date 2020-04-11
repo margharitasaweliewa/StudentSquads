@@ -24,6 +24,7 @@ namespace StudentSquads.Models
         public string ExitReason { get; set; }
         //Ссылка на отряд
         public Squad Squad { get; set; }
+        [Display(Name ="Отряд")]
         public Guid? SquadId { get; set; }
         //Ссылка на статус в отряде
         public Status Status { get; set; }
