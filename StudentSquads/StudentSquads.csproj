@@ -223,6 +223,22 @@
     <Compile Include="Migrations\202004111616500_AddedMainPosition.Designer.cs">
       <DependentUpon>202004111616500_AddedMainPosition.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004112001482_ChangedUser.cs" />
+    <Compile Include="Migrations\202004112001482_ChangedUser.Designer.cs">
+      <DependentUpon>202004112001482_ChangedUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004112008334_AddedUserIdtoPerson.cs" />
+    <Compile Include="Migrations\202004112008334_AddedUserIdtoPerson.Designer.cs">
+      <DependentUpon>202004112008334_AddedUserIdtoPerson.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004112037578_ChangedHeadsofStudentSquads.cs" />
+    <Compile Include="Migrations\202004112037578_ChangedHeadsofStudentSquads.Designer.cs">
+      <DependentUpon>202004112037578_ChangedHeadsofStudentSquads.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004112124224_MadeDateofBirthRequired.cs" />
+    <Compile Include="Migrations\202004112124224_MadeDateofBirthRequired.Designer.cs">
+      <DependentUpon>202004112124224_MadeDateofBirthRequired.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FeePayment.cs" />
@@ -352,6 +368,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004111616500_AddedMainPosition.resx">
       <DependentUpon>202004111616500_AddedMainPosition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004112001482_ChangedUser.resx">
+      <DependentUpon>202004112001482_ChangedUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004112008334_AddedUserIdtoPerson.resx">
+      <DependentUpon>202004112008334_AddedUserIdtoPerson.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004112037578_ChangedHeadsofStudentSquads.resx">
+      <DependentUpon>202004112037578_ChangedHeadsofStudentSquads.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004112124224_MadeDateofBirthRequired.resx">
+      <DependentUpon>202004112124224_MadeDateofBirthRequired.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -156,12 +156,13 @@ namespace StudentSquads.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    //SquadManager,RegionalManaer,
+                    //SquadManager,RegionalManager, UniManager,DesantManager
                     //Создаю менеджеров с ролями
                     //var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
                     //var roleSquadManager = new RoleManager<IdentityRole>(roleStore);
-                    //await roleSquadManager.CreateAsync(new IdentityRole("UniManager"));
-                    //await UserManager.AddToRoleAsync(user.Id, "UniManager");
+                    //await roleSquadManager.CreateAsync(new IdentityRole("DesantManager"));
+                    //user.PersonId = Guid.NewGuid();
+                    //await UserManager.AddToRoleAsync(user.Id, "DesantManager");
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771

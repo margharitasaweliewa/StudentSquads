@@ -20,7 +20,7 @@ namespace StudentSquads.Models
         public Guid? SquadId { get; set; }
         public Person Person { get; set; }
         [Display(Name = "Член организации")]
-        public Guid PersonId { get; set; }
+        public Guid? PersonId { get; set; }
         [Display(Name = "Начало работы")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]

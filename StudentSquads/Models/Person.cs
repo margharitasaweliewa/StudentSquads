@@ -9,6 +9,8 @@ namespace StudentSquads.Models
 {
     public class Person
     {
+        public string ApplicationUserId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
         public Guid Id { get; set; }
         [Display(Name = "Фамилия")]
         public string LastName { get; set; }
@@ -21,7 +23,7 @@ namespace StudentSquads.Models
         [Display(Name = "Дата рождения")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? DateofBirth { get; set; }
+        public DateTime DateofBirth { get; set; }
         [Display(Name = "Место обучения")]
         public string PlaceofStudy { get; set; }
         [Display(Name = "Форма обучения")]
