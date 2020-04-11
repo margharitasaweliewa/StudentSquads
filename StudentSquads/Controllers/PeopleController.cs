@@ -15,9 +15,11 @@ namespace StudentSquads.Controllers
     public class PeopleController : Controller
     {
         private ApplicationDbContext _context;
+
         public PeopleController()
         {
             _context = new ApplicationDbContext();
+      
         }
         protected override void Dispose(bool disposing)
         {
@@ -30,6 +32,12 @@ namespace StudentSquads.Controllers
                 pageIndex = 1;
             if (String.IsNullOrWhiteSpace(sortBy))
                 sortBy = "FIO";
+            string id = User.Identity.GetUserId();
+            var personid = _context.Users.SingleOrDefault(u => u.Id == id).PersonId;
+            //Если у пользователя роль "Руководитель отряда", тогда находим, какого отряда он сейчас является руководителем
+            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также дата окончания должности не равна null
+            var headofsquad = _context.HeadsOfStudentSquads.SingleOrDefault(h => (h.PersonId == personid) && (h.DateofEnd==null));
+            var squadId = headofsquad.SquadId;
             //Тут нужно получить запись (Person+(Member+Squad+Status)*необязательно)
             dynamic model = new ExpandoObject();
             var query = _context.People.Join(_context.Members.Include(m => m.Squad).Include(m => m.Status),
@@ -37,14 +45,23 @@ namespace StudentSquads.Controllers
                 m => m.PersonId,
                 (p, m) => new
                 {
+                    //Выход из организации
+                    p.DateOfExit,
                     p.FIO,
                     p.DateofBirth,
                     p.PhoneNumber,
                     p.MembershipNumber,
-                    SquadName = m.Squad.Name,
-                    StatusName = m.Status.Name
+                    SquadId = m.Squad.Id,
+                    SquadName = (m == null ? String.Empty : m.Squad.Name),
+                    StatusName = (m == null ? String.Empty : m.Status.Name),
+                    //Выход из отряда
+                    m.DateofTransition
 
-                });
+                })
+                //Только те, которые не перешли в другой отряд
+                .Where(m => (m.DateofTransition == null)&&(m.SquadId==squadId))
+                .OrderBy(m => m.SquadName)
+                .ThenBy(p => p.FIO);
             List<ExpandoObject> joinData = new List<ExpandoObject>();
 
             foreach (var item in query)
@@ -68,7 +85,6 @@ namespace StudentSquads.Controllers
             {
                 Squads = squads
             };
-            //Определяю Id текущего пользователя, чтобы найти id личности
             string id = User.Identity.GetUserId();
             var personid = _context.Users.SingleOrDefault(u => u.Id == id).PersonId;
             //Если User ещё не привязан к личности, возвращаем пустую форму

@@ -215,9 +215,14 @@
     <Compile Include="Migrations\202004111208115_AddedStatus.Designer.cs">
       <DependentUpon>202004111208115_AddedStatus.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004111435310_AddedHeadsOgStudentSquads.cs" />
+    <Compile Include="Migrations\202004111435310_AddedHeadsOgStudentSquads.Designer.cs">
+      <DependentUpon>202004111435310_AddedHeadsOgStudentSquads.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FeePayment.cs" />
+    <Compile Include="Models\HeadsOfStudentSquads.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Member.cs" />
@@ -336,6 +341,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004111208115_AddedStatus.resx">
       <DependentUpon>202004111208115_AddedStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004111435310_AddedHeadsOgStudentSquads.resx">
+      <DependentUpon>202004111435310_AddedHeadsOgStudentSquads.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
