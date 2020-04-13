@@ -118,6 +118,10 @@ namespace StudentSquads.Controllers
             //Проверяем, есть ли личность у пользователя. Если нет, добавляем
             if (Convert.ToString(newModel.Person.Id) == "00000000-0000-0000-0000-000000000000")
             {
+                if (!ModelState.IsValid)
+                {
+                    return View("PersonForm", newModel);
+                }
                 //Добавляем новую личность с идентификатором
                 var personId = Guid.NewGuid();
                 newModel.Person.Id = personId;

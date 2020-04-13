@@ -239,6 +239,10 @@
     <Compile Include="Migrations\202004112124224_MadeDateofBirthRequired.Designer.cs">
       <DependentUpon>202004112124224_MadeDateofBirthRequired.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004131749309_MadeNameRequired.cs" />
+    <Compile Include="Migrations\202004131749309_MadeNameRequired.Designer.cs">
+      <DependentUpon>202004131749309_MadeNameRequired.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FeePayment.cs" />
@@ -380,6 +384,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004112124224_MadeDateofBirthRequired.resx">
       <DependentUpon>202004112124224_MadeDateofBirthRequired.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004131749309_MadeNameRequired.resx">
+      <DependentUpon>202004131749309_MadeNameRequired.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

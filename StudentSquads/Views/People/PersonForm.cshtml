@@ -8,6 +8,7 @@
 
 @using (Html.BeginForm("Save", "People"))
 {
+	@Html.ValidationSummary(true, "Пожалуйста, заполните поля правильно")
 <button type="submit" class="btn btn-warning">Сохранить</button>
 @Html.HiddenFor(m => m.Person.Id)
 	@*<p>
@@ -18,6 +19,7 @@
 		<div class="form-group">
 			@Html.LabelFor(m => m.Person.LastName)
 			@Html.TextBoxFor(m => m.Person.LastName, new { @class = "form-control" })
+		    @Html.ValidationMessageFor(m => m.Person.LastName)
 		</div>
 		<div class="form-group">
 			@Html.LabelFor(m => m.Person.FirstName)
@@ -120,8 +122,9 @@
 
 </div>
 
-
-
-
+}
+@section scripts
+{
+	@Scripts.Render("~/bundles/jqueryval")
 }
 

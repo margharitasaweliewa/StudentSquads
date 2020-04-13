@@ -12,14 +12,17 @@ namespace StudentSquads.Models
         public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         public Guid Id { get; set; }
+        [Required(ErrorMessage ="Введите вашу фамилию")]
         [Display(Name = "Фамилия")]
         public string LastName { get; set; }
+        [Required(ErrorMessage = "Введите ваше имя")]
         [Display(Name = "Имя")]
         public string FirstName { get; set; }
         [Display(Name = "Отчество")]
         public string PatronymicName { get; set; }
         //true - мужской, false-женский
         public bool Sex { get; set; }
+        [Required(ErrorMessage = "Введите вашу дату рождения")]
         [Display(Name = "Дата рождения")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
