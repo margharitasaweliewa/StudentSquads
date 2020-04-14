@@ -97,20 +97,17 @@ namespace StudentSquads.Controllers
             };
             string id = User.Identity.GetUserId();
             var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
-            if(person == null) return View(viewModel);
-            else {
+            //Если User ещё не привязан к личности, возвращаем пустую форму
+            if (person == null) return View(viewModel);
+            //Иначе возвращаем заполненную
+            else
+            {
 
                 var modelperson = _context.People.SingleOrDefault(p => p.Id == person.Id);
                 viewModel.Person = modelperson;
                 return View(viewModel);
-                }
-                
+            }
 
-
-            //Если User ещё не привязан к личности, возвращаем пустую форму
-        
-            //Иначе возвращаем заполненную
-           
         }
         [HttpPost]
         public ActionResult Save(NewPersonViewModel newModel)
