@@ -17,9 +17,7 @@ namespace StudentSquads.ViewModels
         public Guid Id { get; set; }
         public DateTime DateOfExit { get; set; }
         public string FIO { get; set; }
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime DateofBirth { get; set; }
+        public string DateofBirth { get; set; }
         public string PhoneNumber { get; set; }
         public string MembershipNumber { get; set; }
         public Guid SquadId { get; set; }

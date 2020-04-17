@@ -5,10 +5,11 @@
 }
 
 <h2>Члены организации</h2>
-<table class="table table-bordered table-hover">
+<button class="btn btn-warning js-exclude">Исключить</button>
+<table id="people" class="table table-bordered table-hover">
 	<thead>
 		<tr>
-			<td></td>
+			<th></th>
 			<th>ФИО</th>
 			<th>Дата рождения</th>
 			<th>Телефон</th>
@@ -18,10 +19,10 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var member in Model.JoinData)
+		@*@foreach (var member in Model.JoinData)
 		{
 			<tr>
-				<td><input type="checkbox"></td>
+				<td><input id="@member.Id" type="checkbox"></td>
 				<td>@member.FIO</td>
 				<td>@member.DateofBirth.ToString("dd.MM.yyyy")</td>
 				<td>@member.PhoneNumber</td>
@@ -29,6 +30,63 @@
 				<td>@member.SquadName</td>
 				<td>@member.StatusName</td>
 			</tr>
-		}
+		}*@
 	</tbody>
-	</table>
+</table>
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			//Используем плагин для поиска и сортировки
+			$('#people').DataTable({
+				ajax: {
+					url: "/api/people",
+					dataSrc: ""
+				},
+				columns: [
+					{
+						data: "Id",
+						render: function (data) {
+						return "<input id="+data+" type=checkbox>"}
+					},
+					{
+						data: "FIO",
+						render: function (data, type, person) {
+							return "<a href ='/people/edit" + person.Id + "'>" + person.FIO + "</a>";
+						}
+					},
+					{
+						data: "DateofBirth"
+					},
+					{
+						data: "PhoneNumber"
+					},
+					{
+						data: "MembershipNumber"
+					},
+					{
+						data: "SquadName"
+					},
+					{
+						data: "StatusName"
+					}
+				]
+			});
+			$(".js-exclude").on("click", function () {
+				var button = $(this);
+				bootbox.confirm("Вы уверены, что хотите исключить члена(ов) организации?", function (result) {
+					if (result) {
+						$.ajax({
+							url: "/api/people/" + button.attr("data-person-id"),
+							method: "DELETE",
+							success: function () {
+								button.remove();
+							}
+
+						});
+					}
+				});
+			});
+		});
+	</script>
+}

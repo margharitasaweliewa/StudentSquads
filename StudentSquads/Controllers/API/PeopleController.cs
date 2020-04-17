@@ -85,7 +85,7 @@ namespace StudentSquads.Controllers.API
                     Id = member.Id,
                     SquadId = member.SquadId,
                     FIO = member.FIO,
-                    DateofBirth = member.DateofBirth,
+                    DateofBirth = member.DateofBirth.ToString("dd.MM.yyyy"),
                     PhoneNumber = member.PhoneNumber,
                     MembershipNumber = member.MembershipNumber,
                     SquadName = member.SquadName,
@@ -187,8 +187,9 @@ namespace StudentSquads.Controllers.API
             personInDb.FIO = Convert.ToString(newModel.Person.LastName + ' ' + newModel.Person.FirstName + ' ' + newModel.Person.PatronymicName);
             _context.SaveChanges();
         }
-
-        public void ExcludePerson(Guid id)
+        // DELETE /ape/people/1
+        [HttpDelete]
+        public void DeletePerson(Guid id)
         {
             var personInDb = _context.People.Single(p => p.Id == id);
             if (personInDb == null)
