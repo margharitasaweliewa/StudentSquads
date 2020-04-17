@@ -32,60 +32,6 @@ namespace StudentSquads.Controllers
         //Нам не нужна эта функция, так как мы используем api для отображения личностей
         public ActionResult AllPeople(int? pageIndex, string sortBy)
         {
-            //if (!pageIndex.HasValue)
-            //    pageIndex = 1;
-            //if (String.IsNullOrWhiteSpace(sortBy))
-            //    sortBy = "FIO";
-            //string id = User.Identity.GetUserId();
-            //var personid = _context.People.SingleOrDefault(u => u.ApplicationUserId == id).Id;
-            ////Если у пользователя роль "Руководитель отряда", тогда находим, какого отряда он сейчас является руководителем
-            ////Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также дата окончания должности не равна null
-            //var headofsquad = _context.HeadsOfStudentSquads.SingleOrDefault(h => (h.PersonId == personid) && (h.DateofEnd == null));
-            //if (headofsquad != null)
-            //{
-            //    var squadId = headofsquad.SquadId;
-            //    //Тут нужно получить запись (Person+(Member+Squad+Status)*необязательно)
-            //    dynamic model = new ExpandoObject();
-            //    DateTime dateofBirth = DateTime.Now;
-            //    var query = _context.People.Join(_context.Members.Include(m => m.Squad).Include(m => m.Status),
-            //        p => p.Id,
-            //        m => m.PersonId,
-            //        (p, m) => new
-            //        {
-            //            //Выход из организации
-            //            p.Id,
-            //            p.DateOfExit,
-            //            p.FIO,
-            //            p.DateofBirth,
-            //            p.PhoneNumber,
-            //            p.MembershipNumber,
-            //            SquadId = m.Squad.Id,
-            //            SquadName = (m == null ? String.Empty : m.Squad.Name),
-            //            StatusName = (m == null ? String.Empty : m.Status.Name),
-            //            //Выход из отряда
-            //            m.DateofTransition
-            //        })
-            //        //Только те, которые не перешли в другой отряд
-            //        .Where(m => (m.DateofTransition == null) && (m.SquadId == squadId))
-            //        .OrderBy(m => m.SquadName)
-            //        .ThenBy(p => p.FIO);
-            //    List<ExpandoObject> joinData = new List<ExpandoObject>();
-
-            //    foreach (var item in query)
-            //    {
-            //        IDictionary<string, object> itemExpando = new ExpandoObject();
-            //        foreach (PropertyDescriptor property
-            //                 in
-            //                 TypeDescriptor.GetProperties(item.GetType()))
-            //        {
-            //            itemExpando.Add(property.Name, property.GetValue(item));
-            //        }
-            //        joinData.Add(itemExpando as ExpandoObject);
-            //        model.JoinData = joinData;
-            //    }
-            //    return View(model);
-            //}
-            //return RedirectToAction("Index", "Home");
             return View();
         }
         public ActionResult PersonForm()
@@ -198,9 +144,8 @@ namespace StudentSquads.Controllers
 
             var viewModel = new NewPersonViewModel
             {
-                Person =person,
+                Person =person
             };
-
             return View("PersonForm", viewModel);
         }
 

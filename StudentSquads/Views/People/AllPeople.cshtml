@@ -19,18 +19,6 @@
 		</tr>
 	</thead>
 	<tbody>
-		@*@foreach (var member in Model.JoinData)
-		{
-			<tr>
-				<td><input id="@member.Id" type="checkbox"></td>
-				<td>@member.FIO</td>
-				<td>@member.DateofBirth.ToString("dd.MM.yyyy")</td>
-				<td>@member.PhoneNumber</td>
-				<td>@member.MembershipNumber</td>
-				<td>@member.SquadName</td>
-				<td>@member.StatusName</td>
-			</tr>
-		}*@
 	</tbody>
 </table>
 @section scripts
@@ -38,7 +26,7 @@
 	<script>
 		$(document).ready(function () {
 			//Используем плагин для поиска и сортировки
-			$('#people').DataTable({
+			var table = $('#people').DataTable({
 				ajax: {
 					url: "/api/people",
 					dataSrc: ""
@@ -52,7 +40,7 @@
 					{
 						data: "FIO",
 						render: function (data, type, person) {
-							return "<a href ='/people/edit" + person.Id + "'>" + person.FIO + "</a>";
+							return "<a href ='/people/edit/" + person.Id + "'>" + person.FIO + "</a>";
 						}
 					},
 					{
@@ -77,9 +65,10 @@
 				bootbox.confirm("Вы уверены, что хотите исключить члена(ов) организации?", function (result) {
 					if (result) {
 						$.ajax({
-							url: "/api/people/" + button.attr("data-person-id"),
+							url: "/people/",
 							method: "DELETE",
 							success: function () {
+								table.row()
 								button.remove();
 							}
 
