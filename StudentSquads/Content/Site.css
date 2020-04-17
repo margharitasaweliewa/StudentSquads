@@ -29,4 +29,8 @@ textarea {
 .input-validation-error {
     border: 2px solid red;
 }
+.menu-container {
+    margin-right: 50px;
+    margin-left: 50px;
+}
 

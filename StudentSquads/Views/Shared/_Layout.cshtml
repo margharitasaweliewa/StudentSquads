@@ -16,7 +16,7 @@
 	</style>
 	<div class="navbar navbar-inverse navbar-fixed-top">
 
-		<div class="container">
+		<div class="menu-container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 					<span class="icon-bar"></span>
@@ -27,17 +27,53 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					@*<div class="dropdown open">
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Dropdown button
-						</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" href="#">Action</a>
-							<a class="dropdown-item" href="#">Another action</a>
-							<a class="dropdown-item" href="#">Something else here</a>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Члены организации</a>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="/people/allpeople">Все члены</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">Руководители</a>
 						</div>
-					</div>*@
-					<li>@Html.ActionLink("Члены организации", "ShowAll", "Members")</li>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Заявки</a>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="#">Заявки на вступление</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">Заявки на внесение информации о взносах</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">Заявки на добавление мероприятия</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">Заявки на смену ком. состава</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">Заявки на исключение</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">Заявки на переход</a>
+						</div>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Рейтинги</a>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="#">Текущий рейтинг</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">Рейтинговые показатели</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">История рейтинга</a>
+						</div>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Трудовая деятельность</a>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="#">Выездные списки</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">Информация по трудовому семестру</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">История трудовой деятельности</a>
+						</div>
+					</li>
+					<li>
+						@Html.ActionLink("Управление должностями", "Index", "Home", new { area = "" })
+					</li>
 				</ul>
 				@Html.Partial("_LoginPartial")
 			</div>
