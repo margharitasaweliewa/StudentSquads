@@ -140,11 +140,8 @@ namespace StudentSquads.Controllers.API
                     newModel.HeadsOfStudentSquads.SquadId = newModel.Member.SquadId;
                     newModel.HeadsOfStudentSquads.DateofBegin = DateTime.Now;
                     _context.HeadsOfStudentSquads.Add(newModel.HeadsOfStudentSquads);
-                    //Добавлеяем статус в зависимости от выбранного
-                    //Очень опасный код, подумай, как исправить
-                    var position = _context.MainPositions.Single(p => p.Id == newModel.HeadsOfStudentSquads.MainPositionId).Name;
-                    int statusid = _context.Status.Single(s => s.Name == position).Id;
-                    newModel.Member.StatusId = statusid;
+                    //Добавлеяем статус "Член ком. состава"
+                    newModel.Member.StatusId = 8;
                 }
             }
             _context.People.Add(newModel.Person);
