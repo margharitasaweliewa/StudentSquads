@@ -74,14 +74,14 @@ namespace StudentSquads.Controllers.API
             }
             List<NewPersonViewModel> listofmembers = new List<NewPersonViewModel>();
             //Затем переводим ExpandoObject в обычный класс
-            var squads = _context.Squads.ToList();
-            var mainpositions = _context.MainPositions.ToList();
+            //var squads = _context.Squads.ToList();
+            //var mainpositions = _context.MainPositions.ToList();
             foreach (var member in model.JoinData)
             {
                 NewPersonViewModel newmember = new NewPersonViewModel
                 {
-                    Squads = squads,
-                    MainPositions = mainpositions,
+                    //Squads = squads,
+                    //MainPositions = mainpositions,
                     Id = member.Id,
                     SquadId = member.SquadId,
                     FIO = member.FIO,
@@ -89,9 +89,9 @@ namespace StudentSquads.Controllers.API
                     PhoneNumber = member.PhoneNumber,
                     MembershipNumber = member.MembershipNumber,
                     SquadName = member.SquadName,
-                    StatusName = member.StatusName,
-                    Member = new Member(),
-                    HeadsOfStudentSquads = new HeadsOfStudentSquads()
+                    StatusName = member.StatusName
+                    //Member = new Member(),
+                    //HeadsOfStudentSquads = new HeadsOfStudentSquads()
                 };
                 Guid Id = member.Id;
                 newmember.Person = _context.People.SingleOrDefault(p => p.Id == Id);

@@ -14,6 +14,7 @@ namespace StudentSquads.ViewModels
         public Member Member { get; set; }
         public IEnumerable<MainPosition> MainPositions { get; set; }
         public HeadsOfStudentSquads HeadsOfStudentSquads { get; set; }
+        public IEnumerable<Status> Status { get; set; }
         public Guid Id { get; set; }
         public DateTime DateOfExit { get; set; }
         public string FIO { get; set; }

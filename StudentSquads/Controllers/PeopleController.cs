@@ -50,7 +50,6 @@ namespace StudentSquads.Controllers
             //Иначе возвращаем заполненную
             else
             {
-
                 var modelperson = _context.People.SingleOrDefault(p => p.Id == person.Id);
                 viewModel.Person = modelperson;
                 return View(viewModel);
@@ -60,13 +59,13 @@ namespace StudentSquads.Controllers
         [HttpPost]
         public ActionResult Save(NewPersonViewModel newModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return View("PersonForm", newModel);
+            }
             //Проверяем, есть ли личность у пользователя. Если нет, добавляем
             if (Convert.ToString(newModel.Person.Id) == "00000000-0000-0000-0000-000000000000")
             {
-                if (!ModelState.IsValid)
-                {
-                    return View("PersonForm", newModel);
-                }
                 //Добавляем новую личность с идентификатором
                 var personId = Guid.NewGuid();
                 newModel.Person.Id = personId;
@@ -138,15 +137,31 @@ namespace StudentSquads.Controllers
         public ActionResult Edit(Guid id)
         {
             var person = _context.People.SingleOrDefault(c => c.Id == id);
-
+            var status = _context.Status.ToList();
             if (person == null)
                 return HttpNotFound();
-
+            var member = _context.Members.SingleOrDefault(m => (m.PersonId == id) && (m.DateofExit == null));
             var viewModel = new NewPersonViewModel
             {
-                Person =person
+                Person = person,
+                Status = status,
+                Member = member
+
             };
-            return View("PersonForm", viewModel);
+            return View("PersonEditForm", viewModel);
+        }
+        [HttpPost]
+        public ActionResult ChangeStatus(NewPersonViewModel newModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("PersonEditForm", newModel);
+            }
+            var memberInDb = _context.Members.Single(m => m.Id == newModel.Member.Id);
+            //Изменяю поля персональных данных
+            memberInDb.StatusId = newModel.Member.Status.Id;
+            _context.SaveChanges();
+            return RedirectToAction("AllPeople", "People");
         }
 
     }

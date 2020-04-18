@@ -1,15 +1,21 @@
 ﻿@model StudentSquads.ViewModels.NewPersonViewModel
 @{
-	ViewBag.Title = "PersonForm";
+	ViewBag.Title = "PersonEditForm";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Личные данные</h2>
-@using (Html.BeginForm("Save", "People"))
+<button class="btn btn-warning js-exclude" data-id="@Model.Person.Id">Исключить</button>
+@using (Html.BeginForm("ChangeStatus", "People"))
 {
-	@Html.ValidationSummary(true, "Пожалуйста, заполните поля правильно")
-	<button type="submit" class="btn btn-warning">Сохранить</button>
+	<div class="form-group" disabled>
+		@Html.LabelFor(m => m.Member.Status.Id)
+		@Html.DropDownListFor(m => m.Member.Status.Id, new SelectList(Model.Status, "Id", "Name"), "", new { @class = "form-control" })
+	</div>
+	<button type="submit" class="btn btn-warning">Изменить</button>
 	@Html.HiddenFor(m => m.Person.Id)
+	@Html.HiddenFor(m => m.Member.Id)
+
 	@*<p>
 			@Html.ActionLink("Сохранить", "New", "Movies", null, new { @class = "btn btn-warning" })
 		</p>*@
@@ -30,7 +36,7 @@
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.DateofBirth)
-				@Html.TextBoxFor(m => m.Person.DateofBirth, "{0:dd.MM.yyyy}", new { @class = "form-control"})
+				@Html.TextBoxFor(m => m.Person.DateofBirth, "{0:dd.MM.yyyy}", new { @class = "form-control" })
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.PlaceofStudy)
@@ -122,9 +128,30 @@
 	</div>
 
 }
-
 @section scripts
 {
 	@Scripts.Render("~/bundles/jqueryval")
+	<script>
+		$(document).ready(function () {
+			$(".js-exclude").on("click", function () {
+				var button = $(this);
+				bootbox.prompt("Вы уверены, что хотите исключить члена организации?\nУкажите причину:", function (result) {
+					if (result) {
+						$.ajax({
+							url: "/api/people/" + button.attr("data-id") + "/" + result,
+							method: "DELETE",
+							success: function () {
+								alert(result);
+								//table.row(button.parents("tr")).remove().draw();
+							}
+
+						});
+					}
+				});
+			});
+		});
+	</script>
 }
+
+
 
