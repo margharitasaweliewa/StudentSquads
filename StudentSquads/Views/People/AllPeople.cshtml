@@ -5,7 +5,6 @@
 }
 
 <h2>Члены организации</h2>
-<button class="btn btn-warning js-exclude">Исключить</button>
 <table id="people" class="table table-bordered table-hover">
 	<thead>
 		<tr>
@@ -59,22 +58,6 @@
 						data: "StatusName"
 					}
 				]
-			});
-			$(".js-exclude").on("click", function () {
-				var button = $(this);
-				bootbox.confirm("Вы уверены, что хотите исключить члена(ов) организации?", function (result) {
-					if (result) {
-						$.ajax({
-							url: "/people/",
-							method: "DELETE",
-							success: function () {
-								table.row()
-								button.remove();
-							}
-
-						});
-					}
-				});
 			});
 		});
 	</script>

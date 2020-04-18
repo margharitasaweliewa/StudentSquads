@@ -61,6 +61,7 @@ namespace StudentSquads.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? DateOfExit { get; set; }
+        public string ExitReason { get; set; }
         [Display(Name = "Номер членского билета")]
         public string MembershipNumber { get; set; }
         //null - зарегистрирован в системе,
@@ -68,6 +69,7 @@ namespace StudentSquads.Models
         public bool? ApplicationFrom { get; set; }
         [Display(Name = "ФИО")]
         public string FIO { get; set; }
+
 
 
     }

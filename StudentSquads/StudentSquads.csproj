@@ -254,6 +254,10 @@
     <Compile Include="Migrations\202004131749309_MadeNameRequired.Designer.cs">
       <DependentUpon>202004131749309_MadeNameRequired.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004180943079_AddExitReasontoPerson.cs" />
+    <Compile Include="Migrations\202004180943079_AddExitReasontoPerson.Designer.cs">
+      <DependentUpon>202004180943079_AddExitReasontoPerson.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FeePayment.cs" />
@@ -573,6 +577,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004131749309_MadeNameRequired.resx">
       <DependentUpon>202004131749309_MadeNameRequired.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004180943079_AddExitReasontoPerson.resx">
+      <DependentUpon>202004180943079_AddExitReasontoPerson.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

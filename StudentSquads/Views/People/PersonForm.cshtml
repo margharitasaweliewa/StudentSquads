@@ -5,126 +5,147 @@
 }
 
 <h2>Личные данные</h2>
-
+<button class="btn btn-warning js-exclude" data-id ="@Model.Person.Id">Исключить</button>
 @using (Html.BeginForm("Save", "People"))
 {
 	@Html.ValidationSummary(true, "Пожалуйста, заполните поля правильно")
-<button type="submit" class="btn btn-warning">Сохранить</button>
-@Html.HiddenFor(m => m.Person.Id)
+	<button type="submit" class="btn btn-warning">Сохранить</button>
+	@Html.HiddenFor(m => m.Person.Id)
 	@*<p>
-		@Html.ActionLink("Сохранить", "New", "Movies", null, new { @class = "btn btn-warning" })
-	</p>*@
-<div>
-	<div class="col-xs-4" float="left">
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.LastName)
-			@Html.TextBoxFor(m => m.Person.LastName, new { @class = "form-control" })
-		    @Html.ValidationMessageFor(m => m.Person.LastName)
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.FirstName)
-			@Html.TextBoxFor(m => m.Person.FirstName, new { @class = "form-control" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.PatronymicName)
-			@Html.TextBoxFor(m => m.Person.PatronymicName, new { @class = "form-control" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.DateofBirth)
-			@Html.TextBoxFor(m => m.Person.DateofBirth, new { @class = "form-control", @type = "date" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.PlaceofStudy)
-			@Html.TextBoxFor(m => m.Person.PlaceofStudy, new { @class = "form-control" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.FormofStudy)
-			@Html.TextBoxFor(m => m.Person.FormofStudy, new { @class = "form-control" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.PhoneNumber)
-			@Html.TextBoxFor(m => m.Person.PhoneNumber, new { @class = "form-control" })
-		</div>
-		@*Тут лучше поменять на что-то более стоящее*@
-		<div class="checkbox">
-			<label>
-				@Html.CheckBoxFor(m => m.Person.Sex) Пол Ж(без отметки) М(с отметкой)
-			</label>
-		</div>
-
-	</div>
-	<div class="col-xs-4" float="left">
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.PasportSerie)
-			@Html.TextBoxFor(m => m.Person.PasportSerie, new { @class = "form-control" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.PassportNumber)
-			@Html.TextBoxFor(m => m.Person.PassportNumber, new { @class = "form-control" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.DateofIssue)
-			@Html.TextBoxFor(m => m.Person.DateofIssue, new { @class = "form-control" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.DepartmentCode)
-			@Html.TextBoxFor(m => m.Person.DepartmentCode, new { @class = "form-control" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.CityofBirth)
-			@Html.TextBoxFor(m => m.Person.CityofBirth, new { @class = "form-control" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.RegistrationPlace)
-			@Html.TextBoxFor(m => m.Person.RegistrationPlace, new { @class = "form-control" })
-		</div>
-	</div>
-	<div class="col-xs-4" float="left">
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.INN)
-			@Html.TextBoxFor(m => m.Person.INN, new { @class = "form-control" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.Snils)
-			@Html.TextBoxFor(m => m.Person.Snils, new { @class = "form-control" })
-		</div>
-
-		<div class="form-group">
-			@Html.LabelFor(m => m.Person.Email)
-			@Html.TextBoxFor(m => m.Person.Email, new { @class = "form-control" })
-		</div>
-		@*Тут скорее надо заблокировать, чем не отображать*@
-		@if (Model.Person is null)
-		{<div class="checkbox" id="alreadymember">
-				<label disabled>
-					@Html.CheckBoxFor(m => m.Member.ApprovedByCommandStaff) Уже являетесь членом организации?
-				</label>
-			</div>
-			<div class="form-group" disabled>
-				@Html.LabelFor(m => m.Member.SquadId)
-				@Html.DropDownListFor(m => m.Member.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control" })
+			@Html.ActionLink("Сохранить", "New", "Movies", null, new { @class = "btn btn-warning" })
+		</p>*@
+	<div>
+		<div class="col-xs-4" float="left">
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.LastName)
+				@Html.TextBoxFor(m => m.Person.LastName, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.LastName)
 			</div>
 			<div class="form-group">
-				@Html.LabelFor(m => m.Person.MembershipNumber)
-				@Html.TextBoxFor(m => m.Person.MembershipNumber, new { @class = "form-control" })
+				@Html.LabelFor(m => m.Person.FirstName)
+				@Html.TextBoxFor(m => m.Person.FirstName, new { @class = "form-control" })
 			</div>
-			<div class="checkbox" id="ishead">
-				<label disabled>
-					@Html.CheckBoxFor(m => m.Member.ApprovedByCommandStaff) Являетесь членом ком. состава ЛСО?
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.PatronymicName)
+				@Html.TextBoxFor(m => m.Person.PatronymicName, new { @class = "form-control" })
+			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.DateofBirth)
+				@Html.TextBoxFor(m => m.Person.DateofBirth, new { @class = "form-control", @type = "date" })
+			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.PlaceofStudy)
+				@Html.TextBoxFor(m => m.Person.PlaceofStudy, new { @class = "form-control" })
+			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.FormofStudy)
+				@Html.TextBoxFor(m => m.Person.FormofStudy, new { @class = "form-control" })
+			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.PhoneNumber)
+				@Html.TextBoxFor(m => m.Person.PhoneNumber, new { @class = "form-control" })
+			</div>
+			@*Тут лучше поменять на что-то более стоящее*@
+			<div class="checkbox">
+				<label>
+					@Html.CheckBoxFor(m => m.Person.Sex) Пол Ж(без отметки) М(с отметкой)
 				</label>
 			</div>
-			<div class="form-group" disabled>
-				@Html.LabelFor(m => m.HeadsOfStudentSquads.MainPositionId)
-				@Html.DropDownListFor(m => m.HeadsOfStudentSquads.MainPositionId, new SelectList(Model.MainPositions, "Id", "Name"), "", new { @class = "form-control" })
-			</div>
-		}
-	</div>
 
-</div>
+		</div>
+		<div class="col-xs-4" float="left">
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.PasportSerie)
+				@Html.TextBoxFor(m => m.Person.PasportSerie, new { @class = "form-control" })
+			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.PassportNumber)
+				@Html.TextBoxFor(m => m.Person.PassportNumber, new { @class = "form-control" })
+			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.DateofIssue)
+				@Html.TextBoxFor(m => m.Person.DateofIssue, new { @class = "form-control" })
+			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.DepartmentCode)
+				@Html.TextBoxFor(m => m.Person.DepartmentCode, new { @class = "form-control" })
+			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.CityofBirth)
+				@Html.TextBoxFor(m => m.Person.CityofBirth, new { @class = "form-control" })
+			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.RegistrationPlace)
+				@Html.TextBoxFor(m => m.Person.RegistrationPlace, new { @class = "form-control" })
+			</div>
+		</div>
+		<div class="col-xs-4" float="left">
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.INN)
+				@Html.TextBoxFor(m => m.Person.INN, new { @class = "form-control" })
+			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.Snils)
+				@Html.TextBoxFor(m => m.Person.Snils, new { @class = "form-control" })
+			</div>
+
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.Email)
+				@Html.TextBoxFor(m => m.Person.Email, new { @class = "form-control" })
+			</div>
+			@*Тут скорее надо заблокировать, чем не отображать*@
+			@if (Model.Person is null)
+			{<div class="checkbox" id="alreadymember">
+					<label disabled>
+						@Html.CheckBoxFor(m => m.Member.ApprovedByCommandStaff) Уже являетесь членом организации?
+					</label>
+				</div>
+				<div class="form-group" disabled>
+					@Html.LabelFor(m => m.Member.SquadId)
+					@Html.DropDownListFor(m => m.Member.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control" })
+				</div>
+				<div class="form-group">
+					@Html.LabelFor(m => m.Person.MembershipNumber)
+					@Html.TextBoxFor(m => m.Person.MembershipNumber, new { @class = "form-control" })
+				</div>
+				<div class="checkbox" id="ishead">
+					<label disabled>
+						@Html.CheckBoxFor(m => m.Member.ApprovedByCommandStaff) Являетесь членом ком. состава ЛСО?
+					</label>
+				</div>
+				<div class="form-group" disabled>
+					@Html.LabelFor(m => m.HeadsOfStudentSquads.MainPositionId)
+					@Html.DropDownListFor(m => m.HeadsOfStudentSquads.MainPositionId, new SelectList(Model.MainPositions, "Id", "Name"), "", new { @class = "form-control" })
+				</div>
+			}
+		</div>
+
+	</div>
 
 }
 @section scripts
 {
-	@Scripts.Render("~/bundles/jqueryval")
+	<script>
+		$(document).ready(function () {
+			$(".js-exclude").on("click", function () {
+				var button = $(this);
+				bootbox.prompt("Вы уверены, что хотите исключить члена организации?\nУкажите причину:", function (result)
+				{
+					if (result) {
+						$.ajax({
+							url: "/api/people/" + button.attr("data-id") + "/"+result,
+							method: "DELETE",
+							success: function ()
+							{
+								alert(result);
+								//table.row(button.parents("tr")).remove().draw();
+							}
+
+						});
+					}
+				});
+			});
+		});
+	</script>
 }
 

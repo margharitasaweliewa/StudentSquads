@@ -187,18 +187,20 @@ namespace StudentSquads.Controllers.API
             personInDb.FIO = Convert.ToString(newModel.Person.LastName + ' ' + newModel.Person.FirstName + ' ' + newModel.Person.PatronymicName);
             _context.SaveChanges();
         }
-        // DELETE /ape/people/1
+        // DELETE /api/people/1
         [HttpDelete]
-        public void DeletePerson(Guid id)
+        public IHttpActionResult ExcludeMember(Guid id, string reason)
         {
             var personInDb = _context.People.Single(p => p.Id == id);
             if (personInDb == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             //При исключении подставляем дату исключения
             personInDb.DateOfExit = DateTime.Now;
+            personInDb.ExitReason = reason;
             _context.SaveChanges();
-        }
 
+            return Ok();
+        }
 
     }
 }
