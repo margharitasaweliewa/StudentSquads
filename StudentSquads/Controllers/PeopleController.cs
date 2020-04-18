@@ -34,6 +34,10 @@ namespace StudentSquads.Controllers
         {
             return View();
         }
+        public ActionResult PersonMainForm()
+        {
+            return View();
+        }
         public ActionResult PersonForm()
         {//Определяем вид для отображения
             var squads = _context.Squads.ToList();

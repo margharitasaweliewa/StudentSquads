@@ -510,6 +510,7 @@
     <Content Include="Views\People\PersonForm.cshtml" />
     <Content Include="Views\People\AllPeople.cshtml" />
     <Content Include="Views\People\PersonEditForm.cshtml" />
+    <Content Include="Views\People\PersonMainForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
