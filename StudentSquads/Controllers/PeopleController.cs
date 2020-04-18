@@ -81,7 +81,7 @@ namespace StudentSquads.Controllers
                 {
                     newModel.Member.Id = Guid.NewGuid();
                     newModel.Member.PersonId = personId;
-                    newModel.Member.DateofEnter = DateTime.Now;
+                    newModel.Member.DateOfEnter = DateTime.Now;
                     newModel.Member.ApprovedByCommandStaff = true;
                     _context.Members.Add(newModel.Member);
                     //Если является ком. составом отряда,создаем запись в таблице "HeadsofStudentSquads"
@@ -140,7 +140,7 @@ namespace StudentSquads.Controllers
             var status = _context.Status.ToList();
             if (person == null)
                 return HttpNotFound();
-            var member = _context.Members.SingleOrDefault(m => (m.PersonId == id) && (m.DateofExit == null));
+            var member = _context.Members.SingleOrDefault(m => (m.PersonId == id));
             var viewModel = new NewPersonViewModel
             {
                 Person = person,

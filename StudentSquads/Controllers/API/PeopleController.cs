@@ -51,11 +51,11 @@ namespace StudentSquads.Controllers.API
                         SquadName = (m == null ? String.Empty : m.Squad.Name),
                         StatusName = (m == null ? String.Empty : m.Status.Name),
                         //Выход из отряда
-                        m.DateofTransition
+                        m.DateOfTransition
 
                     })
                     //Только те, которые не перешли в другой отряд
-                    .Where(m => (m.DateofTransition == null) && (m.SquadId == squadId))
+                    .Where(m => (m.DateOfTransition == null) && (m.SquadId == squadId))
                     .OrderBy(m => m.SquadName)
                     .ThenBy(p => p.FIO);
             List<ExpandoObject> joinData = new List<ExpandoObject>();
@@ -129,7 +129,7 @@ namespace StudentSquads.Controllers.API
             {
                 newModel.Member.Id = Guid.NewGuid();
                 newModel.Member.PersonId = personId;
-                newModel.Member.DateofEnter = DateTime.Now;
+                newModel.Member.DateOfEnter = DateTime.Now;
                 newModel.Member.ApprovedByCommandStaff = true;
                 _context.Members.Add(newModel.Member);
                 //Если является ком. составом отряда,создаем запись в таблице "HeadsofStudentSquads"
@@ -191,12 +191,15 @@ namespace StudentSquads.Controllers.API
         [HttpDelete]
         public IHttpActionResult ExcludeMember(Guid id, string reason)
         {
-            var personInDb = _context.People.Single(p => p.Id == id);
+            var personInDb = _context.People.SingleOrDefault(p => p.Id == id);
             if (personInDb == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+            var memberInDb = _context.Members.SingleOrDefault(m => (m.PersonId == id) && (m.DateOfExit == null));
             //При исключении подставляем дату исключения
             personInDb.DateOfExit = DateTime.Now;
             personInDb.ExitReason = reason;
+            memberInDb.DateOfExit = DateTime.Now;
+            memberInDb.ExitReason = reason;
             _context.SaveChanges();
 
             return Ok();

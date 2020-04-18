@@ -11,15 +11,18 @@ namespace StudentSquads.Models
     public class Member
     {
         public Guid Id { get; set; }
+        [Display(Name = "Дата вступления")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? DateofEnter { get; set; }
+        public DateTime? DateOfEnter { get; set; }
+        [Display(Name = "Дата исключения")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? DateofExit { get; set; }
+        public DateTime? DateOfExit { get; set; }
+        [Display(Name = "Дата перехода в другой отряд")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? DateofTransition { get; set; }
+        public DateTime? DateOfTransition { get; set; }
         public bool ApprovedByCommandStaff { get; set; }
         public string ExitReason { get; set; }
         //Ссылка на отряд
