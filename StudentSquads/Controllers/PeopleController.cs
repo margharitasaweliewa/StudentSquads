@@ -85,13 +85,13 @@ namespace StudentSquads.Controllers
         [HttpPost]
         public ActionResult Save(NewPersonViewModel newModel)
         {
-            
+
             if (!ModelState.IsValid)
             {
                 return View("PersonForm", newModel);
             }
             //Проверяем, есть ли личность у пользователя. Если нет, добавляем
-            if (Convert.ToString(newModel.Person.Id) == "00000000-0000-0000-0000-000000000000")
+            if (Convert.ToString(newModel.Id) == "00000000-0000-0000-0000-000000000000")
             {
                 var personId = Guid.NewGuid();
                 newModel.Person.Id = personId;

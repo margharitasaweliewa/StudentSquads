@@ -13,11 +13,12 @@ namespace StudentSquads.ViewModels
         public Person Person { get; set; }
         //Для отображения отрядов для выбора
         public IEnumerable<Squad> Squads { get; set; }
-        //Выбранный отряд
+        //Выбранный отряд\
+        [Display(Name = "Выберите отряд")]
         public Guid? SquadId { get; set; }
         //Для вывода списка штабов
         public IEnumerable<UniversityHeadquarter> UniversityHeadquarters { get; set; }
-        [Display(Name = "Штаб")]
+        [Display(Name = "Выберите штаб")]
         //Выбранный штаб
         public Guid? UniversityHeadquarterId { get; set; }
         //Для вывода информации о всех отряд, в которых была и есть личность

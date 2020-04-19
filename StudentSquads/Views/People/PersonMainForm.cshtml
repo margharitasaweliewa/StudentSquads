@@ -12,30 +12,29 @@ else
 { @Html.HiddenFor(m => m.Person.Id)
 <div class="row">
 	@*Проверяем, является ли пользователь членом организации.*@
-	@{ if (Model.AllPersonSquads == null)
+	@{ if (Model.AllPersonSquads.Count() == 0)
 		{
-			<button class="btn btn-warning js-exclude">Подать заявку на вступление</button>
-			<div class="form-group" disabled>
-				@Html.LabelFor(m => m.UniversityHeadquarterId)
-				@Html.DropDownListFor(m => m.UniversityHeadquarterId, new SelectList(Model.UniversityHeadquarters, "Id", "Name"), "", new { @class = "form-control" })
+			<div class="row">
+				<div class="col-xs-3" disabled>
+					@Html.LabelFor(m => m.UniversityHeadquarterId)
+					@Html.DropDownListFor(m => m.UniversityHeadquarterId, new SelectList(Model.UniversityHeadquarters, "Id", "Name"), "", new { @class = "form-control" })
+				</div>
+				<div class="col-xs-3" disabled>
+					@Html.LabelFor(m => m.SquadId)
+					@Html.DropDownListFor(m => m.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control" })
+				</div>
 			</div>
-			<div class="form-group" disabled>
-				@Html.LabelFor(m => m.SquadId)
-				@Html.DropDownListFor(m => m.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control" })
-			</div>
+			<button class="btn btn-warning js-apply">Подать заявку на вступление</button>
 		}
 		else
-		{<button class="btn btn-warning js-exclude">Подать заявку на переход</button>
-			<button class="btn btn-default js-exclude">Выйти из организации</button>
+		{<button class="btn btn-warning js-transition">Подать заявку на переход</button>
+		<button class="btn btn-default js-exit">Выйти из организации</button>
 		}
 	}
 
 </div>
 <h3>Ваш отряд</h3>
-if (Model.AllPersonSquads == null)
-{
-	<h4>Данных о членстве в отрядах не найдено.</h4>
-}
+if (Model.AllPersonSquads.Count() == 0){<h5>Данных о членстве в отрядах не найдено.</h5>}
 else
 {
 	<table class="table table-bordered table-hover">
@@ -60,12 +59,11 @@ else
 		</tbody>
 	</table>
 }
-if (Model.AllPersonPositions == null)
-{
-	<h4>Данных о наличии должностей не найдено.</h4>
-}
+
 <h3>Ваши должности</h3>
-<table class="table table-bordered table-hover">
+		if (Model.AllPersonPositions.Count() == 0) { <h5>Данных о наличии должностей не найдено.</h5>}
+		else
+		{<table class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<th>Место</th>
@@ -86,4 +84,5 @@ if (Model.AllPersonPositions == null)
 		}
 	</tbody>
 </table>
-}
+			}
+		}

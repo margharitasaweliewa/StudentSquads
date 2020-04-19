@@ -7,9 +7,9 @@
 <h2>Личные данные</h2>
 @using (Html.BeginForm("Save", "People"))
 {
-	@Html.ValidationSummary(true, "Пожалуйста, заполните поля правильно")
+	@Html.ValidationSummary()
 	<button type="submit" class="btn btn-warning">Сохранить</button>
-	@Html.HiddenFor(m => m.Person.Id)
+	@Html.HiddenFor(m => m.Id)
 	@*<p>
 			@Html.ActionLink("Сохранить", "New", "Movies", null, new { @class = "btn btn-warning" })
 		</p>*@
