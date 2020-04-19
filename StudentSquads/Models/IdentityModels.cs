@@ -33,6 +33,8 @@ namespace StudentSquads.Models
         public DbSet<Person> People { get; set; }
         public DbSet<MainPosition> MainPositions { get; set; }
         public DbSet<HeadsOfStudentSquads> HeadsOfStudentSquads { get; set; }
+        public DbSet<RegionalHeadquarter> RegionalHeadquarters { get; set; }
+        public DbSet<UniversityHeadquarter> UniversityHeadquarters { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

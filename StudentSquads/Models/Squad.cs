@@ -19,7 +19,7 @@ namespace StudentSquads.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? DateofLiquidation { get; set; }
-
-
+        public UniversityHeadquarter UniversityHeadquarter { get; set; }
+        public Guid? UniversityHeadquarterId { get; set; }
     }
 }

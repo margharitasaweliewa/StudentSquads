@@ -1,39 +1,71 @@
-﻿@model  StudentSquads.ViewModels.NewPersonViewModel
+﻿@model StudentSquads.ViewModels.PersonMainFormViewModel
 @{
 	ViewBag.Title = "PersonMainForm";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Личный кабинет</h2>
+@*Проверяем, есть ли у пользователя личность*@
+@if (Model.Person == null)
+{<h4>Для использования функций приложения заполните личные данные в разделе "Мои данные".</h4>}
+else
+{ @Html.HiddenFor(m => m.Person.Id)
 <div class="row">
-	<button class="btn btn-warning js-exclude">Подать заявку на вступление</button>
-	<button class="btn btn-warning js-exclude">Подать заявку на переход</button>
-	<button class="btn btn-default js-exclude">Выйти из организации</button>
+	@*Проверяем, является ли пользователь членом организации.*@
+	@{ if (Model.AllPersonSquads == null)
+		{
+			<button class="btn btn-warning js-exclude">Подать заявку на вступление</button>
+			<div class="form-group" disabled>
+				@Html.LabelFor(m => m.UniversityHeadquarterId)
+				@Html.DropDownListFor(m => m.UniversityHeadquarterId, new SelectList(Model.UniversityHeadquarters, "Id", "Name"), "", new { @class = "form-control" })
+			</div>
+			<div class="form-group" disabled>
+				@Html.LabelFor(m => m.SquadId)
+				@Html.DropDownListFor(m => m.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control" })
+			</div>
+		}
+		else
+		{<button class="btn btn-warning js-exclude">Подать заявку на переход</button>
+			<button class="btn btn-default js-exclude">Выйти из организации</button>
+		}
+	}
+
 </div>
 <h3>Ваш отряд</h3>
-<table class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<th>Отряд</th>
-			<th>Статус</th>
-			<th>Дата вступления</th>
-			<th>Дата выхода</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var member in Model.AllPersonSquads)
-		{
+if (Model.AllPersonSquads == null)
+{
+	<h4>Данных о членстве в отрядах не найдено.</h4>
+}
+else
+{
+	<table class="table table-bordered table-hover">
+		<thead>
 			<tr>
-				<td>@member.Squad.Name</td>
-				<td>@member.Status.Name</td>
-				<td>@member.DateOfEnter</td>
-				<td>@member.DateOfExit</td>
+				<th>Отряд</th>
+				<th>Статус</th>
+				<th>Дата вступления</th>
+				<th>Дата выхода</th>
 			</tr>
-		}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			@foreach (var member in Model.AllPersonSquads)
+			{
+				<tr>
+					<td>@member.Squad.Name</td>
+					<td>@member.Status.Name</td>
+					<td>@member.DateOfEnter</td>
+					<td>@member.DateOfExit</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+if (Model.AllPersonPositions == null)
+{
+	<h4>Данных о наличии должностей не найдено.</h4>
+}
 <h3>Ваши должности</h3>
-<table  class="table table-bordered table-hover">
+<table class="table table-bordered table-hover">
 	<thead>
 		<tr>
 			<th>Место</th>
@@ -54,16 +86,4 @@
 		}
 	</tbody>
 </table>
-
-@*@foreach (var member in Model.JoinData)
-	{
-		<tr>
-			<td><input id="@member.Id" type="checkbox"></td>
-			<td>@member.FIO</td>
-			<td>@member.DateofBirth.ToString("dd.MM.yyyy")</td>
-			<td>@member.PhoneNumber</td>
-			<td>@member.MembershipNumber</td>
-			<td>@member.SquadName</td>
-			<td>@member.StatusName</td>
-		</tr>
-	}*@
+}

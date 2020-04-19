@@ -25,7 +25,6 @@ namespace StudentSquads.ViewModels
         public Guid SquadId { get; set; }
         public string SquadName { get; set; }
         public string StatusName { get; set; }
-        public IEnumerable<Member> AllPersonSquads { get; set; }
-        public IEnumerable<HeadsOfStudentSquads> AllPersonPositions { get; set; }
+
     }
 }

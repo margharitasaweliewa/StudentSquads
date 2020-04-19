@@ -37,21 +37,27 @@ namespace StudentSquads.Controllers
         public ActionResult PersonMainForm()
         {
             string id = User.Identity.GetUserId();
+            var unis = _context.UniversityHeadquarters.ToList();
+            var squads = _context.Squads.ToList();
             var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
+            PersonMainFormViewModel newmember = new PersonMainFormViewModel
+            {
+                Person =person,
+                Squads = squads,
+                UniversityHeadquarters = unis,
+            };
+            if (person == null) return View(newmember);
             var personid = person.Id;
+            //Тут нужно прописать зависимость
             //Находим все связи с отрядами
             var allsquads = _context.Members.Include(m => m.Squad).Include(m => m.Status)
                 .Where(s => s.PersonId == personid).ToList();
             //Находим все связи с должностями
             var allpositions = _context.HeadsOfStudentSquads.Include(p => p.Squad).Include(p => p.MainPosition)
                 .Where(p => p.PersonId == personid).ToList();
-            NewPersonViewModel newmember = new NewPersonViewModel
-            {
-
-                Id = personid,
-                AllPersonSquads = allsquads,
-                AllPersonPositions = allpositions
-            };
+            //Добавляем в модель
+            newmember.AllPersonSquads = allsquads;
+            newmember.AllPersonPositions = allpositions;
             return View(newmember);
         }
         public ActionResult PersonForm()
@@ -79,6 +85,7 @@ namespace StudentSquads.Controllers
         [HttpPost]
         public ActionResult Save(NewPersonViewModel newModel)
         {
+            
             if (!ModelState.IsValid)
             {
                 return View("PersonForm", newModel);
@@ -86,9 +93,9 @@ namespace StudentSquads.Controllers
             //Проверяем, есть ли личность у пользователя. Если нет, добавляем
             if (Convert.ToString(newModel.Person.Id) == "00000000-0000-0000-0000-000000000000")
             {
-                //Добавляем новую личность с идентификатором
                 var personId = Guid.NewGuid();
                 newModel.Person.Id = personId;
+                //Добавляем новую личность с идентификатором
                 newModel.Person.FIO = Convert.ToString(newModel.Person.LastName + ' ' + newModel.Person.FirstName + ' ' + newModel.Person.PatronymicName);
                 //Получаем объект User
                 string id = User.Identity.GetUserId();
@@ -181,5 +188,17 @@ namespace StudentSquads.Controllers
             _context.SaveChanges();
             return RedirectToAction("AllPeople", "People");
         }
+        //public ActionResult ApplyForEnter(Guid id, Guid SquadId)
+        //{
+        //    //var personInDb = _context.People.SingleOrDefault(p => p.Id == id);
+        //    //if (personInDb == null) return RedirectToAction("PersonMainForm", "People");
+        //    Member newMember = new Member
+        //    {
+        //        PersonId = id
+        //    }
+        //    personInDb.
+        //    _context.People.Add(newModel.Person);
+        //}
+
     }
 }

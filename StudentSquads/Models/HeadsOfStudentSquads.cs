@@ -18,6 +18,10 @@ namespace StudentSquads.Models
         public int? MainPositionId { get; set; }
         public Squad Squad { get; set; }
         public Guid? SquadId { get; set; }
+        public UniversityHeadquarter UniversityHeadquarter { get; set; }
+        public Guid? UniversityHeadquarterId { get; set; }
+        public RegionalHeadquarter RegionalHeadquarter { get; set; }
+        public Guid? RegionalHeadquarterId { get; set; }
         public Person Person { get; set; }
         [Display(Name = "Член организации")]
         public Guid? PersonId { get; set; }
