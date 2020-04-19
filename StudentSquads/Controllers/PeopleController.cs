@@ -36,7 +36,23 @@ namespace StudentSquads.Controllers
         }
         public ActionResult PersonMainForm()
         {
-            return View();
+            string id = User.Identity.GetUserId();
+            var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
+            var personid = person.Id;
+            //Находим все связи с отрядами
+            var allsquads = _context.Members.Include(m => m.Squad).Include(m => m.Status)
+                .Where(s => s.PersonId == personid).ToList();
+            //Находим все связи с должностями
+            var allpositions = _context.HeadsOfStudentSquads.Include(p => p.Squad).Include(p => p.MainPosition)
+                .Where(p => p.PersonId == personid).ToList();
+            NewPersonViewModel newmember = new NewPersonViewModel
+            {
+
+                Id = personid,
+                AllPersonSquads = allsquads,
+                AllPersonPositions = allpositions
+            };
+            return View(newmember);
         }
         public ActionResult PersonForm()
         {//Определяем вид для отображения
@@ -151,6 +167,7 @@ namespace StudentSquads.Controllers
             };
             return View("PersonEditForm", viewModel);
         }
+        //Думаю насчет перемещения в Member, но тогда надо будет поменять название действия в View
         [HttpPost]
         public ActionResult ChangeStatus(NewPersonViewModel newModel)
         {
@@ -164,6 +181,5 @@ namespace StudentSquads.Controllers
             _context.SaveChanges();
             return RedirectToAction("AllPeople", "People");
         }
-
     }
 }

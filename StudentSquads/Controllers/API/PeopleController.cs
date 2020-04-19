@@ -27,14 +27,16 @@ namespace StudentSquads.Controllers.API
             string id = User.Identity.GetUserId();
             var personid = _context.People.SingleOrDefault(u => u.ApplicationUserId == id).Id;
             //Если у пользователя роль "Руководитель отряда", тогда находим, какого отряда он сейчас является руководителем
-            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также дата окончания должности не равна null
-            var headofsquad = _context.HeadsOfStudentSquads.SingleOrDefault(h => (h.PersonId == personid) && (h.DateofEnd == null));
-            ////Но вообще у пользователя, который не является руководителем, даже шанса не должно быть использовать этот запрос
-            if (headofsquad == null)
-              throw new HttpResponseException(HttpStatusCode.NotFound);
-             var squadId = headofsquad.SquadId;
-            dynamic model = new ExpandoObject();
-            //Тут нужно получить запись (Person+(Member+Squad+Status)*необязательно)
+            if (User.IsInRole("SquadManager"))
+            {
+                //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также дата окончания должности не равна null
+                var headofsquad = _context.HeadsOfStudentSquads.SingleOrDefault(h => (h.PersonId == personid) && (h.DateofEnd == null));
+                ////Но вообще у пользователя, который не является руководителем, даже шанса не должно быть использовать этот запрос
+                if (headofsquad == null)
+                    throw new HttpResponseException(HttpStatusCode.NotFound);
+                var squadId = headofsquad.SquadId;
+                dynamic model = new ExpandoObject();
+                //Тут нужно получить запись (Person+(Member+Squad+Status)*необязательно)
                 var query = _context.People.Join(_context.Members.Include(m => m.Squad).Include(m => m.Status),
                     p => p.Id,
                     m => m.PersonId,
@@ -58,46 +60,52 @@ namespace StudentSquads.Controllers.API
                     .Where(m => (m.DateOfTransition == null) && (m.SquadId == squadId))
                     .OrderBy(m => m.SquadName)
                     .ThenBy(p => p.FIO);
-            List<ExpandoObject> joinData = new List<ExpandoObject>();
-            //Сначала обрабатываем ExpandoObject
-            foreach (var item in query)
-            {
-                IDictionary<string, object> itemExpando = new ExpandoObject();
-                foreach (PropertyDescriptor property
-                         in
-                         TypeDescriptor.GetProperties(item.GetType()))
+                List<ExpandoObject> joinData = new List<ExpandoObject>();
+                //Сначала обрабатываем ExpandoObject
+                foreach (var item in query)
                 {
-                    itemExpando.Add(property.Name, property.GetValue(item));
+                    IDictionary<string, object> itemExpando = new ExpandoObject();
+                    foreach (PropertyDescriptor property
+                             in
+                             TypeDescriptor.GetProperties(item.GetType()))
+                    {
+                        itemExpando.Add(property.Name, property.GetValue(item));
+                    }
+                    joinData.Add(itemExpando as ExpandoObject);
+                    model.JoinData = joinData;
                 }
-                joinData.Add(itemExpando as ExpandoObject);
-                model.JoinData = joinData;
-            }
-            List<NewPersonViewModel> listofmembers = new List<NewPersonViewModel>();
-            //Затем переводим ExpandoObject в обычный класс
-            //var squads = _context.Squads.ToList();
-            //var mainpositions = _context.MainPositions.ToList();
-            foreach (var member in model.JoinData)
-            {
-                NewPersonViewModel newmember = new NewPersonViewModel
+                List<NewPersonViewModel> listofmembers = new List<NewPersonViewModel>();
+                //Затем переводим ExpandoObject в обычный класс
+                //var squads = _context.Squads.ToList();
+                //var mainpositions = _context.MainPositions.ToList();
+                foreach (var member in model.JoinData)
                 {
-                    //Squads = squads,
-                    //MainPositions = mainpositions,
-                    Id = member.Id,
-                    SquadId = member.SquadId,
-                    FIO = member.FIO,
-                    DateofBirth = member.DateofBirth.ToString("dd.MM.yyyy"),
-                    PhoneNumber = member.PhoneNumber,
-                    MembershipNumber = member.MembershipNumber,
-                    SquadName = member.SquadName,
-                    StatusName = member.StatusName
-                    //Member = new Member(),
-                    //HeadsOfStudentSquads = new HeadsOfStudentSquads()
-                };
-                Guid Id = member.Id;
-                newmember.Person = _context.People.SingleOrDefault(p => p.Id == Id);
-                listofmembers.Add(newmember);
-            }
+                    NewPersonViewModel newmember = new NewPersonViewModel
+                    {
+                        //Squads = squads,
+                        //MainPositions = mainpositions,
+                        Id = member.Id,
+                        SquadId = member.SquadId,
+                        FIO = member.FIO,
+                        DateofBirth = member.DateofBirth.ToString("dd.MM.yyyy"),
+                        PhoneNumber = member.PhoneNumber,
+                        MembershipNumber = member.MembershipNumber,
+                        SquadName = member.SquadName,
+                        StatusName = member.StatusName
+                        //Member = new Member(),
+                        //HeadsOfStudentSquads = new HeadsOfStudentSquads()
+                    };
+                    Guid Id = member.Id;
+                    newmember.Person = _context.People.SingleOrDefault(p => p.Id == Id);
+                    listofmembers.Add(newmember);
+                }
                 return listofmembers;
+
+            }
+            //Тут надо доделать для тех, кт о не является руковожителями отряда
+            else return new List<NewPersonViewModel>();
+
+
         }
         // GET /api/people/id
         public Person GetPerson(Guid id)

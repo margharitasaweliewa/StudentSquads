@@ -16,6 +16,7 @@ namespace StudentSquads.ViewModels
         public HeadsOfStudentSquads HeadsOfStudentSquads { get; set; }
         public IEnumerable<Status> Status { get; set; }
         public Guid Id { get; set; }
+        //Для отображения в списке
         public DateTime DateOfExit { get; set; }
         public string FIO { get; set; }
         public string DateofBirth { get; set; }
@@ -24,5 +25,7 @@ namespace StudentSquads.ViewModels
         public Guid SquadId { get; set; }
         public string SquadName { get; set; }
         public string StatusName { get; set; }
+        public IEnumerable<Member> AllPersonSquads { get; set; }
+        public IEnumerable<HeadsOfStudentSquads> AllPersonPositions { get; set; }
     }
 }
