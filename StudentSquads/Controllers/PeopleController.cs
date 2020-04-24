@@ -188,17 +188,7 @@ namespace StudentSquads.Controllers
             _context.SaveChanges();
             return RedirectToAction("AllPeople", "People");
         }
-        //public ActionResult ApplyForEnter(Guid id, Guid SquadId)
-        //{
-        //    //var personInDb = _context.People.SingleOrDefault(p => p.Id == id);
-        //    //if (personInDb == null) return RedirectToAction("PersonMainForm", "People");
-        //    Member newMember = new Member
-        //    {
-        //        PersonId = id
-        //    }
-        //    personInDb.
-        //    _context.People.Add(newModel.Person);
-        //}
+        
 
     }
 }

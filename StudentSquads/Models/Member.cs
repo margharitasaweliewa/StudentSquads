@@ -23,7 +23,7 @@ namespace StudentSquads.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? DateOfTransition { get; set; }
-        public bool ApprovedByCommandStaff { get; set; }
+        public bool? ApprovedByCommandStaff { get; set; }
         public string ExitReason { get; set; }
         //Ссылка на отряд
         public Squad Squad { get; set; }

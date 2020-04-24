@@ -266,6 +266,10 @@
     <Compile Include="Migrations\202004191415196_MadeNumbersNullable.Designer.cs">
       <DependentUpon>202004191415196_MadeNumbersNullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004191830509_MadeApprovesByCommandStaffNullable.cs" />
+    <Compile Include="Migrations\202004191830509_MadeApprovesByCommandStaffNullable.Designer.cs">
+      <DependentUpon>202004191830509_MadeApprovesByCommandStaffNullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FeePayment.cs" />
@@ -281,6 +285,7 @@
     <Compile Include="Models\UniversityHeadquarter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\ApplicationsListViewModel.cs" />
     <Compile Include="ViewModels\NewPersonViewModel.cs" />
     <Compile Include="ViewModels\PersonMainFormViewModel.cs" />
   </ItemGroup>
@@ -522,6 +527,7 @@
     <Content Include="Views\People\AllPeople.cshtml" />
     <Content Include="Views\People\PersonEditForm.cshtml" />
     <Content Include="Views\People\PersonMainForm.cshtml" />
+    <Content Include="Views\Members\EnterApplications.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -599,6 +605,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004191415196_MadeNumbersNullable.resx">
       <DependentUpon>202004191415196_MadeNumbersNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004191830509_MadeApprovesByCommandStaffNullable.resx">
+      <DependentUpon>202004191830509_MadeApprovesByCommandStaffNullable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
