@@ -9,6 +9,11 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using StudentSquads.Models;
 using StudentSquads.ViewModels;
+using System.IO;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentFormat.OpenXml.Packaging;
+using System.Xml;
 
 namespace StudentSquads.Controllers
 {
@@ -49,6 +54,7 @@ namespace StudentSquads.Controllers
         {
             //var personInDb = _context.People.SingleOrDefault(p => p.Id == id);
             //if (personInDb == null) return RedirectToAction("PersonMainForm", "People");
+            EnterDocument(model);
             Member newMember = new Member
             {
                 Id = Guid.NewGuid(),
@@ -109,5 +115,49 @@ namespace StudentSquads.Controllers
             }
             return View(listmodel);
         }
+        private static Dictionary<string, BookmarkEnd> FindBookmarks(OpenXmlElement documentPart, Dictionary<string, BookmarkEnd> results = null, Dictionary<string, string> unmatched = null)
+        {
+            results = results ?? new Dictionary<string, BookmarkEnd>();
+            unmatched = unmatched ?? new Dictionary<string, string>();
+
+            foreach (var child in documentPart.Elements())
+            {
+                if (child is BookmarkStart)
+                {
+                    var bStart = child as BookmarkStart;
+                    unmatched.Add(bStart.Id, bStart.Name);
+                }
+
+                if (child is BookmarkEnd)
+                {
+                    var bEnd = child as BookmarkEnd;
+                    foreach (var orphanName in unmatched)
+                    {
+                        if (bEnd.Id == orphanName.Key)
+                            results.Add(orphanName.Value, bEnd);
+                    }
+                }
+                FindBookmarks(child, results, unmatched);
+            }
+            return results;
+        }
+        public void EnterDocument(PersonMainFormViewModel model) 
+        {
+            Person person = _context.People.SingleOrDefault(p => p.Id == model.Person.Id);
+            string fileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление на вступление в РСО.docx";
+            var wordDocument = WordprocessingDocument.Open(fileName as string, true);
+            var bookMarks = FindBookmarks(wordDocument.MainDocumentPart.Document);
+            foreach (var end in bookMarks)
+            {
+                string inn = "";
+                if (end.Key == "FIO") 
+                { inn = person.FIO; }
+                var textElement = new Text(inn);
+                var runElement = new Run(textElement);
+                end.Value.InsertAfterSelf(runElement);
+            }
+            wordDocument.MainDocumentPart.Document.Save();
+        }
+
     }
 }
