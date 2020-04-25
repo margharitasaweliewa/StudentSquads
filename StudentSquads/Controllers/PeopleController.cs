@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -34,18 +35,39 @@ namespace StudentSquads.Controllers
         {
             return View();
         }
+        //public FileResult GetFile()
+        //{
+        //    // Путь к файлу
+        //    string file_path = Server.MapPath("~/Files/Заявление на вступление в РСО_Волкова.docx");
+        //    // Тип файла - content-type
+        //    string file_type = "application/docx";
+        //    // Имя файла - необязательно
+        //    string file_name = "Заявление на вступление в РСО";
+        //    var file = File(file_path, file_type, file_name);
+        //    return
+        //}
+
         public ActionResult PersonMainForm()
         {
             string id = User.Identity.GetUserId();
             var unis = _context.UniversityHeadquarters.ToList();
             var squads = _context.Squads.ToList();
             var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
+            //Объявляем файл вступления в РСО
+            FilePathResult enterfile = null;
+            if (person.EnterDocumentPath != null)
+                enterfile = File(person.EnterDocumentPath, "application/docx", "Заявление на вступление в РСО");
+            string str = enterfile.FileDownloadName;
+            //var fileContents = System.IO.File.ReadAllText(Server.MapPath(@person.EnterDocumentPath));
             PersonMainFormViewModel newmember = new PersonMainFormViewModel
             {
+
+                file = "https://vk.com/doc9058999_499015105?hash=fbeb2e184c6b7d11b3&dl=3d0d5c4de610f3032e",
                 Person =person,
                 Squads = squads,
                 UniversityHeadquarters = unis,
             };
+        
             if (person == null) return View(newmember);
             var personid = person.Id;
             //Тут нужно прописать зависимость

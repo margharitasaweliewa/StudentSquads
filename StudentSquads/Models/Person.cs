@@ -69,8 +69,9 @@ namespace StudentSquads.Models
         public bool? ApplicationFrom { get; set; }
         [Display(Name = "ФИО")]
         public string FIO { get; set; }
-
-
+        public string FIOinGenetiv { get; set; }
+        public string EnterDocumentPath { get; set; }
+        public string ExitDocumentPath { get; set; }
 
     }
 }

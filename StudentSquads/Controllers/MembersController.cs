@@ -144,9 +144,12 @@ namespace StudentSquads.Controllers
         public void EnterDocument(PersonMainFormViewModel model) 
         {
             Person person = _context.People.SingleOrDefault(p => p.Id == model.Person.Id);
-            string fileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление на вступление в РСО.docx";
-            var wordDocument = WordprocessingDocument.Open(fileName as string, true);
-            var bookMarks = FindBookmarks(wordDocument.MainDocumentPart.Document);
+            string fileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление_на_вступление_в_РСО.docx";
+            var wordDocument = WordprocessingDocument.Open(fileName as string, false);
+            string newfileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление_на_вступление_в_РСО_"+person.LastName+".docx";
+            wordDocument.Clone(newfileName, true).Close();
+            var newwordDocument = WordprocessingDocument.Open(newfileName as string, true);
+            var bookMarks = FindBookmarks(newwordDocument.MainDocumentPart.Document);
             foreach (var end in bookMarks)
             {
                 string inn = "";
@@ -156,7 +159,10 @@ namespace StudentSquads.Controllers
                 var runElement = new Run(textElement);
                 end.Value.InsertAfterSelf(runElement);
             }
-            wordDocument.MainDocumentPart.Document.Save();
+            newwordDocument.MainDocumentPart.Document.Save();
+            //Добавляем путь к файлу
+            person.EnterDocumentPath = newfileName;
+            _context.SaveChanges();
         }
 
     }

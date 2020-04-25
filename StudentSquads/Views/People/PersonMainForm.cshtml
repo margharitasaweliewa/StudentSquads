@@ -5,9 +5,15 @@
 }
 
 <h2>Личный кабинет</h2>
+
+<a href="https://docs.google.com/document/d/1tQmeaU5bUpu4j-aAAdIfpOg0Pd_aqtU5e65XFJwriQY/edit" target="_blank" title="Загрузить заявление на вступление">Загрузить заявление на вступление1</a>
+<p><a href=@Model.Person.EnterDocumentPath target="_blank" download="true">Загрузить заявление на вступление</a></p>
+<p><a href=@Model.file target="_blank" download="true">Загрузить заявление на вступление</a></p>
 @*Проверяем, есть ли у пользователя личность*@
 @using (Html.BeginForm("ApplyForEnter", "Members"))
 {
+	if (Model.Person.EnterDocumentPath != null)
+	{<p><a href=@Model.file target="_blank" download="true">Загрузить заявление на вступление</a></p>}
 	if (Model.Person == null)
 	{<h4>Для использования функций приложения заполните личные данные в разделе "Мои данные".</h4>}
 	else
@@ -29,18 +35,30 @@
 				</div>
 				<button type="submit" class="btn btn-warning js-apply">Подать заявку на вступление</button>
 			}
-			else if(Model.Person.MembershipNumber!=null)
-			{<button data-id="m.Person.Id" class="btn btn-warning js-transition">Подать заявку на переход</button>
+			else if (Model.Person.MembershipNumber != null)
+			{
+				<div class="form-group">
+					<div class="input-group mb-3">
+						<div class="custom-file">
+							<input type="file" class="custom-file-input" id="inputGroupFile02">
+							<label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+						</div>
+						<div class="input-group-append">
+							<span class="input-group-text" id="">Upload</span>
+						</div>
+					</div>
+				</div>
+				<button data-id="m.Person.Id" class="btn btn-warning js-transition">Подать заявку на переход</button>
 				<button data-id="m.Person.Id" class="btn btn-default js-exit">Выйти из организации</button>
 			}
 		}
 
 	</div>
 	<h3>Ваш отряд</h3>
-			if (Model.AllPersonSquads.Count() == 0)
-			{<h5>Данных о членстве в отрядах не найдено.</h5>}
-			else
-			{
+	if (Model.AllPersonSquads.Count() == 0)
+	{<h5>Данных о членстве в отрядах не найдено.</h5>}
+	else
+	{
 		<table class="table table-bordered table-hover">
 			<thead>
 				<tr>
@@ -53,24 +71,29 @@
 			<tbody>
 				@foreach (var member in Model.AllPersonSquads)
 				{
-				<tr>
-					<td>@member.Squad.Name</td>
-					@if (member.Status!= null)
-					{<td>@member.Status.Name</td>}
-					else {<td>Не подтвежден</td> }
-					<td>@member.DateOfEnter</td>
-					<td>@member.DateOfExit</td>
-				</tr>
+					<tr>
+						<td>@member.Squad.Name</td>
+						@if (member.Status != null)
+						{
+							<td>@member.Status.Name</td>
+}
+						else
+						{
+							<td>Не подтвежден</td>
+							}
+						<td>@member.DateOfEnter</td>
+						<td>@member.DateOfExit</td>
+					</tr>
 				}
 			</tbody>
 		</table>
-			}
+	}
 
 	<h3>Ваши должности</h3>
-			if (Model.AllPersonPositions.Count() == 0)
-			{ <h5>Данных о наличии должностей не найдено.</h5>}
-			else
-			{<table class="table table-bordered table-hover">
+	if (Model.AllPersonPositions.Count() == 0)
+	{ <h5>Данных о наличии должностей не найдено.</h5>}
+	else
+	{<table class="table table-bordered table-hover">
 			<thead>
 				<tr>
 					<th>Место</th>
@@ -91,10 +114,10 @@
 				}
 			</tbody>
 		</table>
-				}
-			}
-			}
-			@*Если ты придумаешь, как взять выбранный dropdown, то можешь использовать ajax*@
+	}
+}
+}
+@*Если ты придумаешь, как взять выбранный dropdown, то можешь использовать ajax*@
 @*@section scripts
 	{
 		@Scripts.Render("~/bundles/jqueryval")

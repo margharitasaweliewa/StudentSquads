@@ -282,6 +282,10 @@
     <Compile Include="Migrations\202004191830509_MadeApprovesByCommandStaffNullable.Designer.cs">
       <DependentUpon>202004191830509_MadeApprovesByCommandStaffNullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004251147490_AddEnterandExitPath.cs" />
+    <Compile Include="Migrations\202004251147490_AddEnterandExitPath.Designer.cs">
+      <DependentUpon>202004251147490_AddEnterandExitPath.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FeePayment.cs" />
@@ -621,6 +625,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004191830509_MadeApprovesByCommandStaffNullable.resx">
       <DependentUpon>202004191830509_MadeApprovesByCommandStaffNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004251147490_AddEnterandExitPath.resx">
+      <DependentUpon>202004251147490_AddEnterandExitPath.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
