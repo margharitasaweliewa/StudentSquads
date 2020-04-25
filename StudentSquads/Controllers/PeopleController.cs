@@ -84,8 +84,15 @@ namespace StudentSquads.Controllers
         }
         [HttpPost]
         public ActionResult Save(NewPersonViewModel newModel)
-        {
-
+        {//Это надо будет перенести в другое место
+            foreach (string file in Request.Files)
+            {
+                HttpPostedFileBase File = Request.Files[file] as HttpPostedFileBase;
+                // получаем имя файла
+                string fileName = System.IO.Path.GetFileName(File.FileName);
+                // сохраняем файл в папку Files в проекте
+                File.SaveAs(Server.MapPath("~/Files/" + fileName));
+            }
             if (!ModelState.IsValid)
             {
                 return View("PersonForm", newModel);

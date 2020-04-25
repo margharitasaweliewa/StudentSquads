@@ -25,6 +25,9 @@ namespace StudentSquads.ViewModels
         public Guid SquadId { get; set; }
         public string SquadName { get; set; }
         public string StatusName { get; set; }
+        public bool AlreadyMember{ get; set; }
+        [Display(Name ="Ваши документы")]
+        public HttpPostedFileBase file { get; set; }
 
     }
 }

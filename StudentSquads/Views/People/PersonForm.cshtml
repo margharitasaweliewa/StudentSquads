@@ -5,7 +5,7 @@
 }
 
 <h2>Личные данные</h2>
-@using (Html.BeginForm("Save", "People"))
+@using (Html.BeginForm("Save", "People", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
 	@Html.ValidationSummary()
 	<button type="submit" class="btn btn-warning">Сохранить</button>
@@ -77,6 +77,10 @@
 				@Html.LabelFor(m => m.Person.RegistrationPlace)
 				@Html.TextBoxFor(m => m.Person.RegistrationPlace, new { @class = "form-control" })
 			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.file)
+				@Html.TextBoxFor(m => m.file, new { @class = "custom-file-input", type = "file", name = "upload" })
+			</div>
 		</div>
 		<div class="col-xs-4" float="left">
 			<div class="form-group">
@@ -96,7 +100,7 @@
 			@if (Model.Person is null)
 			{<div class="checkbox" id="alreadymember">
 					<label disabled>
-						@Html.CheckBoxFor(m => m.Member.ApprovedByCommandStaff) Уже являетесь членом организации?
+						@Html.CheckBoxFor(m => m.AlreadyMember) Уже являетесь членом организации?
 					</label>
 				</div>
 				<div class="form-group" disabled>
@@ -109,7 +113,7 @@
 				</div>
 				<div class="checkbox" id="ishead">
 					<label disabled>
-						@Html.CheckBoxFor(m => m.Member.ApprovedByCommandStaff) Являетесь членом ком. состава ЛСО?
+						@Html.CheckBoxFor(m => m.AlreadyMember) Являетесь членом ком. состава ЛСО?
 					</label>
 				</div>
 				<div class="form-group" disabled>
