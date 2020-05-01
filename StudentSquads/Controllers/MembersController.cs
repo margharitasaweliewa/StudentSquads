@@ -65,6 +65,7 @@ namespace StudentSquads.Controllers
             _context.SaveChanges();
             return RedirectToAction("PersonMainForm","People");
         }
+        [HttpGet]
         public ActionResult EnterApplications()
         {
             List<ApplicationsListViewModel> listmodel = new List<ApplicationsListViewModel>();
@@ -114,6 +115,23 @@ namespace StudentSquads.Controllers
                 //if (headofsquad == null) RedirectToAction("PersonMainForm", "People");
             }
             return View(listmodel);
+        }
+        [HttpPost]
+        public ActionResult ApproveEnterApllications(List<ApplicationsListViewModel> applications)
+        {
+            foreach (var member in applications)
+            {//Если выбрали для одобрения
+                if (member.Choosen)
+                {
+                    //Находим члена отряда в БД
+                    var memberInDb = _context.Members.Single(m => m.Id == member.Member.Id);
+                    //Делаем "Одобрено ком. составом"
+                    memberInDb.ApprovedByCommandStaff = true;
+                }
+
+            }
+            _context.SaveChanges();
+                return RedirectToAction("EnterApplications","Members");
         }
         private static Dictionary<string, BookmarkEnd> FindBookmarks(OpenXmlElement documentPart, Dictionary<string, BookmarkEnd> results = null, Dictionary<string, string> unmatched = null)
         {

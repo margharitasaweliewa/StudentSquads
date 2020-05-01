@@ -1,51 +1,61 @@
-﻿@model IEnumerable<StudentSquads.ViewModels.ApplicationsListViewModel>
+﻿@model List<StudentSquads.ViewModels.ApplicationsListViewModel>
 @{
 	ViewBag.Title = "EnterApplications";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Заявки на вступление</h2>
-
-<table id="people" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<th></th>
-			<th>ФИО</th>
-			<th>Пол</th>
-			<th>Дата рождения</th>
-			<th>Телефон</th>
-			<th>Место обучения</th>
-			<th>Отряд</th>
-			<th>Статус</th>
-			<th>Взнос</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var member in Model)
-		{
-		<tr>
-			<td><input id =@member.Member.Id type="checkbox"></td>
-			<td>@member.Member.Person.FIO</td>
-			@{ if (@member.Member.Person.Sex == true){<td>Муж</td>}
-				else{<td>Жен</td>}
-			 }
-					<td>@member.Member.Person.DateofBirth.ToString("dd.MM.yyyy")</td>
-					<td>@member.Member.Person.PhoneNumber</td>
-					<td>@member.Member.Person.PlaceofStudy</td>
-					<td>@member.Member.Squad.Name</td>
-					<td>@member.Status</td>
-					@{ if (member.FeePayments != null)
-						{
-							<td>Сдан</td>
-						}
-						else
-						{
-							<td>Не Сдан</td>
-						}
+@using (Html.BeginForm("ApproveEnterApllications", "Members"))
+{
+	<button type="submit" class="btn btn-warning">Одобрить</button>
+	<table id="people" class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th></th>
+				<th>ФИО</th>
+				<th>Пол</th>
+				<th>Дата рождения</th>
+				<th>Телефон</th>
+				<th>Место обучения</th>
+				<th>Отряд</th>
+				<th>Статус</th>
+				<th>Взнос</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (int i = 0; i < Model.Count; i++)
+			{@Html.HiddenFor(m => m[i].Member.Id)
+			<tr>
+				<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
+				<td>@Model[i].Member.Person.FIO</td>
+				@{ if (@Model[i].Member.Person.Sex == true)
+					{
+						<td>Муж</td>
 					}
-				</tr>
+					else
+					{
+						<td>Жен</td>
+					}
+				}
+				<td>@Model[i].Member.Person.DateofBirth.ToString("dd.MM.yyyy")</td>
+				<td>@Model[i].Member.Person.PhoneNumber</td>
+				<td>@Model[i].Member.Person.PlaceofStudy</td>
+				<td>@Model[i].Member.Squad.Name</td>
+				<td>@Model[i].Status</td>
+				@{ if (Model[i].FeePayments != null)
+					{
+						<td>Сдан</td>
+					}
+					else
+					{
+						<td>Не Сдан</td>
+					}
+				}
+			</tr>
 			}
 	</tbody>
-</table>
+   </table >
+}
 
 

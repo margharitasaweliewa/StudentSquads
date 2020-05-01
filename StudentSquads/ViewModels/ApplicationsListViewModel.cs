@@ -12,7 +12,10 @@ namespace StudentSquads.ViewModels
         public Member Member{ get; set; }
         public List<FeePayment> FeePayments { get; set; }
         public string Status { get; set; }
-       
-
+        public bool Choosen { get; set; }
+        public ApplicationsListViewModel()
+        {
+            Choosen = false;
+        }
     }
 }
