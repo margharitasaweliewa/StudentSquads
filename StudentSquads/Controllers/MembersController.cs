@@ -69,69 +69,103 @@ namespace StudentSquads.Controllers
         public ActionResult EnterApplications()
         {
             List<ApplicationsListViewModel> listmodel = new List<ApplicationsListViewModel>();
+            //Объявили список для отображения
+            List<Member> members = null;
             string id = User.Identity.GetUserId();
             var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
-            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также дата окончания должности не равна null
-            var headofsquad = _context.HeadsOfStudentSquads.SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null));
-            ////Но вообще у пользователя, который не является руководителем, даже шанса не должно быть использовать этот запрос
-            if (headofsquad == null) RedirectToAction("PersonMainForm", "People");
-            dynamic model = new ExpandoObject();
-            List<ExpandoObject> joinData = new List<ExpandoObject>();
+            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также должность активна
+            var headofsquad = _context.HeadsOfStudentSquads.SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null) && (h.DateofBegin != null));
+            //Если активной записи о руководстве не найдено, перенаправляем на главную страницу
+            if (headofsquad == null)  return RedirectToAction("PersonMainForm", "People"); 
+            //Выбираем из таблицы Members без даты вступления, решение ком. состава либо true, либо null, даты выхода нет(если есть, значит, отклонен)
+            var allmembers = _context.Members.Include(m => m.Person).Include(m => m.Squad)
+                .Where(m => (m.DateOfEnter == null) && (m.ApprovedByCommandStaff != false) && (m.Person.DateOfExit == null)).ToList();
             if (User.IsInRole("SquadManager"))
             {
-                //Выбираем без даты вступления, и решение ком. состава либо true, либо null
-                var members = _context.Members.Include(m => m.Person).Include(m => m.Squad)
-                    .Where(m => (m.DateOfEnter == null) && (m.ApprovedByCommandStaff != false)).ToList();
-                //var query = from m in _context.Members
-                //            join f in _context.FeePayments
-                //            on m.PersonId equals f.PersonId into list
-                //            from x in list.DefaultIfEmpty()
-                //            select new
-                //            {
-                //                m.PersonId,
-                //                m.SquadId,
-                //                Payment = x?.Id ?? Guid.Empty
-                //              };
-
-                foreach (var member in members)
-                {
-                    string status = "";
-                    if (member.ApprovedByCommandStaff == null) status = "Не рассмотрено";
-                    else status = "На рассмотрении рег. штабом";
-                    ApplicationsListViewModel newapplication = new ApplicationsListViewModel
-                    {
-                        Member = member,
-                        FeePayments = _context.FeePayments.Where(m => m.PersonId == member.Person.Id).ToList(),
-                        Status = status
-                    };
-                    listmodel.Add(newapplication);
-                }
+                //Для руководителей отрядов ограничиваем отрядом
+                members = allmembers.Where(m => m.SquadId == headofsquad.SquadId).ToList();
+            }
+            if (User.IsInRole("UniManager"))
+            {
+                //Для руководителей штаба отбираем только штаб
+                members = allmembers.Where(m => m.Squad.UniversityHeadquarterId == headofsquad.UniversityHeadquarterId).ToList();
             }
             if (User.IsInRole("RegionalManager"))
             {
-                ////Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также дата окончания должности не равна null
-                //var headofsquad = _context.HeadsOfStudentSquads.SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null));
-                //////Но вообще у пользователя, который не является руководителем, даже шанса не должно быть использовать этот запрос
-                //if (headofsquad == null) RedirectToAction("PersonMainForm", "People");
+                //Это будет работать только в пределах одного регионального отделения, т.к. ограничения по рег.отделению не стоит
+                //Для руководителей рег. отделения ограничиваем одобрением ком.состава
+                members = allmembers.Where(m => m.ApprovedByCommandStaff == true).ToList();
+            }
+            foreach (var member in members)
+            {
+                string status = "";
+                //Если ещё не выставлено решение ком. состава
+                if (member.ApprovedByCommandStaff == null) status = "Не рассмотрено";
+                //Если ещё не одобрено рег. отделением
+                else if (member.Person.DateOfEnter == null) status = "На рассмотрении рег. штабом";
+                //Если уже одобрено, но пока не является членом организации (Member.DateOfEnter = null)
+                else status = "Ожидается взнос";
+                ApplicationsListViewModel newapplication = new ApplicationsListViewModel
+                {
+                    Member = member,
+                    FeePayments = _context.FeePayments.Where(m => m.PersonId == member.Person.Id).ToList(),
+                    Status = status
+                };
+                listmodel.Add(newapplication);
             }
             return View(listmodel);
         }
         [HttpPost]
         public ActionResult ApproveEnterApllications(List<ApplicationsListViewModel> applications)
         {
+
             foreach (var member in applications)
             {//Если выбрали для одобрения
                 if (member.Choosen)
                 {
-                    //Находим члена отряда в БД
-                    var memberInDb = _context.Members.Single(m => m.Id == member.Member.Id);
-                    //Делаем "Одобрено ком. составом"
-                    memberInDb.ApprovedByCommandStaff = true;
+
+                    //Если ком. составом рассматривается, делаем "Одобрено ком. составом"
+                    if (User.IsInRole("SquadManager"))
+                    {
+                        var memberInDb = _context.Members.Single(m => m.Id == member.Member.Id);
+                        memberInDb.ApprovedByCommandStaff = true;
+                    }
+                    //Если региональным отделением, то ставим дату вступления у личности, пока без номера членского билета
+                    else if (User.IsInRole("RegionalManager"))
+                    {
+                        var personInDb = _context.People.Single(m => m.Id == member.Member.PersonId);
+                        personInDb.DateOfEnter = DateTime.Now;
+                    }
                 }
 
             }
             _context.SaveChanges();
                 return RedirectToAction("EnterApplications","Members");
+        }
+        public ActionResult RejectApplications(List<ApplicationsListViewModel> applications)
+        {
+            foreach (var member in applications)
+            {//Если выбрали для одобрения
+                if (member.Choosen)
+                {
+                    //Если ком. составом рассматривается, делаем "Одобрено ком. составом" = false
+                    if (User.IsInRole("SquadManager"))
+                    {
+                        var memberInDb = _context.Members.Single(m => m.Id == member.Member.Id);
+                        memberInDb.ApprovedByCommandStaff = false;
+                    }
+                    //Если региональным отделением, то ставим дату исклбчения личности, без даты вступления с датой исключения будут считаться непринятые
+                    //Они не будут рассматриваться нигде
+                    else if (User.IsInRole("RegionalManager"))
+                    {
+                        var personInDb = _context.People.Single(m => m.Id == member.Member.PersonId);
+                        personInDb.DateOfExit = DateTime.Now;
+                    }
+                }
+
+            }
+            _context.SaveChanges();
+            return RedirectToAction("EnterApplications", "Members");
         }
         private static Dictionary<string, BookmarkEnd> FindBookmarks(OpenXmlElement documentPart, Dictionary<string, BookmarkEnd> results = null, Dictionary<string, string> unmatched = null)
         {

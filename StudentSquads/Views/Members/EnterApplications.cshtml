@@ -7,11 +7,14 @@
 <h2>Заявки на вступление</h2>
 @using (Html.BeginForm("ApproveEnterApllications", "Members"))
 {
-	<button type="submit" class="btn btn-warning">Одобрить</button>
-	<table id="people" class="table table-bordered table-hover">
+	if (User.IsInRole("RegionalManager") || User.IsInRole("SquadManager"))
+	{
+		<button type="submit" class="btn btn-warning" id="approve">Одобрить</button>
+		<input type="submit" name="button2" value="Отклонить" class="btn btn-default" formaction="@Url.Action("RejectApplications", "Members")" />
+	}
+	<table id="enterapplications" class="table table-bordered table-hover">
 		<thead>
 			<tr>
-				<th>ID</th>
 				<th></th>
 				<th>ФИО</th>
 				<th>Пол</th>
@@ -26,6 +29,7 @@
 		<tbody>
 			@for (int i = 0; i < Model.Count; i++)
 			{@Html.HiddenFor(m => m[i].Member.Id)
+			@Html.HiddenFor(m => m[i].Member.PersonId)
 			<tr>
 				<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
 				<td>@Model[i].Member.Person.FIO</td>
@@ -53,9 +57,17 @@
 					}
 				}
 			</tr>
-			}
-	</tbody>
-   </table >
+		}
+		</tbody>
+	</table>
+}
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			$("#enterapplications").DataTable();
+		});
+    </script>
 }
 
 
