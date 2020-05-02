@@ -10,6 +10,6 @@ namespace StudentSquads.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Region { get; set; }
-        public int? RegionNumber { get; set; }
+        public string RegionNumber { get; set; }
     }
 }

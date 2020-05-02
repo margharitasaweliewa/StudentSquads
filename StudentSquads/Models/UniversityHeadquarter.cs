@@ -11,7 +11,7 @@ namespace StudentSquads.Models
         public Guid Id { get; set; }
         public string Name{ get; set; }
         public string University { get; set; }
-        public int? UniversityNumber{ get; set; }
+        public string UniversityNumber{ get; set; }
         public RegionalHeadquarter RegionalHeadquarter { get; set; }
         public Guid? RegionalHeadquarterId { get; set; }
 

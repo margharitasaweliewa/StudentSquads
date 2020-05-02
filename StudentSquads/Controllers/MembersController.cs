@@ -187,6 +187,59 @@ namespace StudentSquads.Controllers
             _context.SaveChanges();
             return RedirectToAction("EnterApplications", "Members");
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateEnterProtocol(List<ApplicationsListViewModel> applications)
+        {//Проверяем (на всякий случай) роль
+            if (User.IsInRole("RegionalManager"))
+            { //Идем по всем в списке
+                foreach (var member in applications)
+                {//Если выбран
+                    if (member.Choosen)
+                    {
+                        var memberInDb = _context.Members.Single(m => m.Id == member.Id);
+                        //Добавляем дату вступелния члену отряда
+                        memberInDb.DateOfEnter = DateTime.Now;
+                        var personInDb = _context.People.Single(p => p.Id == member.PersonId);
+                        //Если после одобрения уже составляется протокол, то время изменяется, так как время принятися = время составление протокола
+                        personInDb.DateOfEnter = DateTime.Now;
+                        //Фукция для вычисления рег. номера
+                        string regnumber = NewRegNumber(memberInDb);
+                        personInDb.MembershipNumber = regnumber;
+                    }
+                }
+                _context.SaveChanges();
+                //Функция для заполнения протокола (т.е. списком должно выводиться все)
+            }
+            return RedirectToAction("EnterApplications","Members");
+        }
+        public string NewRegNumber(Member member)
+        {
+            string regnumber = "";
+            //Находим номер штаба
+            UniversityHeadquarter uni = _context.Squads.Include(u => u.UniversityHeadquarter).Single(u => u.Id == member.SquadId).UniversityHeadquarter;
+            string uninumber = uni.UniversityNumber;
+            //Находим номер рег отделения
+            string regionnumber = _context.RegionalHeadquarters.Single(r => r.Id == uni.RegionalHeadquarterId).RegionNumber;
+            regnumber = regionnumber + uninumber;
+            //Находим самый большой номер с таким началом
+            var numbers = _context.People.Where(p => p.MembershipNumber != null).Select(p => p.MembershipNumber).ToList();
+            List<int> allnumbers = new List<int>();
+            foreach(var number in numbers)
+            {
+                //Если номера с таким же началом, удаляем подстроку-начало, конвертируем в int, добавляем в список значений
+                if (number.Contains(regnumber))
+                {
+                    allnumbers.Add(Convert.ToInt32(number.Replace(regnumber, "")));
+                }
+            }
+            //Находим самое большое из найденных значений
+            int max = allnumbers.Max();
+            //Тут ещё надо спросить, что происходит при 999
+            //Формируем рег. номер
+            string newregnumber = regnumber + Convert.ToString(max + 1);
+            return newregnumber;
+        }
         private static Dictionary<string, BookmarkEnd> FindBookmarks(OpenXmlElement documentPart, Dictionary<string, BookmarkEnd> results = null, Dictionary<string, string> unmatched = null)
         {
             results = results ?? new Dictionary<string, BookmarkEnd>();
