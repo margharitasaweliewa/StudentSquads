@@ -50,6 +50,7 @@ namespace StudentSquads.Controllers
             //return Content(String.Format("pageIndex={0}&sortBy={1}", pageIndex, sortBy));
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ApplyForEnter(PersonMainFormViewModel model)
         {
             //var personInDb = _context.People.SingleOrDefault(p => p.Id == id);
@@ -116,6 +117,7 @@ namespace StudentSquads.Controllers
             return View(listmodel);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ApproveEnterApllications(List<ApplicationsListViewModel> applications)
         {
 
@@ -142,6 +144,8 @@ namespace StudentSquads.Controllers
             _context.SaveChanges();
                 return RedirectToAction("EnterApplications","Members");
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult RejectApplications(List<ApplicationsListViewModel> applications)
         {
             foreach (var member in applications)

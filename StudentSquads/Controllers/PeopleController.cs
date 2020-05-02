@@ -105,6 +105,7 @@ namespace StudentSquads.Controllers
 
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Save(NewPersonViewModel newModel)
         {//Это надо будет перенести в другое место
             foreach (string file in Request.Files)

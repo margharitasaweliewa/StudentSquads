@@ -76,11 +76,11 @@
 						@if (member.Status != null)
 						{
 							<td>@member.Status.Name</td>
-}
+						}
 						else
 						{
 							<td>Не подтвежден</td>
-							}
+						}
 						<td>@member.DateOfEnter</td>
 						<td>@member.DateOfExit</td>
 					</tr>
@@ -114,8 +114,10 @@
 				}
 			</tbody>
 		</table>
+
 	}
 }
+@Html.AntiForgeryToken()
 }
 @*Если ты придумаешь, как взять выбранный dropdown, то можешь использовать ajax*@
 @*@section scripts

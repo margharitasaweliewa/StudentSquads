@@ -60,6 +60,7 @@
 		}
 		</tbody>
 	</table>
+	@Html.AntiForgeryToken()
 }
 @section scripts
 {
@@ -67,7 +68,7 @@
 		$(document).ready(function () {
 			$("#enterapplications").DataTable();
 		});
-    </script>
+	</script>
 }
 
 
