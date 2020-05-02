@@ -9,13 +9,16 @@ namespace StudentSquads.ViewModels
 {
     public class ApplicationsListViewModel
     {
-        public Member Member{ get; set; }
-        public List<FeePayment> FeePayments { get; set; }
+        public string FIO { get; set; }
+        public string Sex { get; set; }
+        public string DateOfBirth { get; set; }
+        public string PhoneNumber { get; set; }
+        public string PlaceOfStudy { get; set; }
+        public string Squad { get; set; }
+        public string FeePayment { get; set; }
+        public Guid Id { get; set; }
+        public Guid PersonId { get; set; }       
         public string Status { get; set; }
         public bool Choosen { get; set; }
-        public ApplicationsListViewModel()
-        {
-            Choosen = false;
-        }
     }
 }

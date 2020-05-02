@@ -99,17 +99,33 @@ namespace StudentSquads.Controllers
             }
             foreach (var member in members)
             {
+                string sex = "";
                 string status = "";
+                string feepayment = "";
                 //Если ещё не выставлено решение ком. состава
                 if (member.ApprovedByCommandStaff == null) status = "Не рассмотрено";
                 //Если ещё не одобрено рег. отделением
                 else if (member.Person.DateOfEnter == null) status = "На рассмотрении рег. штабом";
                 //Если уже одобрено, но пока не является членом организации (Member.DateOfEnter = null)
                 else status = "Ожидается взнос";
+                //Определяем пол для отображения
+                if (member.Person.Sex == true) sex = "Муж";
+                else sex = "Жен";
+                var payments = _context.FeePayments.Where(m => m.PersonId == member.PersonId).ToList();
+                if (payments == null) feepayment = "Не сдан";
+                else feepayment = "Cдан";
                 ApplicationsListViewModel newapplication = new ApplicationsListViewModel
                 {
-                    Member = member,
-                    FeePayments = _context.FeePayments.Where(m => m.PersonId == member.Person.Id).ToList(),
+                    Choosen = false,
+                    Id = member.Id,
+                    PersonId = member.PersonId,
+                    FIO = member.Person.FIO,
+                    Sex = sex,
+                    DateOfBirth = member.Person.DateofBirth.ToString("dd.MM.yyyy"),
+                    PhoneNumber = member.Person.PhoneNumber,
+                    PlaceOfStudy = member.Person.PhoneNumber,
+                    Squad = member.Squad.Name,
+                    FeePayment = feepayment,
                     Status = status
                 };
                 listmodel.Add(newapplication);
@@ -129,13 +145,13 @@ namespace StudentSquads.Controllers
                     //Если ком. составом рассматривается, делаем "Одобрено ком. составом"
                     if (User.IsInRole("SquadManager"))
                     {
-                        var memberInDb = _context.Members.Single(m => m.Id == member.Member.Id);
+                        var memberInDb = _context.Members.Single(m => m.Id == member.Id);
                         memberInDb.ApprovedByCommandStaff = true;
                     }
                     //Если региональным отделением, то ставим дату вступления у личности, пока без номера членского билета
                     else if (User.IsInRole("RegionalManager"))
                     {
-                        var personInDb = _context.People.Single(m => m.Id == member.Member.PersonId);
+                        var personInDb = _context.People.Single(m => m.Id == member.PersonId);
                         personInDb.DateOfEnter = DateTime.Now;
                     }
                 }
@@ -155,14 +171,14 @@ namespace StudentSquads.Controllers
                     //Если ком. составом рассматривается, делаем "Одобрено ком. составом" = false
                     if (User.IsInRole("SquadManager"))
                     {
-                        var memberInDb = _context.Members.Single(m => m.Id == member.Member.Id);
+                        var memberInDb = _context.Members.Single(m => m.Id == member.Id);
                         memberInDb.ApprovedByCommandStaff = false;
                     }
                     //Если региональным отделением, то ставим дату исклбчения личности, без даты вступления с датой исключения будут считаться непринятые
                     //Они не будут рассматриваться нигде
                     else if (User.IsInRole("RegionalManager"))
                     {
-                        var personInDb = _context.People.Single(m => m.Id == member.Member.PersonId);
+                        var personInDb = _context.People.Single(m => m.Id == member.PersonId);
                         personInDb.DateOfExit = DateTime.Now;
                     }
                 }

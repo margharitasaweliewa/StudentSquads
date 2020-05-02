@@ -28,34 +28,18 @@
 		</thead>
 		<tbody>
 			@for (int i = 0; i < Model.Count; i++)
-			{@Html.HiddenFor(m => m[i].Member.Id)
-			@Html.HiddenFor(m => m[i].Member.PersonId)
+			{@Html.HiddenFor(m => m[i].Id)
+			 @Html.HiddenFor(m => m[i].PersonId)
 			<tr>
 				<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
-				<td>@Model[i].Member.Person.FIO</td>
-				@{ if (@Model[i].Member.Person.Sex == true)
-					{
-						<td>Муж</td>
-					}
-					else
-					{
-						<td>Жен</td>
-					}
-				}
-				<td>@Model[i].Member.Person.DateofBirth.ToString("dd.MM.yyyy")</td>
-				<td>@Model[i].Member.Person.PhoneNumber</td>
-				<td>@Model[i].Member.Person.PlaceofStudy</td>
-				<td>@Model[i].Member.Squad.Name</td>
+				<td>@Model[i].FIO</td>
+				<td>@Model[i].Sex</td>
+				<td>@Model[i].DateOfBirth</td>
+				<td>@Model[i].PhoneNumber</td>
+				<td>@Model[i].PlaceOfStudy</td>
+				<td>@Model[i].Squad</td>
 				<td>@Model[i].Status</td>
-				@{ if (Model[i].FeePayments != null)
-					{
-						<td>Сдан</td>
-					}
-					else
-					{
-						<td>Не Сдан</td>
-					}
-				}
+				<td>@Model[i].FeePayment</td> 
 			</tr>
 		}
 		</tbody>
