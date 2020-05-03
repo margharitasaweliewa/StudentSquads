@@ -102,8 +102,6 @@ namespace StudentSquads.Controllers.API
             }
             //Тут надо доделать для тех, кт о не является руковожителями отряда
             else return new List<NewPersonViewModel>();
-
-
         }
         // GET /api/people/id
         public Person GetPerson(Guid id)
