@@ -25,6 +25,15 @@ namespace StudentSquads.Controllers
         {
             _context = new ApplicationDbContext();
         }
+        public HeadsOfStudentSquads GetHeadOfStudentSquads()
+        {
+            string id = User.Identity.GetUserId();
+            var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
+            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также должность активна
+            var headofsquad = _context.HeadsOfStudentSquads.SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null) && (h.DateofBegin != null));
+            //Если активной записи о руководстве не найдено, перенаправляем на главную страницу
+            return headofsquad;
+        }
         protected override void Dispose(bool disposing)
         {
             _context.Dispose();
@@ -49,6 +58,29 @@ namespace StudentSquads.Controllers
 
             //return Content(String.Format("pageIndex={0}&sortBy={1}", pageIndex, sortBy));
         }
+        //Функция для ограничения списка заявок согласно с ролью пользователя
+        public List<Member> LimitMembers(List<Member> allmembers, HeadsOfStudentSquads headofsquad)
+        {
+            List<Member> members = new List<Member>();
+            if (User.IsInRole("SquadManager"))
+            {
+                //Для руководителей отрядов ограничиваем отрядом
+                members = allmembers.Where(m => m.SquadId == headofsquad.SquadId).ToList();
+            }
+            if (User.IsInRole("UniManager"))
+            {
+                //Для руководителей штаба отбираем только штаб
+                members = allmembers.Where(m => m.Squad.UniversityHeadquarterId == headofsquad.UniversityHeadquarterId).ToList();
+            }
+            if (User.IsInRole("RegionalManager"))
+            {
+                //Это будет работать только в пределах одного регионального отделения, т.к. ограничения по рег.отделению не стоит
+                //Для руководителей рег. отделения ограничиваем одобрением ком.состава
+                members = allmembers.Where(m => m.ApprovedByCommandStaff == true).ToList();
+            }
+            return members;
+        }
+        //Следующие 6 функций для вступления в организацию
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ApplyForEnter(PersonMainFormViewModel model)
@@ -72,26 +104,23 @@ namespace StudentSquads.Controllers
             List<ApplicationsListViewModel> listmodel = new List<ApplicationsListViewModel>();
             //Объявили список для отображения
             List<Member> members = null;
-            string id = User.Identity.GetUserId();
-            var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
-            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также должность активна
-            var headofsquad = _context.HeadsOfStudentSquads.SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null) && (h.DateofBegin != null));
-            //Если активной записи о руководстве не найдено, перенаправляем на главную страницу
-            if (headofsquad == null)  return RedirectToAction("PersonMainForm", "People"); 
+            var headofsquad = GetHeadOfStudentSquads();
+            if (headofsquad == null) return RedirectToAction("PersonMainForm", "People");
             //Выбираем из таблицы Members без даты вступления, решение ком. состава либо true, либо null, даты выхода нет(если есть, значит, отклонен)
+            //Также откидываем записи уже состоящих в отрядах
             var allmembers = _context.Members.Include(m => m.Person).Include(m => m.Squad)
-                .Where(m => (m.DateOfEnter == null) && (m.ApprovedByCommandStaff != false) && (m.Person.DateOfExit == null)).ToList();
+                .Where(m => (m.Person.MembershipNumber==null) && (m.ApprovedByCommandStaff != false) && (m.Person.DateOfExit == null)).ToList();
             if (User.IsInRole("SquadManager"))
             {
                 //Для руководителей отрядов ограничиваем отрядом
                 members = allmembers.Where(m => m.SquadId == headofsquad.SquadId).ToList();
             }
-            if (User.IsInRole("UniManager"))
+            else if (User.IsInRole("UniManager"))
             {
                 //Для руководителей штаба отбираем только штаб
                 members = allmembers.Where(m => m.Squad.UniversityHeadquarterId == headofsquad.UniversityHeadquarterId).ToList();
             }
-            if (User.IsInRole("RegionalManager"))
+            else if (User.IsInRole("RegionalManager"))
             {
                 //Это будет работать только в пределах одного регионального отделения, т.к. ограничения по рег.отделению не стоит
                 //Для руководителей рег. отделения ограничиваем одобрением ком.состава
@@ -162,7 +191,7 @@ namespace StudentSquads.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RejectApplications(List<ApplicationsListViewModel> applications)
+        public ActionResult RejectEnterApplications(List<ApplicationsListViewModel> applications)
         {
             foreach (var member in applications)
             {//Если выбрали для одобрения
@@ -239,6 +268,124 @@ namespace StudentSquads.Controllers
             //Формируем рег. номер
             string newregnumber = regnumber + Convert.ToString(max + 1);
             return newregnumber;
+        }
+        //Функции для перехода в другой отряд
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ApplyForTransition(PersonMainFormViewModel model)
+        {
+            //Находим запись, в котором отряде в настоящее время находится член организации (совпадает личность, он активен)
+            var memberInDb = _context.Members.SingleOrDefault(m => (m.PersonId == model.Person.Id) && (m.DateOfExit == null)&&(m.DateOfEnter != null));
+            //Создаем заявление на переход
+            //TransitionDocument(model, memberInDb.SquadId);
+            Member newMember = new Member
+            {
+                Id = Guid.NewGuid(),
+                PersonId = model.Person.Id,
+                SquadId = model.SquadId,
+                FromSquadId = memberInDb.SquadId
+            };
+            //Добавляем параметр "Переходит в отряд" в текущую активную запись члена организации в отряде
+            memberInDb.ToSquadId = model.SquadId;
+            _context.Members.Add(newMember);
+            _context.SaveChanges();
+            return RedirectToAction("PersonMainForm", "People");
+        }
+        [HttpGet]
+        public ActionResult TransitionApplications()
+        {
+            List<ApplicationsListViewModel> listmodel = new List<ApplicationsListViewModel>();
+            //Объявили список для отображения
+            var headofsquad = GetHeadOfStudentSquads();
+            if (headofsquad == null) return RedirectToAction("PersonMainForm","People");
+            //Выбираем из таблицы Members без даты вступления, решение ком. состава либо true, либо null, "из отряда" заполнено
+            //Также смотрим, чтобы DateOfExit был null (в этом случае отклоняется руководителем рег. отделением)
+            var allmembers = _context.Members.Include(m => m.Person).Include(m => m.Squad).Include(m => m.FromSquad)
+                .Where(m => (m.DateOfEnter == null) && (m.DateOfExit==null) && (m.ApprovedByCommandStaff != false) && (m.FromSquadId != null)).ToList();
+            //Получаем ограниченный по роли список
+            List<Member> members = LimitMembers(allmembers, headofsquad);
+            foreach (var member in members)
+            {
+                //Ищем текущего члена отряда по личности
+                var oldmember = _context.Members.Single(o => (o.PersonId == member.PersonId) && (o.DateOfEnter != null) && (o.DateOfExit == null));
+                string status = "";
+                //Если ещё не выставлено решение ком. состава
+                if (member.ApprovedByCommandStaff == null) status = "Не рассмотрено";
+                //Если ещё не одобрено рег. отделением (смотрим именно member, потому что сразу он будет присваиваться)
+                else  status = "На рассмотрении рег. штабом";
+                ApplicationsListViewModel newapplication = new ApplicationsListViewModel
+                {
+                    Choosen = false,
+                    Id = member.Id,
+                    OldId = oldmember.Id,
+                    PersonId = member.PersonId,
+                    FIO = member.Person.FIO,
+                    MembershipNumber = member.Person.MembershipNumber,
+                    DateOfBirth = member.Person.DateofBirth.ToString("dd.MM.yyyy"),
+                    PhoneNumber = member.Person.PhoneNumber,
+                    Squad = member.Squad.Name,
+                    OldSquad =member.FromSquad.Name,
+                    Status = status
+                };
+                listmodel.Add(newapplication);
+            }
+            return View(listmodel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ApproveTransitionApllications(List<ApplicationsListViewModel> applications)
+        {
+            foreach (var member in applications)
+            {//Если выбрали для одобрения
+                if (member.Choosen)
+                {
+                    var memberInDb = _context.Members.Single(m => m.Id == member.Id);
+                    //Если ком. составом рассматривается, делаем "Одобрено ком. составом"
+                    if (User.IsInRole("SquadManager"))
+                    {
+                        memberInDb.ApprovedByCommandStaff = true;
+                    }
+                    //Если региональным отделением, то ставим дату вступления новому члену отряда, дату выхода старому
+                    else if (User.IsInRole("RegionalManager"))
+                    {
+                        memberInDb.DateOfEnter = DateTime.Now;
+                        var oldmemberInDb = _context.Members.Single(m => m.Id == member.OldId);
+                        oldmemberInDb.DateOfExit = DateTime.Now;
+                    }
+                }
+
+            }
+            _context.SaveChanges();
+            return RedirectToAction("TransitionApplications", "Members");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RejectTransitionApplications(List<ApplicationsListViewModel> applications)
+        {
+            foreach (var member in applications)
+            {//Если выбрали для одобрения
+                if (member.Choosen)
+                {
+                    var memberInDb = _context.Members.Single(m => m.Id == member.Id);
+                    //Если ком. составом рассматривается, делаем "Одобрено ком. составом" = false
+                    if (User.IsInRole("SquadManager"))
+                    {
+                        memberInDb = _context.Members.Single(m => m.Id == member.Id);
+                        memberInDb.ApprovedByCommandStaff = false;
+                    }
+                    //Если региональным отделением, то очищаем поле "Переходит в отряд" в старом члене отрядов
+                    //В таблице Member ставим Дату выхода. Если есть дата выхода без даты вступления, значит, отменено рег. отделением
+                    else if (User.IsInRole("RegionalManager"))
+                    {
+                        memberInDb.DateOfExit = DateTime.Now;
+                        var oldmemberInDb = _context.Members.Single(m => m.Id == member.OldId);
+                        oldmemberInDb.ToSquad = null;
+                    }
+                }
+
+            }
+            _context.SaveChanges();
+            return RedirectToAction("TransitionApplications", "Members");
         }
         private static Dictionary<string, BookmarkEnd> FindBookmarks(OpenXmlElement documentPart, Dictionary<string, BookmarkEnd> results = null, Dictionary<string, string> unmatched = null)
         {

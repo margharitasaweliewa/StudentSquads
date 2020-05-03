@@ -6,9 +6,9 @@
 
 <h2>Личный кабинет</h2>
 
-<a href="https://docs.google.com/document/d/1tQmeaU5bUpu4j-aAAdIfpOg0Pd_aqtU5e65XFJwriQY/edit" target="_blank" title="Загрузить заявление на вступление">Загрузить заявление на вступление1</a>
+@*<a href="https://docs.google.com/document/d/1tQmeaU5bUpu4j-aAAdIfpOg0Pd_aqtU5e65XFJwriQY/edit" target="_blank" title="Загрузить заявление на вступление">Загрузить заявление на вступление1</a>
 <p><a href=@Model.Person.EnterDocumentPath target="_blank" download="true">Загрузить заявление на вступление</a></p>
-<p><a href=@Model.file target="_blank" download="true">Загрузить заявление на вступление</a></p>
+<p><a href=@Model.file target="_blank" download="true">Загрузить заявление на вступление</a></p>*@
 @*Проверяем, есть ли у пользователя личность*@
 @using (Html.BeginForm("ApplyForEnter", "Members"))
 {
@@ -18,42 +18,30 @@
 	{<h4>Для использования функций приложения заполните личные данные в разделе "Мои данные".</h4>}
 	else
 	{ @Html.HiddenFor(m => m.Person.Id)
+<div class="row">
+	@*Проверяем, является ли пользователь членом организации.*@
 	<div class="row">
-		@*Проверяем, является ли пользователь членом организации.*@
-		@{ if (Model.AllPersonSquads.Count() == 0)
-			{
-				<div class="row">
-					<div class="col-xs-3" disabled>
-						@Html.LabelFor(m => m.UniversityHeadquarterId)
-						@Html.DropDownListFor(m => m.UniversityHeadquarterId, new SelectList(Model.UniversityHeadquarters, "Id", "Name"), "", new { @class = "form-control" })
-					</div>
-					<div class="col-xs-3" disabled>
-						@Html.LabelFor(m => m.SquadId)
-						@Html.DropDownListFor(m => m.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control squad" })
-						<>
-					</div>
-				</div>
-				<button type="submit" class="btn btn-warning js-apply">Подать заявку на вступление</button>
-			}
-			else if (Model.Person.MembershipNumber != null)
-			{
-				<div class="form-group">
-					<div class="input-group mb-3">
-						<div class="custom-file">
-							<input type="file" class="custom-file-input" id="inputGroupFile02">
-							<label class="custom-file-label" for="inputGroupFile02">Choose file</label>
-						</div>
-						<div class="input-group-append">
-							<span class="input-group-text" id="">Upload</span>
-						</div>
-					</div>
-				</div>
-				<button data-id="m.Person.Id" class="btn btn-warning js-transition">Подать заявку на переход</button>
-				<button data-id="m.Person.Id" class="btn btn-default js-exit">Выйти из организации</button>
-			}
-		}
-
+		<div class="col-xs-3" disabled>
+			@Html.LabelFor(m => m.UniversityHeadquarterId)
+			@Html.DropDownListFor(m => m.UniversityHeadquarterId, new SelectList(Model.UniversityHeadquarters, "Id", "Name"), "", new { @class = "form-control" })
+		</div>
+		<div class="col-xs-3" disabled>
+			@Html.LabelFor(m => m.SquadId)
+			@Html.DropDownListFor(m => m.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control squad" })
+		</div>
 	</div>
+	@{ if (Model.AllPersonSquads.Count() == 0)
+		{
+			<button type="submit" class="btn btn-warning js-apply">Подать заявку на вступление</button>
+		}
+		else if (Model.Person.MembershipNumber != null)
+		{
+			<input type="submit" name="button2" value="Подать заявку на переход" class="btn btn-warning" formaction="@Url.Action("ApplyForTransition", "Members")" />
+			@*<input type="submit" name="button2" value="Выйти из организации" class="btn btn-default" formaction="@Url.Action("ApplyForTransition", "Members")" />*@
+		}
+	}
+
+</div>
 	<h3>Ваш отряд</h3>
 	if (Model.AllPersonSquads.Count() == 0)
 	{<h5>Данных о членстве в отрядах не найдено.</h5>}

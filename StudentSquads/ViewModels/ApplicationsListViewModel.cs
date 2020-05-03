@@ -17,7 +17,11 @@ namespace StudentSquads.ViewModels
         public string Squad { get; set; }
         public string FeePayment { get; set; }
         public Guid Id { get; set; }
-        public Guid PersonId { get; set; }       
+        public Guid PersonId { get; set; }
+        public string MembershipNumber { get; set; }
+        public string OldSquad { get; set; }
+        //Инфомармация о старом отряде (при подаче заявки на переход в другой отряд)
+        public Guid OldId { get; set; }
         public string Status { get; set; }
         public bool Choosen { get; set; }
     }

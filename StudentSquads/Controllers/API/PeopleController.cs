@@ -53,11 +53,9 @@ namespace StudentSquads.Controllers.API
                         SquadName = (m == null ? String.Empty : m.Squad.Name),
                         StatusName = (m == null ? String.Empty : m.Status.Name),
                         //Выход из отряда
-                        m.DateOfTransition
-
                     })
-                    //Только те, которые не перешли в другой отряд
-                    .Where(m => (m.DateOfTransition == null) && (m.SquadId == squadId))
+                    //Только те, которые не вышли из отряда
+                    .Where(m => (m.DateOfExit == null) && (m.SquadId == squadId))
                     .OrderBy(m => m.SquadName)
                     .ThenBy(p => p.FIO);
                 List<ExpandoObject> joinData = new List<ExpandoObject>();

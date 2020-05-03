@@ -290,6 +290,10 @@
     <Compile Include="Migrations\202005022045491_MadeRedionandUniNumbersString.Designer.cs">
       <DependentUpon>202005022045491_MadeRedionandUniNumbersString.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005030818177_AddTransitionSquads.cs" />
+    <Compile Include="Migrations\202005030818177_AddTransitionSquads.Designer.cs">
+      <DependentUpon>202005030818177_AddTransitionSquads.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FeePayment.cs" />
@@ -548,6 +552,7 @@
     <Content Include="Views\People\PersonEditForm.cshtml" />
     <Content Include="Views\People\PersonMainForm.cshtml" />
     <Content Include="Views\Members\EnterApplications.cshtml" />
+    <Content Include="Views\Members\TransitionApplications.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -635,6 +640,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005022045491_MadeRedionandUniNumbersString.resx">
       <DependentUpon>202005022045491_MadeRedionandUniNumbersString.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005030818177_AddTransitionSquads.resx">
+      <DependentUpon>202005030818177_AddTransitionSquads.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

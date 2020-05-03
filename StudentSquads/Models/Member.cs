@@ -22,7 +22,13 @@ namespace StudentSquads.Models
         [Display(Name = "Дата перехода в другой отряд")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? DateOfTransition { get; set; }
+        //public DateTime? DateOfTransition { get; set; }
+        //Для отряда, из которого перешел член организации
+        public Guid? FromSquadId { get; set; }
+        public Squad FromSquad { get; set; }
+        //Для отряда, в который переход член организации
+        public Guid? ToSquadId { get; set; }
+        public Squad ToSquad { get; set; }
         public bool? ApprovedByCommandStaff { get; set; }
         public string ExitReason { get; set; }
         //Ссылка на отряд

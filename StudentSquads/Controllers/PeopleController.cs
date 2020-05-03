@@ -194,7 +194,8 @@ namespace StudentSquads.Controllers
             var status = _context.Status.ToList();
             if (person == null)
                 return HttpNotFound();
-            var member = _context.Members.SingleOrDefault(m => (m.PersonId == id));
+            //Может же Member не быть - надо поправить
+            var member = _context.Members.SingleOrDefault(m => (m.PersonId == id)&&(m.DateOfEnter!=null) &&(m.DateOfExit == null));
             var viewModel = new NewPersonViewModel
             {
                 Person = person,
