@@ -295,6 +295,10 @@
     <Compile Include="Migrations\202005030818177_AddTransitionSquads.Designer.cs">
       <DependentUpon>202005030818177_AddTransitionSquads.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005041142478_AddApplicationStatus.cs" />
+    <Compile Include="Migrations\202005041142478_AddApplicationStatus.Designer.cs">
+      <DependentUpon>202005041142478_AddApplicationStatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\FeePayment.cs" />
@@ -645,6 +649,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005030818177_AddTransitionSquads.resx">
       <DependentUpon>202005030818177_AddTransitionSquads.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005041142478_AddApplicationStatus.resx">
+      <DependentUpon>202005041142478_AddApplicationStatus.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

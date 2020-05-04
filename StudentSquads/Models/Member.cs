@@ -41,7 +41,7 @@ namespace StudentSquads.Models
         //Ссылка на личность
         public Person Person { get; set; }
         public Guid PersonId { get; set; }
-
+        public string ApplicationStatus { get; set; }
         // public Status Status { get; set; }
         //public int StatusId { get; set; }
     }

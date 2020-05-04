@@ -55,10 +55,13 @@ namespace StudentSquads.Controllers
             var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
             //Объявляем файл вступления в РСО
             FilePathResult enterfile = null;
-            if (person.EnterDocumentPath != null)
+            if (person != null)
             {
-                enterfile = File(person.EnterDocumentPath, "application/docx", "Заявление на вступление в РСО");
-                string str = enterfile.FileDownloadName;
+                if (person.EnterDocumentPath != null)
+                {
+                    enterfile = File(person.EnterDocumentPath, "application/docx", "Заявление на вступление в РСО");
+                    string str = enterfile.FileDownloadName;
+                }
             }
             //var fileContents = System.IO.File.ReadAllText(Server.MapPath(@person.EnterDocumentPath));
             PersonMainFormViewModel newmember = new PersonMainFormViewModel
@@ -110,14 +113,14 @@ namespace StudentSquads.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Save(NewPersonViewModel newModel)
         {//Это надо будет перенести в другое место
-            foreach (string file in Request.Files)
-            {
-                HttpPostedFileBase File = Request.Files[file] as HttpPostedFileBase;
-                // получаем имя файла
-                string fileName = System.IO.Path.GetFileName(File.FileName);
-                // сохраняем файл в папку Files в проекте
-                File.SaveAs(Server.MapPath("~/Files/" + fileName));
-            }
+            //foreach (string file in Request.Files)
+            //{
+            //    HttpPostedFileBase File = Request.Files[file] as HttpPostedFileBase;
+            //    // получаем имя файла
+            //    string fileName = System.IO.Path.GetFileName(File.FileName);
+            //    // сохраняем файл в папку Files в проекте
+            //    File.SaveAs(Server.MapPath("~/Files/" + fileName));
+            //}
             if (!ModelState.IsValid)
             {
                 return View("PersonForm", newModel);
@@ -142,6 +145,7 @@ namespace StudentSquads.Controllers
                     newModel.Member.PersonId = personId;
                     newModel.Member.DateOfEnter = DateTime.Now;
                     newModel.Member.ApprovedByCommandStaff = true;
+                    newModel.Member.ApplicationStatus = "Член отряда";
                     _context.Members.Add(newModel.Member);
                     //Если является ком. составом отряда,создаем запись в таблице "HeadsofStudentSquads"
                     if (newModel.HeadsOfStudentSquads.MainPositionId != null)
@@ -188,7 +192,7 @@ namespace StudentSquads.Controllers
             }
             _context.SaveChanges();
             
-            return RedirectToAction("AllPeople","People");
+            return RedirectToAction("PersonMainForm","People");
         }
         public ActionResult Edit(Guid id)
         {

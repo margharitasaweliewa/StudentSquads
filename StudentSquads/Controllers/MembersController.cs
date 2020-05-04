@@ -94,7 +94,8 @@ namespace StudentSquads.Controllers
             {
                 Id = Guid.NewGuid(),
                 PersonId = model.Person.Id,
-                SquadId = model.SquadId
+                SquadId = model.SquadId,
+                ApplicationStatus = "Не рассмотрено"
             };
             _context.Members.Add(newMember);
             _context.SaveChanges();
@@ -115,19 +116,12 @@ namespace StudentSquads.Controllers
             foreach (var member in members)
             {
                 string sex = "";
-                string status = "";
                 string feepayment = "";
-                //Если ещё не выставлено решение ком. состава
-                if (member.ApprovedByCommandStaff == null) status = "Не рассмотрено";
-                //Если ещё не одобрено рег. отделением
-                else if (member.Person.DateOfEnter == null) status = "На рассмотрении рег. штабом";
-                //Если уже одобрено, но пока не является членом организации (Member.DateOfEnter = null)
-                else status = "Ожидается взнос";
                 //Определяем пол для отображения
                 if (member.Person.Sex == true) sex = "Муж";
                 else sex = "Жен";
                 var payments = _context.FeePayments.Where(m => m.PersonId == member.PersonId).ToList();
-                if (payments == null) feepayment = "Не сдан";
+                if (payments.Count==0) feepayment = "Не сдан";
                 else feepayment = "Cдан";
                 ApplicationsListViewModel newapplication = new ApplicationsListViewModel
                 {
@@ -141,7 +135,7 @@ namespace StudentSquads.Controllers
                     PlaceOfStudy = member.Person.PlaceofStudy,
                     Squad = member.Squad.Name,
                     FeePayment = feepayment,
-                    Status = status
+                    Status = member.ApplicationStatus
                 };
                 listmodel.Add(newapplication);
             }
@@ -156,18 +150,19 @@ namespace StudentSquads.Controllers
             {//Если выбрали для одобрения
                 if (member.Choosen)
                 {
-
+                    var memberInDb = _context.Members.Single(m => m.Id == member.Id);
                     //Если ком. составом рассматривается, делаем "Одобрено ком. составом"
                     if (User.IsInRole("SquadManager"))
                     {
-                        var memberInDb = _context.Members.Single(m => m.Id == member.Id);
                         memberInDb.ApprovedByCommandStaff = true;
+                        memberInDb.ApplicationStatus = "На рассмотрении рег.штабом";
                     }
                     //Если региональным отделением, то ставим дату вступления у личности, пока без номера членского билета
                     else if (User.IsInRole("RegionalManager"))
                     {
                         var personInDb = _context.People.Single(m => m.Id == member.PersonId);
                         personInDb.DateOfEnter = DateTime.Now;
+                        memberInDb.ApplicationStatus = "Ожидается членский взнос";
                     }
                 }
 
@@ -183,11 +178,12 @@ namespace StudentSquads.Controllers
             {//Если выбрали для одобрения
                 if (member.Choosen)
                 {
+                    var memberInDb = _context.Members.Single(m => m.Id == member.Id);
                     //Если ком. составом рассматривается, делаем "Одобрено ком. составом" = false
                     if (User.IsInRole("SquadManager"))
                     {
-                        var memberInDb = _context.Members.Single(m => m.Id == member.Id);
                         memberInDb.ApprovedByCommandStaff = false;
+                        memberInDb.ApplicationStatus = "Отклонено ком. составом ЛСО";
                     }
                     //Если региональным отделением, то ставим дату исклбчения личности, без даты вступления с датой исключения будут считаться непринятые
                     //Они не будут рассматриваться нигде
@@ -195,6 +191,7 @@ namespace StudentSquads.Controllers
                     {
                         var personInDb = _context.People.Single(m => m.Id == member.PersonId);
                         personInDb.DateOfExit = DateTime.Now;
+                        memberInDb.ApplicationStatus = "Отклонено рег. отделением";
                     }
                 }
 
@@ -213,6 +210,8 @@ namespace StudentSquads.Controllers
                     if (member.Choosen)
                     {
                         var memberInDb = _context.Members.Single(m => m.Id == member.Id);
+                        //Добавляем статус
+                        memberInDb.ApplicationStatus = "Член отряда";
                         //Добавляем дату вступелния члену отряда
                         memberInDb.DateOfEnter = DateTime.Now;
                         var personInDb = _context.People.Single(p => p.Id == member.PersonId);
@@ -269,7 +268,8 @@ namespace StudentSquads.Controllers
                 Id = Guid.NewGuid(),
                 PersonId = model.Person.Id,
                 SquadId = model.SquadId,
-                FromSquadId = memberInDb.SquadId
+                FromSquadId = memberInDb.SquadId,
+                ApplicationStatus = "Не рассмотрено"
             };
             //Добавляем параметр "Переходит в отряд" в текущую активную запись члена организации в отряде
             memberInDb.ToSquadId = model.SquadId;
@@ -294,11 +294,6 @@ namespace StudentSquads.Controllers
             {
                 //Ищем текущего члена отряда по личности
                 var oldmember = _context.Members.Single(o => (o.PersonId == member.PersonId) && (o.DateOfEnter != null) && (o.DateOfExit == null));
-                string status = "";
-                //Если ещё не выставлено решение ком. состава
-                if (member.ApprovedByCommandStaff == null) status = "Не рассмотрено";
-                //Если ещё не одобрено рег. отделением (смотрим именно member, потому что сразу он будет присваиваться)
-                else status = "На рассмотрении рег. штабом";
                 ApplicationsListViewModel newapplication = new ApplicationsListViewModel
                 {
                     Choosen = false,
@@ -311,7 +306,7 @@ namespace StudentSquads.Controllers
                     PhoneNumber = member.Person.PhoneNumber,
                     Squad = member.Squad.Name,
                     OldSquad = member.FromSquad.Name,
-                    Status = status
+                    Status = member.ApplicationStatus
                 };
                 listmodel.Add(newapplication);
             }
@@ -330,13 +325,16 @@ namespace StudentSquads.Controllers
                     if (User.IsInRole("SquadManager"))
                     {
                         memberInDb.ApprovedByCommandStaff = true;
+                        memberInDb.ApplicationStatus = "На рассмотрении рег. штабом";
                     }
                     //Если региональным отделением, то ставим дату вступления новому члену отряда, дату выхода старому
                     else if (User.IsInRole("RegionalManager"))
                     {
                         memberInDb.DateOfEnter = DateTime.Now;
+                        memberInDb.ApplicationStatus = "Член отряда";
                         var oldmemberInDb = _context.Members.Single(m => m.Id == member.OldId);
                         oldmemberInDb.DateOfExit = DateTime.Now;
+                        oldmemberInDb.ApplicationStatus = "Исключен";
                     }
                 }
 
@@ -358,12 +356,14 @@ namespace StudentSquads.Controllers
                     {
                         memberInDb = _context.Members.Single(m => m.Id == member.Id);
                         memberInDb.ApprovedByCommandStaff = false;
+                        memberInDb.ApplicationStatus = "Отклонено ком. составом ЛСО";
                     }
                     //Если региональным отделением, то очищаем поле "Переходит в отряд" в старом члене отрядов
                     //В таблице Member ставим Дату выхода. Если есть дата выхода без даты вступления, значит, отменено рег. отделением
                     else if (User.IsInRole("RegionalManager"))
                     {
                         memberInDb.DateOfExit = DateTime.Now;
+                        memberInDb.ApplicationStatus = "Отклонено рег. отделением";
                         var oldmemberInDb = _context.Members.Single(m => m.Id == member.OldId);
                         oldmemberInDb.ToSquad = null;
                     }
@@ -489,10 +489,12 @@ namespace StudentSquads.Controllers
             {//Если выбран для протокола об исключении
                 if (member.Choosen)
                 {
-               
+                    var memberInDb = _context.Members.SingleOrDefault(m => m.Id == member.Id);
+                    memberInDb.ApplicationStatus = "Исключен";
                 }
 
             }
+            _context.SaveChanges();
             return RedirectToAction("ExitApplications", "Members");
         }
         private static Dictionary<string, BookmarkEnd> FindBookmarks(OpenXmlElement documentPart, Dictionary<string, BookmarkEnd> results = null, Dictionary<string, string> unmatched = null)

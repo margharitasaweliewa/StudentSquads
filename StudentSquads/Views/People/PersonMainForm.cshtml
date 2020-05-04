@@ -15,10 +15,10 @@
 {
 	@*if (Model.Person.EnterDocumentPath != null)
 		{<p><a href=@Model.file target="_blank" download="true">Загрузить заявление на вступление</a></p>}*@
-if (Model.Person == null)
-{<h4>Для использования функций приложения заполните личные данные в разделе "Мои данные".</h4>}
-else
-{ @Html.HiddenFor(m => m.Person.Id)
+	if (Model.Person == null)
+	{<h4>Для использования функций приложения заполните личные данные в разделе "Мои данные".</h4>}
+	else
+	{ @Html.HiddenFor(m => m.Person.Id)
 	<div class="row">
 		@*Проверяем, является ли пользователь членом организации.*@
 		<div class="row">
@@ -44,12 +44,12 @@ else
 		}
 	</div>
 	@Html.AntiForgeryToken()
-				}
 }
-<button class="btn btn-default js-exclude" data-id="@Model.Person.Id">Выйти из организации</button>
-
+}
+@if (Model.Person != null)
+{<button class="btn btn-default js-exclude" data-id="@Model.Person.Id">Выйти из организации</button>
 <h3>Ваш отряд</h3>
-@if (Model.AllPersonSquads.Count() == 0)
+if (Model.AllPersonSquads.Count() == 0)
 {<h5>Данных о членстве в отрядах не найдено.</h5>}
 else
 {
@@ -67,13 +67,13 @@ else
 			{
 				<tr>
 					<td>@member.Squad.Name</td>
-					@if (member.Status != null)
+					@if (member.Status != null && member.DateOfExit == null)
 					{
 						<td>@member.Status.Name</td>
 					}
 					else
 					{
-						<td>Не подтвежден</td>
+						<td>@member.ApplicationStatus</td>
 					}
 					<td>@member.DateOfEnter</td>
 					<td>@member.DateOfExit</td>
@@ -82,10 +82,9 @@ else
 		</tbody>
 	</table>
 }
-
 <h3>Ваши должности</h3>
-@if (Model.AllPersonPositions.Count() == 0)
-{ <h5>Данных о наличии должностей не найдено.</h5>}
+if (Model.AllPersonPositions.Count() == 0)
+{<h5>Данных о наличии должностей не найдено.</h5>}
 else
 {<table class="table table-bordered table-hover">
 		<thead>
@@ -108,6 +107,7 @@ else
 			}
 		</tbody>
 	</table>
+}
 }
 
 @*Если ты придумаешь, как взять выбранный dropdown, то можешь использовать ajax*@
