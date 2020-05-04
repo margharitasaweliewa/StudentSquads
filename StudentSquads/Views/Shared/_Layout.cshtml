@@ -27,53 +27,56 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Члены организации</a>
-						<div class="dropdown-menu">
-							<a class="dropdown-item" href="/people/allpeople">Все члены</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#">Руководители</a>
-						</div>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Заявки</a>
-						<div class="dropdown-menu">
-							<a class="dropdown-item" href="/Members/EnterApplications">Заявки на вступление</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#">Заявки на внесение информации о взносах</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#">Заявки на добавление мероприятия</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#">Заявки на смену ком. состава</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="/Members/ExitApplications">Заявки на исключение</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="/Members/TransitionApplications">Заявки на переход</a>
-						</div>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Рейтинги</a>
-						<div class="dropdown-menu">
-							<a class="dropdown-item" href="#">Текущий рейтинг</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#">Рейтинговые показатели</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#">История рейтинга</a>
-						</div>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Трудовая деятельность</a>
-						<div class="dropdown-menu">
-							<a class="dropdown-item" href="#">Выездные списки</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#">Информация по трудовому семестру</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="#">История трудовой деятельности</a>
-						</div>
-					</li>
-					<li>
-						@Html.ActionLink("Управление должностями", "Index", "Home", new { area = "" })
-					</li>
+					@if (User.IsInRole("SquadManager") || User.IsInRole("UniManager") || User.IsInRole("RegionalManager") || User.IsInRole("RegionalManager"))
+					{
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Члены организации</a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="/people/allpeople">Все члены</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#">Руководители</a>
+							</div>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Заявки</a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="/Members/EnterApplications">Заявки на вступление</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#">Заявки на внесение информации о взносах</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#">Заявки на добавление мероприятия</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#">Заявки на смену ком. состава</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="/Members/ExitApplications">Заявки на исключение</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="/Members/TransitionApplications">Заявки на переход</a>
+							</div>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Рейтинги</a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="#">Текущий рейтинг</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#">Рейтинговые показатели</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#">История рейтинга</a>
+							</div>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Трудовая деятельность</a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="#">Выездные списки</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#">Информация по трудовому семестру</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="#">История трудовой деятельности</a>
+							</div>
+						</li>
+						<li>
+							@Html.ActionLink("Управление должностями", "Index", "Home", new { area = "" })
+						</li>
+					}
 					<li>
 						@Html.ActionLink("Личный кабинет", "PersonMainForm", "People")
 					</li>
