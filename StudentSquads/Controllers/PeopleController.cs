@@ -104,6 +104,7 @@ namespace StudentSquads.Controllers
             else
             {
                 var modelperson = _context.People.SingleOrDefault(p => p.Id == person.Id);
+                viewModel.Id = modelperson.Id;
                 viewModel.Person = modelperson;
                 return View(viewModel);
             }
@@ -139,7 +140,7 @@ namespace StudentSquads.Controllers
                 //Если является членом организации, сразу проставляем дату вступления
                 if (newModel.Person.MembershipNumber != null) newModel.Person.DateOfEnter = DateTime.Now;
                 //Если является членом отряда, создаем запись в таблице "Member"
-                if (newModel.Member.SquadId != null)
+                if (newModel.SquadId != null)
                 {
                     newModel.Member.Id = Guid.NewGuid();
                     newModel.Member.PersonId = personId;
@@ -169,7 +170,7 @@ namespace StudentSquads.Controllers
             }
             else
             {
-                var personInDb = _context.People.Single(p => p.Id == newModel.Person.Id);
+                var personInDb = _context.People.Single(p => p.Id == newModel.Id);
                 //Изменяю поля персональных данных
                 personInDb.LastName = newModel.Person.LastName;
                 personInDb.FirstName = newModel.Person.FirstName;
@@ -183,12 +184,14 @@ namespace StudentSquads.Controllers
                 personInDb.DepartmentCode = newModel.Person.DepartmentCode;
                 personInDb.Email = newModel.Person.Email;
                 personInDb.INN = newModel.Person.INN;
-                personInDb.PasportSerie = newModel.Person.PasportSerie;
+                personInDb.PassportSerie = newModel.Person.PassportSerie;
                 personInDb.PassportNumber = newModel.Person.PassportNumber;
+                personInDb.PassportGiven = newModel.Person.PassportGiven;
                 personInDb.RegistrationPlace = newModel.Person.RegistrationPlace;
                 personInDb.Sex = newModel.Person.Sex;
                 personInDb.Snils = newModel.Person.Snils;
                 personInDb.FIO = Convert.ToString(newModel.Person.LastName + ' ' + newModel.Person.FirstName + ' ' + newModel.Person.PatronymicName);
+                personInDb.FIOinGenetiv = newModel.Person.FIOinGenetiv;
             }
             _context.SaveChanges();
             

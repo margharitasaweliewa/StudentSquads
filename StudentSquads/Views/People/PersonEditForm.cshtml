@@ -62,12 +62,16 @@
 		</div>
 		<div class="col-xs-4" float="left">
 			<div class="form-group">
-				@Html.LabelFor(m => m.Person.PasportSerie)
-				@Html.TextBoxFor(m => m.Person.PasportSerie, new { @class = "form-control", @readonly = "true" })
+				@Html.LabelFor(m => m.Person.PassportSerie)
+				@Html.TextBoxFor(m => m.Person.PassportSerie, new { @class = "form-control", @readonly = "true" })
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.PassportNumber)
 				@Html.TextBoxFor(m => m.Person.PassportNumber, new { @class = "form-control", @readonly = "true" })
+			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.PassportGiven)
+				@Html.TextBoxFor(m => m.Person.PassportGiven, new { @class = "form-control" })
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.DateofIssue)

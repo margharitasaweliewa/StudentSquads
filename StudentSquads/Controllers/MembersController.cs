@@ -526,6 +526,8 @@ namespace StudentSquads.Controllers
         public void EnterDocument(PersonMainFormViewModel model) 
         {
             Person person = _context.People.SingleOrDefault(p => p.Id == model.Person.Id);
+            Squad squad = _context.Squads.Include(s => s.Direction).SingleOrDefault(s => s.Id == model.SquadId);
+            UniversityHeadquarter uni = _context.UniversityHeadquarters.Include(u => u.RegionalHeadquarter).SingleOrDefault(u => u.Id == squad.UniversityHeadquarterId);
             string fileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление_на_вступление_в_РСО.docx";
             var wordDocument = WordprocessingDocument.Open(fileName as string, false);
             string newfileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление_на_вступление_в_РСО_"+person.LastName+".docx";
@@ -534,11 +536,76 @@ namespace StudentSquads.Controllers
             var bookMarks = FindBookmarks(newwordDocument.MainDocumentPart.Document);
             foreach (var end in bookMarks)
             {
+                //Переменная для заполнения
                 string inn = "";
-                if (end.Key == "FIO") 
-                { inn = person.FIO; }
+                switch (end.Key)
+                {
+                    case "FIO":
+                        inn = person.FIOinGenetiv;
+                        break;
+                    case "DateofBirth":
+                        inn = person.DateofBirth.ToString("dd.MM.yyyy");
+                        break;
+                    case "PlaceofStudy":
+                        if(person.PlaceofStudy!=null)
+                        inn = person.PlaceofStudy;
+                        break;
+                    case "RegistrationPlace":
+                        inn = person.RegistrationPlace;
+                        break;
+                    case "PhoneNumber":
+                        inn = person.PhoneNumber;
+                        break;
+                    case "Email":
+                        inn = person.Email;
+                        break;
+                    case "PassportSerie":
+                        inn = person.PassportSerie;
+                        break;
+                    case "PassportNumber":
+                        inn = person.PassportNumber;
+                        break;
+                    case "PassportGiven":
+                        inn = person.PassportGiven;
+                        break;
+                    case "DateofIssue":
+                        inn = person.DateofIssue.ToString("dd.MM.yyyy");
+                        break;
+                    case "DepartmentCode":
+                        inn = person.DepartmentCode;
+                        break;
+                    case "INN":
+                        inn = person.INN;
+                        break;
+                    case "Snils":
+                        inn = person.Snils;
+                        break;
+                    case "Squad":
+                        inn = squad.Name;
+                        break;
+                    case "Direction":
+                        inn = squad.Direction.Name;
+                        break;
+                    case "Uni":
+                        inn = uni.University;
+                        break;
+                    case "Region":
+                        inn = uni.RegionalHeadquarter.Region;
+                        break;
+                    case "Date":
+                        inn = DateTime.Now.ToString("dd.MM.yyyy");
+                        break;
+                };
+                //Настраиваем размер шрифта
+                RunProperties runProp = new RunProperties();
+                FontSize size = new FontSize();
+                size.Val = new StringValue("24");
+                runProp.Append(size);
+                //Создаем элемент для прогона
                 var textElement = new Text(inn);
                 var runElement = new Run(textElement);
+                //Подставляем значение
+                runElement.PrependChild<RunProperties>(runProp);
                 end.Value.InsertAfterSelf(runElement);
             }
             newwordDocument.MainDocumentPart.Document.Save();

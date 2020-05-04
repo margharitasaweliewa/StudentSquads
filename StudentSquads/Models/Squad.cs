@@ -21,5 +21,7 @@ namespace StudentSquads.Models
         public DateTime? DateofLiquidation { get; set; }
         public UniversityHeadquarter UniversityHeadquarter { get; set; }
         public Guid? UniversityHeadquarterId { get; set; }
+        public Direction Direction { get; set; }
+        public int? DirectionId { get; set; }
     }
 }

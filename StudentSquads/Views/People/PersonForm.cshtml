@@ -5,14 +5,14 @@
 }
 
 <h2>Личные данные</h2>
-@using (Html.BeginForm("Save", "People", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Save", "People", new { enctype = "multipart/form-data" }))
 {
 	@Html.ValidationSummary()
 	<button type="submit" class="btn btn-warning">Сохранить</button>
-	@Html.HiddenFor(m => m.Id)
 	@*<p>
 			@Html.ActionLink("Сохранить", "New", "Movies", null, new { @class = "btn btn-warning" })
 		</p>*@
+	@Html.HiddenFor(m => m.Id)
 	<div>
 		<div class="col-xs-4" float="left">
 			<div class="form-group">
@@ -29,8 +29,12 @@
 				@Html.TextBoxFor(m => m.Person.PatronymicName, new { @class = "form-control" })
 			</div>
 			<div class="form-group">
+				@Html.LabelFor(m => m.Person.FIOinGenetiv)
+				@Html.TextBoxFor(m => m.Person.FIOinGenetiv, new { @class = "form-control" })
+			</div>
+			<div class="form-group">
 				@Html.LabelFor(m => m.Person.DateofBirth)
-				@Html.TextBoxFor(m => m.Person.DateofBirth, "{0:dd.MM.yyyy}", new { @class = "form-control"})
+				@Html.TextBoxFor(m => m.Person.DateofBirth, "{0:dd.MM.yyyy}", new { @class = "form-control" })
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.PlaceofStudy)
@@ -54,12 +58,16 @@
 		</div>
 		<div class="col-xs-4" float="left">
 			<div class="form-group">
-				@Html.LabelFor(m => m.Person.PasportSerie)
-				@Html.TextBoxFor(m => m.Person.PasportSerie, new { @class = "form-control" })
+				@Html.LabelFor(m => m.Person.PassportSerie)
+				@Html.TextBoxFor(m => m.Person.PassportSerie, new { @class = "form-control" })
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.PassportNumber)
 				@Html.TextBoxFor(m => m.Person.PassportNumber, new { @class = "form-control" })
+			</div>
+			<div class="form-group">
+				@Html.LabelFor(m => m.Person.PassportGiven)
+				@Html.TextBoxFor(m => m.Person.PassportGiven, new { @class = "form-control" })
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.DateofIssue)
@@ -104,8 +112,8 @@
 					</label>
 				</div>
 				<div class="form-group" disabled>
-					@Html.LabelFor(m => m.Member.SquadId)
-					@Html.DropDownListFor(m => m.Member.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control" })
+					@Html.LabelFor(m => m.SquadId)
+					@Html.DropDownListFor(m => m.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control" })
 				</div>
 				<div class="form-group">
 					@Html.LabelFor(m => m.Person.MembershipNumber)

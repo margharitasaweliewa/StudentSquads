@@ -40,13 +40,15 @@ namespace StudentSquads.Models
         [Display(Name = "Электронная почта")]
         public string Email { get; set; }
         [Display(Name = "Серия паспорта")]
-        public string PasportSerie { get; set; }
+        public string PassportSerie { get; set; }
         [Display(Name = "Номер паспорта")]
         public string PassportNumber{ get; set; }
+        [Display(Name = "Кем выдан паспорта")]
+        public string PassportGiven{ get; set; }
         [Display(Name = "Дата выдачи паспорта")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime? DateofIssue  { get; set; }
+        public DateTime DateofIssue  { get; set; }
         [Display(Name = "Код подразделения")]
         public string DepartmentCode { get; set; }
         [Display(Name = "Город рождения")]
@@ -69,6 +71,7 @@ namespace StudentSquads.Models
         public bool? ApplicationFrom { get; set; }
         [Display(Name = "ФИО")]
         public string FIO { get; set; }
+        [Display(Name = "ФИО в родительном падеже")]
         public string FIOinGenetiv { get; set; }
         public string EnterDocumentPath { get; set; }
         public string ExitDocumentPath { get; set; }

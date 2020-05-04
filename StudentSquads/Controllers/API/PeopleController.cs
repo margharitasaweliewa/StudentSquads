@@ -180,7 +180,7 @@ namespace StudentSquads.Controllers.API
             personInDb.DepartmentCode = newModel.Person.DepartmentCode;
             personInDb.Email = newModel.Person.Email;
             personInDb.INN = newModel.Person.INN;
-            personInDb.PasportSerie = newModel.Person.PasportSerie;
+            personInDb.PassportSerie = newModel.Person.PassportSerie;
             personInDb.PassportNumber = newModel.Person.PassportNumber;
             personInDb.RegistrationPlace = newModel.Person.RegistrationPlace;
             personInDb.Sex = newModel.Person.Sex;
