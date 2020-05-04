@@ -1,0 +1,61 @@
+﻿@model List<StudentSquads.ViewModels.ApplicationsListViewModel>
+@{
+	ViewBag.Title = "ExitApplications";
+}
+
+<h2>Заявки на выход</h2>
+@using (Html.BeginForm("CreateExitProtocol", "Members"))
+{
+	if (User.IsInRole("RegionalManager"))
+	{
+		<button type="submit" class="btn btn-warning" id="approve">Составить протокол</button>
+	}
+	<table id="transitionapplications" class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<th></th>
+				<th>ФИО</th>
+				<th>Дата рождения</th>
+				<th>Телефон</th>
+				<th>Номер членского билета</th>
+				@if (!User.IsInRole("RegionalManager"))
+				{<th>Тип исключения</th>}
+				@if (!User.IsInRole("SquadManager"))
+				{<th>Отряд</th>}
+				<th>Заявление</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (int i = 0; i < Model.Count; i++)
+			{
+			<tr>
+				@Html.HiddenFor(m => m[i].Id)
+				@Html.HiddenFor(m => m[i].PersonId)
+				<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
+				<td>@Model[i].FIO</td>
+				<td>@Model[i].DateOfBirth</td>
+				<td>@Model[i].PhoneNumber</td>
+				<td>@Model[i].MembershipNumber</td>
+				@if (!User.IsInRole("RegionalManager"))
+				{
+					<td>@Model[i].Status</td>
+				}
+				@if (!User.IsInRole("SquadManager"))
+				{<td>@Model[i].Squad</td>}
+				<td></td>
+			</tr>
+			}
+		</tbody>
+	</table>
+	@Html.AntiForgeryToken()
+}
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			$("#transitionapplications").DataTable();
+		});
+	</script>
+}
+
+

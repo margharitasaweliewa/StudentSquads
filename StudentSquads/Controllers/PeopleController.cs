@@ -56,8 +56,10 @@ namespace StudentSquads.Controllers
             //Объявляем файл вступления в РСО
             FilePathResult enterfile = null;
             if (person.EnterDocumentPath != null)
+            {
                 enterfile = File(person.EnterDocumentPath, "application/docx", "Заявление на вступление в РСО");
-            string str = enterfile.FileDownloadName;
+                string str = enterfile.FileDownloadName;
+            }
             //var fileContents = System.IO.File.ReadAllText(Server.MapPath(@person.EnterDocumentPath));
             PersonMainFormViewModel newmember = new PersonMainFormViewModel
             {

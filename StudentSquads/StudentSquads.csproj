@@ -554,6 +554,7 @@
     <Content Include="Views\People\PersonMainForm.cshtml" />
     <Content Include="Views\Members\EnterApplications.cshtml" />
     <Content Include="Views\Members\TransitionApplications.cshtml" />
+    <Content Include="Views\Members\ExitApplications.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

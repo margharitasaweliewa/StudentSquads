@@ -47,12 +47,6 @@ namespace StudentSquads.Controllers.API
                 //Сразу ставим дату выхода из организации
                 personInDb.DateOfExit = DateTime.Now;
                 personInDb.ExitReason = "По собственному желанию";
-               //Если есть в каком-то отряде на данный момент, из него тоже исключаем
-               var memberInDb = _context.Members.SingleOrDefault(p => (p.PersonId == personId) && (p.DateOfEnter != null) && (p.DateOfExit == null));
-                if (memberInDb != null) 
-                { memberInDb.DateOfExit = DateTime.Now;
-                memberInDb.ExitReason = "Выход из организации";
-                }
                 //Если есть роли, убираем роли
                 if (User.IsInRole("SquadManager") || User.IsInRole("UniManager") || User.IsInRole("RegionalManager") || User.IsInRole("DesantManager"))
                 {

@@ -138,7 +138,7 @@ namespace StudentSquads.Controllers
                     Sex = sex,
                     DateOfBirth = member.Person.DateofBirth.ToString("dd.MM.yyyy"),
                     PhoneNumber = member.Person.PhoneNumber,
-                    PlaceOfStudy = member.Person.PhoneNumber,
+                    PlaceOfStudy = member.Person.PlaceofStudy,
                     Squad = member.Squad.Name,
                     FeePayment = feepayment,
                     Status = status
@@ -413,108 +413,88 @@ namespace StudentSquads.Controllers
                 _context.SaveChanges();
             }
         }
-        //[HttpGet]
-        //public ActionResult EnterApplications()
-        //{
-        //    List<ApplicationsListViewModel> listmodel = new List<ApplicationsListViewModel>();
-        //    var headofsquad = GetHeadOfStudentSquads();
-        //    if (headofsquad == null) return RedirectToAction("PersonMainForm", "People");
-        //    //Выбираем из таблицы Members без даты вступления, решение ком. состава либо true, либо null, даты выхода нет(если есть, значит, отклонен)
-        //    //Также откидываем записи уже состоящих в отрядах
-        //    var allmembers = _context.Members.Include(m => m.Person).Include(m => m.Squad)
-        //        .Where(m => (m.Person.MembershipNumber == null) && (m.ApprovedByCommandStaff != false) && (m.Person.DateOfExit == null)).ToList();
-        //    //Получаем ограниченный по роли список
-        //    List<Member> members = LimitMembers(allmembers, headofsquad);
-        //    foreach (var member in members)
-        //    {
-        //        string sex = "";
-        //        string status = "";
-        //        string feepayment = "";
-        //        //Если ещё не выставлено решение ком. состава
-        //        if (member.ApprovedByCommandStaff == null) status = "Не рассмотрено";
-        //        //Если ещё не одобрено рег. отделением
-        //        else if (member.Person.DateOfEnter == null) status = "На рассмотрении рег. штабом";
-        //        //Если уже одобрено, но пока не является членом организации (Member.DateOfEnter = null)
-        //        else status = "Ожидается взнос";
-        //        //Определяем пол для отображения
-        //        if (member.Person.Sex == true) sex = "Муж";
-        //        else sex = "Жен";
-        //        var payments = _context.FeePayments.Where(m => m.PersonId == member.PersonId).ToList();
-        //        if (payments == null) feepayment = "Не сдан";
-        //        else feepayment = "Cдан";
-        //        ApplicationsListViewModel newapplication = new ApplicationsListViewModel
-        //        {
-        //            Choosen = false,
-        //            Id = member.Id,
-        //            PersonId = member.PersonId,
-        //            FIO = member.Person.FIO,
-        //            Sex = sex,
-        //            DateOfBirth = member.Person.DateofBirth.ToString("dd.MM.yyyy"),
-        //            PhoneNumber = member.Person.PhoneNumber,
-        //            PlaceOfStudy = member.Person.PhoneNumber,
-        //            Squad = member.Squad.Name,
-        //            FeePayment = feepayment,
-        //            Status = status
-        //        };
-        //        listmodel.Add(newapplication);
-        //    }
-        //    return View(listmodel);
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult ApproveEnterApllications(List<ApplicationsListViewModel> applications)
-        //{
+        [HttpGet]
+        public ActionResult ExitApplications()
+        {
+            List<ApplicationsListViewModel> listmodel = new List<ApplicationsListViewModel>();
+            var headofsquad = GetHeadOfStudentSquads();
+            if (headofsquad == null) return RedirectToAction("PersonMainForm", "People");
+            List<Member> members = new List<Member>();
+            if (User.IsInRole("SquadManager")||(User.IsInRole("UniManager")))
+            {
+                //Для выходящих из организации выбираем активных членов отряда, где DateofExit у личности не null
+                List<Member> outorganisation = _context.Members.Include(o => o.Person).Include(o => o.Squad)
+                  .Where(o => (o.DateOfEnter != null) && (o.DateOfExit == null) && (o.Person.DateOfExit != null)).ToList();
+                //Для переходящих в друго отряд выбираем активных, которые подали заявку на переход
+                List<Member> toothersquad = _context.Members.Include(t => t.Person).Include(o => o.Squad).Include(t => t.ToSquad)
+                    .Where(o => (o.DateOfEnter != null) && (o.DateOfExit == null) && (o.ToSquadId != null)).ToList();
+                //Если показываем руководителю штаба, то только те, кто переходит в другой штаб
+                if ((User.IsInRole("UniManager")))
+                {
+                    toothersquad = toothersquad.Where(a => a.ToSquad.UniversityHeadquarterId != headofsquad.UniversityHeadquarterId).ToList();
+                }
+                List<Member> allmemberssquad = outorganisation.Union(toothersquad).ToList();
+                members = LimitMembers(allmemberssquad, headofsquad);
+                foreach (var member in members)
+                {
+                    string status = "";
+                    if (member.ToSquad != null) status = "Переход в другой отряд";
+                    else status = "Выход из организации";
+                    ApplicationsListViewModel newapplication = new ApplicationsListViewModel
+                    {
+                        Id = member.Id,
+                        Squad = member.Squad.Name,
+                        PersonId = member.PersonId,
+                        FIO = member.Person.FIO,
+                        DateOfBirth = member.Person.DateofBirth.ToString("dd.MM.yyyy"),
+                        PhoneNumber = member.Person.PhoneNumber,
+                        MembershipNumber = member.Person.MembershipNumber,
+                        Status = status
+                    };
+                    listmodel.Add(newapplication);
+                }
+            }
+             else if (User.IsInRole("RegionalManager"))
+            {
+                //Для рег. отделения получаем всех личностей, у кого ещё нет протокола об исключении
+                var people = _context.People.Where(p => (p.DateOfEnter != null) && (p.DateOfExit != null) && (p.ExitDocumentPath == null)).ToList();
+                foreach (var person in people)
+                {
+                    Guid memberid = new Guid();
+                    string squad = "";
+                    //Исправить!!!
+                    var memberInDb = _context.Members.Include(m => m.Squad).SingleOrDefault(m => (m.PersonId ==person.Id)&&(m.DateOfEnter!=null)&&(m.DateOfExit==null));
+                    if (memberInDb != null) { memberid = memberInDb.Id; squad = memberInDb.Squad.Name; }
+                    ApplicationsListViewModel newapplication = new ApplicationsListViewModel
+                        {
+                            Id = memberid,
+                            Squad = squad,
+                            PersonId = person.Id,
+                            FIO = person.FIO,
+                            DateOfBirth = person.DateofBirth.ToString("dd.MM.yyyy"),
+                            PhoneNumber = person.PhoneNumber,
+                            MembershipNumber = person.MembershipNumber,
+                        };
+                        listmodel.Add(newapplication);
+       
+                }
+            }
+            return View(listmodel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateExitProtocol(List<ApplicationsListViewModel> applications)
+        {
+            foreach (var member in applications)
+            {//Если выбран для протокола об исключении
+                if (member.Choosen)
+                {
+               
+                }
 
-        //    foreach (var member in applications)
-        //    {//Если выбрали для одобрения
-        //        if (member.Choosen)
-        //        {
-
-        //            //Если ком. составом рассматривается, делаем "Одобрено ком. составом"
-        //            if (User.IsInRole("SquadManager"))
-        //            {
-        //                var memberInDb = _context.Members.Single(m => m.Id == member.Id);
-        //                memberInDb.ApprovedByCommandStaff = true;
-        //            }
-        //            //Если региональным отделением, то ставим дату вступления у личности, пока без номера членского билета
-        //            else if (User.IsInRole("RegionalManager"))
-        //            {
-        //                var personInDb = _context.People.Single(m => m.Id == member.PersonId);
-        //                personInDb.DateOfEnter = DateTime.Now;
-        //            }
-        //        }
-
-        //    }
-        //    _context.SaveChanges();
-        //    return RedirectToAction("EnterApplications", "Members");
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult RejectEnterApplications(List<ApplicationsListViewModel> applications)
-        //{
-        //    foreach (var member in applications)
-        //    {//Если выбрали для одобрения
-        //        if (member.Choosen)
-        //        {
-        //            //Если ком. составом рассматривается, делаем "Одобрено ком. составом" = false
-        //            if (User.IsInRole("SquadManager"))
-        //            {
-        //                var memberInDb = _context.Members.Single(m => m.Id == member.Id);
-        //                memberInDb.ApprovedByCommandStaff = false;
-        //            }
-        //            //Если региональным отделением, то ставим дату исклбчения личности, без даты вступления с датой исключения будут считаться непринятые
-        //            //Они не будут рассматриваться нигде
-        //            else if (User.IsInRole("RegionalManager"))
-        //            {
-        //                var personInDb = _context.People.Single(m => m.Id == member.PersonId);
-        //                personInDb.DateOfExit = DateTime.Now;
-        //            }
-        //        }
-
-        //    }
-        //    _context.SaveChanges();
-        //    return RedirectToAction("EnterApplications", "Members");
-        //}
+            }
+            return RedirectToAction("ExitApplications", "Members");
+        }
         private static Dictionary<string, BookmarkEnd> FindBookmarks(OpenXmlElement documentPart, Dictionary<string, BookmarkEnd> results = null, Dictionary<string, string> unmatched = null)
         {
             results = results ?? new Dictionary<string, BookmarkEnd>();
