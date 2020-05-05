@@ -25,6 +25,8 @@ namespace StudentSquads.ViewModels
         public IEnumerable<Member> AllPersonSquads { get; set; }
         //Для отображения всех позиций, которые занимала или занимает личность
         public IEnumerable<HeadsOfStudentSquads> AllPersonPositions { get; set; }
+        public  bool IsMember { get; set; }
+        public  bool InOtherSquad { get; set; }
         public string file { get; set; }
     }
 }

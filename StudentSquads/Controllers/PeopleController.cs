@@ -72,19 +72,29 @@ namespace StudentSquads.Controllers
                 Squads = squads,
                 UniversityHeadquarters = unis,
             };
-        
             if (person == null) return View(newmember);
             var personid = person.Id;
             //Тут нужно прописать зависимость
             //Находим все связи с отрядами
             var allsquads = _context.Members.Include(m => m.Squad).Include(m => m.Status)
-                .Where(s => s.PersonId == personid).ToList();
+                .Where(s => (s.PersonId == personid)).ToList();
+            //Если не отказано, не вышел из отряда и нет одобренной заявки ком. составом, 
+            bool ismember = false;
+            var squadsforbotton = allsquads.Where(s => s.ApprovedByCommandStaff != false);
+            if (squadsforbotton.Count() != 0) ismember = true;
+            //Если подал заявку в другой отряд, и она ещё не одобрена, тогда неьзя ещё одну заявку подавать
+            bool inothersquad = false;
+            var othersquad = allsquads.Where(o => (o.FromSquadId!=null)&&(o.DateOfEnter==null)&&(o.DateOfExit==null)&&(o.ApprovedByCommandStaff!=false)).ToList();
+            if (othersquad.Count != 0) inothersquad = true;
+            //Если вышел из организации, то не будут кнопки отображаться
             //Находим все связи с должностями
             var allpositions = _context.HeadsOfStudentSquads.Include(p => p.Squad).Include(p => p.MainPosition)
                 .Where(p => p.PersonId == personid).ToList();
             //Добавляем в модель
             newmember.AllPersonSquads = allsquads;
             newmember.AllPersonPositions = allpositions;
+            newmember.IsMember = ismember;
+            newmember.InOtherSquad = inothersquad;
             return View(newmember);
         }
         public ActionResult PersonForm()

@@ -32,22 +32,21 @@
 			</div>
 		</div>
 		<br>
-		@{ if (Model.AllPersonSquads.Count() == 0)
+		@{ if (!Model.IsMember&&Model.Person.DateOfEnter == null)
 			{
 				<button type="submit" class="btn btn-warning js-apply">Подать заявку на вступление</button>
 			}
-			else if (Model.Person.MembershipNumber != null)
-			{
-				<input type="submit" name="button2" value="Подать заявку на переход" class="btn btn-warning" formaction="@Url.Action("ApplyForTransition", "Members")" />
-				@*<input type="submit" name="button2" value="Выйти из организации" class="btn btn-default" formaction="@Url.Action("ApplyForTransition", "Members")" />*@
-			}
+			else if (Model.Person.MembershipNumber!=null&& !Model.InOtherSquad&& Model.Person.DateOfExit == null)
+			{<input type="submit" name="button2" value="Подать заявку на переход" class="btn btn-warning js-transition" formaction="@Url.Action("ApplyForTransition", "Members")" />}
 		}
 	</div>
 	@Html.AntiForgeryToken()
 }
 }
 @if (Model.Person != null)
-{<button class="btn btn-default js-exclude" data-id="@Model.Person.Id">Выйти из организации</button>
+{
+	if(Model.Person.DateOfEnter!=null&&Model.Person.DateOfExit==null)
+	{<button class="btn btn-default js-exclude" data-id="@Model.Person.Id">Выйти из организации</button>}
 <h3>Ваш отряд</h3>
 if (Model.AllPersonSquads.Count() == 0)
 {<h5>Данных о членстве в отрядах не найдено.</h5>}
@@ -144,6 +143,8 @@ else
 							url: "/api/Members/applyforexit/" + button.attr("data-id"),
 							method: "DELETE",
 							success: function () {
+								button.remove();
+								$(".js-transition").remove();
 								bootbox.alert("Вы вышли из состава организации")
 							}
 
