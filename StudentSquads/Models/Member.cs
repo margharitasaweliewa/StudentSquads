@@ -42,7 +42,6 @@ namespace StudentSquads.Models
         public Person Person { get; set; }
         public Guid PersonId { get; set; }
         public string ApplicationStatus { get; set; }
-        // public Status Status { get; set; }
-        //public int StatusId { get; set; }
+        public string TransitionDocumentPath { get; set; }
     }
 }

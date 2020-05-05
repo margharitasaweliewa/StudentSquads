@@ -89,7 +89,8 @@ namespace StudentSquads.Controllers
         {
             //var personInDb = _context.People.SingleOrDefault(p => p.Id == id);
             //if (personInDb == null) return RedirectToAction("PersonMainForm", "People");
-            EnterDocument(model);
+            //Создаем заявление на вступление
+            CreateDocument(model, 1);
             Member newMember = new Member
             {
                 Id = Guid.NewGuid(),
@@ -275,6 +276,8 @@ namespace StudentSquads.Controllers
             memberInDb.ToSquadId = model.SquadId;
             _context.Members.Add(newMember);
             _context.SaveChanges();
+            //Создаем заявление о переходе
+            CreateDocument(model, 2);
             return RedirectToAction("PersonMainForm", "People");
         }
         [HttpGet]
@@ -523,14 +526,44 @@ namespace StudentSquads.Controllers
             }
             return results;
         }
-        public void EnterDocument(PersonMainFormViewModel model) 
+        public void CreateDocument(PersonMainFormViewModel model, int type) 
         {
+            Squad squad = new Squad();
+            Squad tosquad = new Squad();
+            Member member = new Member();
             Person person = _context.People.SingleOrDefault(p => p.Id == model.Person.Id);
-            Squad squad = _context.Squads.Include(s => s.Direction).SingleOrDefault(s => s.Id == model.SquadId);
+            if (type==1)
+                //Если на вступление, то Squad = это туда, куда вступают
+                squad = _context.Squads.Include(s => s.Direction).SingleOrDefault(s => s.Id == model.SquadId);
+            else
+            {
+                //Если уже есть член организации, то Squad = это то, где этот член уже состоит
+                member = _context.Members.SingleOrDefault(m => (m.PersonId == model.Person.Id) && (m.DateOfEnter != null) && (m.DateOfExit == null));
+                squad = _context.Squads.SingleOrDefault(s => s.Id == member.SquadId);
+                //Если переход, то новый отряд также находим
+                if (member.ToSquadId != null) tosquad = _context.Squads.Include(t => t.UniversityHeadquarter).SingleOrDefault(t => t.Id == member.ToSquadId);
+            }
+            string fileName = "";
+            string newfileName = "";
+            switch (type)
+            {
+                //Заявление на вступление
+                case 1:
+                    fileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление_на_вступление_в_РСО.docx";
+                    break;
+                //Заявление на переход
+                case 2:
+                    fileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление_о_переходе.docx";
+                    break;
+                //Заявление на выход
+                case 3:
+                    fileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление_о_выходе_из_РСО.docx";
+                    break;
+            };
+            //Находим штаб, к которому член организации привязан
             UniversityHeadquarter uni = _context.UniversityHeadquarters.Include(u => u.RegionalHeadquarter).SingleOrDefault(u => u.Id == squad.UniversityHeadquarterId);
-            string fileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление_на_вступление_в_РСО.docx";
-            var wordDocument = WordprocessingDocument.Open(fileName as string, false);
-            string newfileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление_на_вступление_в_РСО_"+person.LastName+".docx";
+            var wordDocument= WordprocessingDocument.Open(fileName as string, false);
+            newfileName = fileName +"_"+ person.FIOinGenetiv + "_" + DateTime.Now.ToString("dd.MM.yyyy") + ".docx";
             wordDocument.Clone(newfileName, true).Close();
             var newwordDocument = WordprocessingDocument.Open(newfileName as string, true);
             var bookMarks = FindBookmarks(newwordDocument.MainDocumentPart.Document);
@@ -595,6 +628,18 @@ namespace StudentSquads.Controllers
                     case "Date":
                         inn = DateTime.Now.ToString("dd.MM.yyyy");
                         break;
+                    case "MembershipNumber":
+                        inn = person.MembershipNumber;
+                        break;
+                    case "FIOInfinitiv":
+                        inn = person.FIO;
+                        break;
+                    case "ToSquad":
+                        inn = tosquad.Name;
+                        break;
+                    case "ToUni":
+                        inn = tosquad.UniversityHeadquarter.University;
+                        break;
                 };
                 //Настраиваем размер шрифта
                 RunProperties runProp = new RunProperties();
@@ -610,7 +655,18 @@ namespace StudentSquads.Controllers
             }
             newwordDocument.MainDocumentPart.Document.Save();
             //Добавляем путь к файлу
-            person.EnterDocumentPath = newfileName;
+            switch (type)
+            {
+                case 1:
+                    person.EnterDocumentPath = newfileName;
+                    break;
+                case 2:
+                    member.TransitionDocumentPath = newfileName;
+                    break;
+                case 3:
+                    person.ExitDocumentPath = newfileName;
+                    break;
+            }
             _context.SaveChanges();
         }
 

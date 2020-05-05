@@ -303,6 +303,10 @@
     <Compile Include="Migrations\202005041434492_AddDirectionPlusChangedPerson.Designer.cs">
       <DependentUpon>202005041434492_AddDirectionPlusChangedPerson.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005051026153_AddTransitionDocumentPath.cs" />
+    <Compile Include="Migrations\202005051026153_AddTransitionDocumentPath.Designer.cs">
+      <DependentUpon>202005051026153_AddTransitionDocumentPath.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
@@ -660,6 +664,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005041434492_AddDirectionPlusChangedPerson.resx">
       <DependentUpon>202005041434492_AddDirectionPlusChangedPerson.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005051026153_AddTransitionDocumentPath.resx">
+      <DependentUpon>202005051026153_AddTransitionDocumentPath.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
