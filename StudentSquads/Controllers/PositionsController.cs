@@ -13,5 +13,9 @@ namespace StudentSquads.Controllers
         {
             return View();
         }
+        public ActionResult PositionForm()
+        {
+            return View();
+        }
     }
 }

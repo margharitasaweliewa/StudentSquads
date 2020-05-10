@@ -25,7 +25,7 @@ namespace StudentSquads.Controllers.API
         //Для обращения к методам Limit и GetHeadOfStudentSquads
         MembersController memberscontr = new MembersController();
         //GET /api/people
-        public List<NewPersonViewModel> GetPeople()
+        public List<NewPersonViewModel> GetPeople(string query=null)
         {
             string uni = "";
             Guid? uniId = new Guid();
@@ -35,8 +35,10 @@ namespace StudentSquads.Controllers.API
             var headofsquads = memberscontr.GetHeadOfStudentSquads();
             //Для найденных members
             List<Member> members = _context.Members.Include(m => m.Person).Include(m => m.Squad).Include(m => m.Status)
-                    .Where(m => (m.DateOfEnter != null) && (m.DateOfExit == null) &&(m.Person.DateOfExit==null))
-                    .OrderBy(m => m.Squad.UniversityHeadquarterId).ToList();
+                    .Where(m => (m.DateOfEnter != null) && (m.DateOfExit == null) && (m.Person.DateOfExit == null)).ToList();
+            if (!String.IsNullOrWhiteSpace(query))
+                members = members.Where(m => m.Person.FIO.Contains(query)).ToList();
+            members = members.OrderBy(m => m.Squad.UniversityHeadquarterId).ToList();
             //Выделяем список только под Id личностей
             var personmembers = members.Select(p => p.PersonId).ToList();
             members = memberscontr.LimitMembers(members, headofsquads);
@@ -92,6 +94,7 @@ namespace StudentSquads.Controllers.API
                     }
                 }
             }
+            
             foreach (var member in members)
             {
                 if (uniId != member.Squad.UniversityHeadquarterId)

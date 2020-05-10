@@ -13,6 +13,8 @@ using System.ComponentModel;
 using Microsoft.AspNet.Identity.EntityFramework;
 using StudentSquads.Controllers;
 using System.Security.Cryptography;
+using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace StudentSquads.Controllers.API
 {
@@ -25,6 +27,7 @@ namespace StudentSquads.Controllers.API
         {
             _context = new ApplicationDbContext();
         }
+        [HttpPut]
         public List<HeadsOfStudentSquads> LimitPositions(List<HeadsOfStudentSquads> allheads, HeadsOfStudentSquads headofsquad)
         {
             List<HeadsOfStudentSquads> heads = new List<HeadsOfStudentSquads>();
@@ -73,6 +76,47 @@ namespace StudentSquads.Controllers.API
 
             }
             return listpositions;
+        }
+        [HttpPost]
+        public IHttpActionResult CreateNewHead(DesignationViewModel head)
+        {
+            if (head.Position == null)
+                return BadRequest("Отсутсвует название должности");
+            //Определяем текущего пользоватея
+            var headofsquads = memberscontr.GetHeadOfStudentSquads();
+            //Определяем, задана ли главная должность
+            int? mainposition = null;
+            if (head.MainPositionId != 0) { mainposition = head.MainPositionId; }
+            //Надо добавить валидацию
+            HeadsOfStudentSquads newhead = new HeadsOfStudentSquads
+            {
+                Id = Guid.NewGuid(),
+                PersonId = head.Id,
+                Position = head.Position,
+                MainPositionId = mainposition,
+                //Если не позволять самим подставлять дату начала работы
+                DateofBegin = DateTime.Now,
+                SquadId = headofsquads.SquadId,
+                UniversityHeadquarterId = headofsquads.UniversityHeadquarterId,
+                RegionalHeadquarterId = headofsquads.RegionalHeadquarterId
+            };
+            if (head.HasRole)
+            {
+                newhead.HasRole = true;
+                string role = "";
+                if (User.IsInRole("SquadManager")) role = "SquadManager";
+                else if (User.IsInRole("UniManager")) role = "UniManager";
+                else if (User.IsInRole("RegionalManager")) role = "RegionalManager";
+                else if (User.IsInRole("DesantManager")) role = "DesantManager";
+                var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(_context));
+                //Находим id пользователя, который связан с личностью
+                var id = _context.People.SingleOrDefault(i => i.Id == head.Id).ApplicationUserId;
+                userManager.AddToRole(id, role);
+            }
+            else newhead.HasRole = false;
+            _context.HeadsOfStudentSquads.Add(newhead);
+            _context.SaveChanges();
+            return Ok();
         }
         }
 }
