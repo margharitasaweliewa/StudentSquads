@@ -28,6 +28,7 @@ namespace StudentSquads.ViewModels
         public bool AlreadyMember{ get; set; }
         [Display(Name ="Ваши документы")]
         public HttpPostedFileBase file { get; set; }
+        public string Uni { get; set; }
 
     }
 }

@@ -103,6 +103,7 @@ namespace StudentSquads.Controllers
             var mainpositions = _context.MainPositions.ToList();
             var viewModel = new NewPersonViewModel
             {
+                Member = new Member(),
                 Squads = squads,
                 MainPositions = mainpositions
             };

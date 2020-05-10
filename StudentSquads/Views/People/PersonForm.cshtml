@@ -112,8 +112,8 @@
 					</label>
 				</div>
 				<div class="form-group" disabled>
-					@Html.LabelFor(m => m.SquadId)
-					@Html.DropDownListFor(m => m.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control" })
+					@Html.LabelFor(m => m.Member.SquadId)
+					@Html.DropDownListFor(m => m.Member.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control" })
 				</div>
 				<div class="form-group">
 					@Html.LabelFor(m => m.Person.MembershipNumber)

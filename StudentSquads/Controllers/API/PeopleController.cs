@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using System.Dynamic;
 using System.ComponentModel;
 using Microsoft.AspNet.Identity.EntityFramework;
+using StudentSquads.Controllers;
 
 namespace StudentSquads.Controllers.API
 {
@@ -21,87 +22,147 @@ namespace StudentSquads.Controllers.API
         {
             _context = new ApplicationDbContext();
         }
+        //Для обращения к методам Limit и GetHeadOfStudentSquads
+        MembersController memberscontr = new MembersController();
         //GET /api/people
         public List<NewPersonViewModel> GetPeople()
         {
-            string id = User.Identity.GetUserId();
-            var personid = _context.People.SingleOrDefault(u => u.ApplicationUserId == id).Id;
-            //Если у пользователя роль "Руководитель отряда", тогда находим, какого отряда он сейчас является руководителем
-            if (User.IsInRole("SquadManager"))
+            string uni = "";
+            Guid? uniId = new Guid();
+            //Для формирования списка
+            List<NewPersonViewModel> listofmembers = new List<NewPersonViewModel>();
+            //Находим руководящую позицию пользователя
+            var headofsquads = memberscontr.GetHeadOfStudentSquads();
+            //Для найденных members
+            List<Member> members = _context.Members.Include(m => m.Person).Include(m => m.Squad).Include(m => m.Status)
+                    .Where(m => (m.DateOfEnter != null) && (m.DateOfExit == null) &&(m.Person.DateOfExit==null))
+                    .OrderBy(m => m.Squad.UniversityHeadquarterId).ToList();
+            //Выделяем список только под Id личностей
+            var personmembers = members.Select(p => p.PersonId).ToList();
+            members = memberscontr.LimitMembers(members, headofsquads);
+            if (User.IsInRole("UniManager"))
             {
-                //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также дата окончания должности не равна null
-                var headofsquad = _context.HeadsOfStudentSquads.SingleOrDefault(h => (h.PersonId == personid) && (h.DateofEnd == null));
-                ////Но вообще у пользователя, который не является руководителем, даже шанса не должно быть использовать этот запрос
-                if (headofsquad == null)
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
-                var squadId = headofsquad.SquadId;
-                dynamic model = new ExpandoObject();
-                //Тут нужно получить запись (Person+(Member+Squad+Status)*необязательно)
-                var query = _context.People.Join(_context.Members.Include(m => m.Squad).Include(m => m.Status),
-                    p => p.Id,
-                    m => m.PersonId,
-                    (p, m) => new
-                    {
-                        p.Id,
-                        //Выход из организации                     
-                        p.DateOfExit,
-                        p.FIO,
-                        p.DateofBirth,
-                        p.PhoneNumber,
-                        p.MembershipNumber,
-                        SquadId = m.Squad.Id,
-                        SquadName = (m == null ? String.Empty : m.Squad.Name),
-                        StatusName = (m == null ? String.Empty : m.Status.Name),
-                        //Выход из отряда
-                    })
-                    //Только те, которые не вышли из отряда
-                    .Where(m => (m.DateOfExit == null) && (m.SquadId == squadId))
-                    .OrderBy(m => m.SquadName)
-                    .ThenBy(p => p.FIO);
-                List<ExpandoObject> joinData = new List<ExpandoObject>();
-                //Сначала обрабатываем ExpandoObject
-                foreach (var item in query)
+                //Найдем всех руководителей штаба
+                var allheads = _context.HeadsOfStudentSquads.Include(h => h.Person).Include(h => h.UniversityHeadquarter)
+                    .Where(h => h.UniversityHeadquarterId==headofsquads.UniversityHeadquarterId).ToList();
+                //Формируем список, если PersonId совпадают, оставляем информацию о принадлежности отряду
+                foreach (var member in allheads)
                 {
-                    IDictionary<string, object> itemExpando = new ExpandoObject();
-                    foreach (PropertyDescriptor property
-                             in
-                             TypeDescriptor.GetProperties(item.GetType()))
+                    //Если человек в обоих списках, то не добавляем
+                    if (!personmembers.Exists(x => x.Equals(member.PersonId)))
                     {
-                        itemExpando.Add(property.Name, property.GetValue(item));
+                        NewPersonViewModel newmember = new NewPersonViewModel
+                        {
+                            Id = member.Person.Id,
+                            FIO = member.Person.FIO,
+                            DateofBirth = member.Person.DateofBirth.ToString("dd.MM.yyyy"),
+                            PhoneNumber = member.Person.PhoneNumber,
+                            MembershipNumber = member.Person.MembershipNumber,
+                            Uni = headofsquads.UniversityHeadquarter.University
+                        };
+                        listofmembers.Add(newmember);
                     }
-                    joinData.Add(itemExpando as ExpandoObject);
-                    model.JoinData = joinData;
                 }
-                List<NewPersonViewModel> listofmembers = new List<NewPersonViewModel>();
-                //Затем переводим ExpandoObject в обычный класс
-                //var squads = _context.Squads.ToList();
-                //var mainpositions = _context.MainPositions.ToList();
-                foreach (var member in model.JoinData)
-                {
-                    NewPersonViewModel newmember = new NewPersonViewModel
-                    {
-                        //Squads = squads,
-                        //MainPositions = mainpositions,
-                        Id = member.Id,
-                        SquadId = member.SquadId,
-                        FIO = member.FIO,
-                        DateofBirth = member.DateofBirth.ToString("dd.MM.yyyy"),
-                        PhoneNumber = member.PhoneNumber,
-                        MembershipNumber = member.MembershipNumber,
-                        SquadName = member.SquadName,
-                        StatusName = member.StatusName
-                        //Member = new Member(),
-                        //HeadsOfStudentSquads = new HeadsOfStudentSquads()
-                    };
-                    Guid Id = member.Id;
-                    newmember.Person = _context.People.SingleOrDefault(p => p.Id == Id);
-                    listofmembers.Add(newmember);
-                }
-                return listofmembers;
-
             }
-            //Тут надо доделать для тех, кт о не является руковожителями отряда
-            else return new List<NewPersonViewModel>();
+            else if (User.IsInRole("RegionalManager"))
+            {
+                //Берем руководителей, исключаем руководителей отрядов, так как они 100% попали в список членов организации
+                var allheads = _context.HeadsOfStudentSquads.Include(h => h.Person).Include(h => h.UniversityHeadquarter)
+                    .Where(h => h.SquadId==null).ToList();
+                foreach (var member in allheads)
+                {
+                    //Если человек в обоих списках, то не добавляем
+                    if (!personmembers.Exists(x => x.Equals(member.PersonId)))
+                    {
+                        //Если руководитель штаба, то находим название штаба
+                        if (member.UniversityHeadquarterId != null) 
+                        {
+                            uni = _context.UniversityHeadquarters.SingleOrDefault(u => u.Id == member.UniversityHeadquarterId).University;
+                        };
+                        NewPersonViewModel newmember = new NewPersonViewModel
+                        {
+                            Id = member.Person.Id,
+                            FIO = member.Person.FIO,
+                            DateofBirth = member.Person.DateofBirth.ToString("dd.MM.yyyy"),
+                            PhoneNumber = member.Person.PhoneNumber,
+                            MembershipNumber = member.Person.MembershipNumber,
+                            Uni = uni,
+                        };
+                        listofmembers.Add(newmember);
+                    }
+                }
+            }
+            foreach (var member in members)
+            {
+                if (uniId != member.Squad.UniversityHeadquarterId)
+                {
+                    uniId = member.Squad.UniversityHeadquarterId;
+                    uni = _context.UniversityHeadquarters.SingleOrDefault(u => u.Id == member.Squad.UniversityHeadquarterId).University; 
+                }
+                NewPersonViewModel newmember = new NewPersonViewModel
+                    {
+                        Id = member.Person.Id,
+                        FIO = member.Person.FIO,
+                        DateofBirth = member.Person.DateofBirth.ToString("dd.MM.yyyy"),
+                        PhoneNumber = member.Person.PhoneNumber,
+                        MembershipNumber = member.Person.MembershipNumber,
+                        SquadId = member.Squad.Id,
+                        SquadName = member.Squad.Name,
+                        StatusName = (member.StatusId == null ? String.Empty : member.Status.Name),
+                        Uni = uni
+                    };
+                    listofmembers.Add(newmember);
+            }
+            //dynamic model = new ExpandoObject();
+            //var query = members.Join(_context.UniversityHeadquarters,
+            //    m => m.Squad.UniversityHeadquarterId,
+            //    u => u.Id,
+            //    (m, u) => new
+            //    {
+            //        m.Person.Id,
+            //        m.Person.FIO,
+            //        m.Person.DateofBirth,
+            //        m.Person.PhoneNumber,
+            //        m.Person.MembershipNumber,
+            //        SquadId = m.Squad.Id,
+            //        SquadName = m.Squad.Name,
+            //        StatusName = (m.Status == null ? String.Empty : m.Status.Name),
+            //        //Выход из отряда
+            //    })
+            //    //Только те, которые не вышли из отряда
+            //    .OrderBy(m => m.SquadName)
+            //    .ThenBy(p => p.FIO);
+            //List<ExpandoObject> joinData = new List<ExpandoObject>();
+            ////Сначала обрабатываем ExpandoObject
+            //foreach (var item in query)
+            //{
+            //    IDictionary<string, object> itemExpando = new ExpandoObject();
+            //    foreach (PropertyDescriptor property
+            //             in
+            //             TypeDescriptor.GetProperties(item.GetType()))
+            //    {
+            //        itemExpando.Add(property.Name, property.GetValue(item));
+            //    }
+            //    joinData.Add(itemExpando as ExpandoObject);
+            //    model.JoinData = joinData;
+            //}
+            ////Затем переводим ExpandoObject в обычный класс
+            //foreach (var member in model.JoinData)
+            //{
+            //    NewPersonViewModel newmember = new NewPersonViewModel
+            //    {
+            //        Id = member.Id,
+            //        SquadId = member.SquadId,
+            //        FIO = member.FIO,
+            //        DateofBirth = member.DateofBirth.ToString("dd.MM.yyyy"),
+            //        PhoneNumber = member.PhoneNumber,
+            //        MembershipNumber = member.MembershipNumber,
+            //        SquadName = member.SquadName,
+            //        StatusName = member.StatusName
+            //    };
+            //    listofmembers.Add(newmember);
+            //}
+            return listofmembers;
         }
         // GET /api/people/id
         public Person GetPerson(Guid id)
