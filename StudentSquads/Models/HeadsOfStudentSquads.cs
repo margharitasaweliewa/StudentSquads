@@ -33,5 +33,6 @@ namespace StudentSquads.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
         public DateTime? DateofEnd { get; set; }
+        public bool? HasRole { get; set; }
     }
 }

@@ -192,10 +192,12 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\API\MembersController.cs" />
     <Compile Include="Controllers\API\PeopleController.cs" />
+    <Compile Include="Controllers\API\PositionsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\PeopleController.cs" />
+    <Compile Include="Controllers\PositionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -307,6 +309,10 @@
     <Compile Include="Migrations\202005051026153_AddTransitionDocumentPath.Designer.cs">
       <DependentUpon>202005051026153_AddTransitionDocumentPath.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005101113100_AddHasRoletoHeads.cs" />
+    <Compile Include="Migrations\202005101113100_AddHasRoletoHeads.Designer.cs">
+      <DependentUpon>202005101113100_AddHasRoletoHeads.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
@@ -324,6 +330,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\ApplicationsListViewModel.cs" />
+    <Compile Include="ViewModels\DesignationViewModel.cs" />
     <Compile Include="ViewModels\NewPersonViewModel.cs" />
     <Compile Include="ViewModels\PersonMainFormViewModel.cs" />
   </ItemGroup>
@@ -568,6 +575,8 @@
     <Content Include="Views\Members\EnterApplications.cshtml" />
     <Content Include="Views\Members\TransitionApplications.cshtml" />
     <Content Include="Views\Members\ExitApplications.cshtml" />
+    <Content Include="Views\Positions\PositionForm.cshtml" />
+    <Content Include="Views\Positions\AllPositions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -667,6 +676,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005051026153_AddTransitionDocumentPath.resx">
       <DependentUpon>202005051026153_AddTransitionDocumentPath.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005101113100_AddHasRoletoHeads.resx">
+      <DependentUpon>202005101113100_AddHasRoletoHeads.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

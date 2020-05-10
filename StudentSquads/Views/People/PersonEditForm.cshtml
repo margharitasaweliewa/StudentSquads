@@ -11,7 +11,7 @@
 }
 @using (Html.BeginForm("ChangeStatus", "People"))
 {
-	if (User.IsInRole("SquadManager") && Model.Member.DateOfExit== null)
+	if (User.IsInRole("SquadManager") && Model.Person.DateOfExit== null)
 	{
 		<div class="form-group" disabled>
 			@Html.LabelFor(m => m.Member.Status.Id)
