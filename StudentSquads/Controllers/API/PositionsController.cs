@@ -80,8 +80,6 @@ namespace StudentSquads.Controllers.API
         [HttpPost]
         public IHttpActionResult CreateNewHead(DesignationViewModel head)
         {
-            if (head.Position == null)
-                return BadRequest("Отсутсвует название должности");
             //Определяем текущего пользоватея
             var headofsquads = memberscontr.GetHeadOfStudentSquads();
             //Определяем, задана ли главная должность

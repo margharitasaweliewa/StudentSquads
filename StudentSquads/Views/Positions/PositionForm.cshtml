@@ -5,74 +5,88 @@
 
 <h2>Назначение на должность</h2>
 <form id="newPosition">
-	<button class="btn btn-warning" id="save">Сохранить</button>
+	<button class="btn btn-warning" type="submit">Сохранить</button>
 	<div class="form-group">
 		<label>Член организации</label>
 		<div class="tt-container">
-			<input id="person" type="text" class="form-control" name="" value="" />
+			<input id="person" data-rule-validPerson="true" required type="text" class="form-control" name="" value="" />
 		</div>
 	</div>
 	<div class="form-group">
 		@Html.LabelFor(m => m.Position)
-		@Html.TextBoxFor(m => m.Position, new { @class = "form-control", @id ="position" })
+		@Html.TextBoxFor(m => m.Position, new { @id = "position", @class = "form-control" })
 	</div>
 	<div class="checkbox">
 		<label>
-			@Html.CheckBoxFor(m => m.HasRole, new {@id ="hasrole" }) Предоставить доступ к управленческим функциям?
+			@Html.CheckBoxFor(m => m.HasRole, new { @id = "hasrole" }) Предоставить доступ к управленческим функциям?
 		</label>
 	</div>
-
 </form>
 @section scripts
 {
-<script>
-	$(document).ready(function () {
+	@Scripts.Render("~/bundles/jqueryval")
+	<script>
+		$(document).ready(function () {
 
-		var vm = {};
+			var vm = {};
 
-	var people = new Bloodhound({
-	datumTokenizer: Bloodhound.tokenizers.obj.whitespace('FIO'),
-	queryTokenizer: Bloodhound.tokenizers.whitespace,
-	remote: {
-	url: '/api/people?query=%QUERY',
-	wildcard: '%QUERY'
-	}
-	});
+			var people = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('FIO'),
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				remote: {
+					url: '/api/people?query=%QUERY',
+					wildcard: '%QUERY'
+				}
+			});
 
-		$('#person').typeahead({
-			minLength: 3,
-			highlight: true
-		}, {
-	name: 'people',
-	display: 'FIO',
-	source: people
-		}).on("typeahead:select", function (e, person)
-		{
-			vm.Id = person.Id;
-		});
-		$("#save").on("click", function () {
-			vm.Position = document.getElementById('position').value;
-			vm.HasRole = document.getElementById('hasrole').value;
-		});
-		//e-event e.preventDefault чтобы не через HTML форму
-		$("#newPosition").submit(function (e)
-		{
-			e.preventDefault();
-
-			$.ajax({
-				url: "/api/Positions",
-				method: "post",
-				data: vm
+			$('#person').typeahead({
+				minLength: 3,
+				highlight: true
+			}, {
+				name: 'people',
+				display: 'FIO',
+				source: people
+			}).on("typeahead:select", function (e, person) {
+				vm.Id = person.Id;
+			});
+			//$("#save").on("click", function () {
+			//	vm.Position = document.getElementById('position').value;
+			//	vm.HasRole = document.getElementById('hasrole').value;
+			//});
+			$.validator.addMethod("validPerson", function () {
+				return vm.Id && vm.Id != null;
+			}, "Пожалуйста, выберите члена организации");
+			//e-event e.preventDefault чтобы не через HTML форму
+			//$("#newPosition").validate({
+			//	submitHandler: function () {
+			//		vm.Position = document.getElementById('position').value;
+			//		vm.HasRole = document.getElementById('hasrole').value;
+			//	}
+			//});
+			$("#newPosition").submit(function (e) {
+				e.preventDefault();
+			    vm.Position = document.getElementById('position').value;
+				vm.HasRole = document.getElementById('hasrole').value;
+				if ($("#newPosition").valid()) {
+					$.ajax({
+						url: "/api/Positions",
+						method: "post",
+						data: vm
+					})
+						.done(function () {
+							$("#position").val("");
+							$("#person").typeahead("val", "");
+							$("#hasrole").prop('checked', false);
+							toastr.success("Успешно сохранено");
+						})
+						.fail(function () {
+							toastr.error("Произошла ошибка сохранения");
+						});
+				}
 			})
-				.done(function () {
-					toastr.success("Успешно сохранено");
-				})
-				.fail(function () {
-					toastr.error("Произошла ошибка сохранения");
-				});
-		})
-	});
-</script>
+
+		});
+	</script>
 }
 
 
