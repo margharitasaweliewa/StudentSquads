@@ -65,9 +65,10 @@
 				data: vm
 			})
 				.done(function () {
-					console.log("Успешно сохранено");
+					toastr.success("Успешно сохранено");
 				})
 				.fail(function () {
+					toastr.error("Произошла ошибка сохранения");
 				});
 		})
 	});
