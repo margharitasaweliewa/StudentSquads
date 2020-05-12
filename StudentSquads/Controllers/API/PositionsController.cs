@@ -65,7 +65,8 @@ namespace StudentSquads.Controllers.API
                 else hasrole = "Нет";
                 DesignationViewModel head = new DesignationViewModel
                 {
-                    Id = position.Person.Id,
+                    HeadofStudentSquadsId = position.Id,
+                    PersonId = position.Person.Id,
                     FIO = position.Person.FIO,
                     Position = position.Position,
                     DateofBegin = position.DateofBegin?.ToString("dd.MM.yyyy"),
@@ -82,37 +83,62 @@ namespace StudentSquads.Controllers.API
         {
             //Определяем текущего пользоватея
             var headofsquads = memberscontr.GetHeadOfStudentSquads();
-            //Определяем, задана ли главная должность
-            int? mainposition = null;
-            if (head.MainPositionId != 0) { mainposition = head.MainPositionId; }
-            //Надо добавить валидацию
-            HeadsOfStudentSquads newhead = new HeadsOfStudentSquads
+            bool changerole = false;
+            //Объект "роль"
+            HeadsOfStudentSquads positionInDb = new HeadsOfStudentSquads();
+            //При редактировании находим в БД и редактируем данные
+            if (head.HeadofStudentSquadsId != Guid.Empty)
             {
-                Id = Guid.NewGuid(),
-                PersonId = head.Id,
-                Position = head.Position,
-                MainPositionId = mainposition,
+                positionInDb = _context.HeadsOfStudentSquads.Single(p => p.Id == head.HeadofStudentSquadsId);
+                //Изменяю поля
+                positionInDb.PersonId = head.PersonId;
+                positionInDb.Position = head.Position;
+                //Если понадобится редактировать даты, то необходимо сделать их типом дата
+                //Если изменили ролевую доступность, тогда добавляем/удаляем роль
+                if (head.HasRole != positionInDb.HasRole) changerole = true;
+            }
+            //При создании нового подставляем полученные параметры
+            else 
+            {
+                //Определяем, задана ли главная должность
+                int? mainposition = null;
+                if (head.MainPositionId != 0) { mainposition = head.MainPositionId; }
+                //Надо добавить валидацию
+                positionInDb.Id = Guid.NewGuid();
+                positionInDb.PersonId = head.PersonId;
+                positionInDb.Position = head.Position;
+                positionInDb.MainPositionId = mainposition;
                 //Если не позволять самим подставлять дату начала работы
-                DateofBegin = DateTime.Now,
-                SquadId = headofsquads.SquadId,
-                UniversityHeadquarterId = headofsquads.UniversityHeadquarterId,
-                RegionalHeadquarterId = headofsquads.RegionalHeadquarterId
-            };
-            if (head.HasRole)
+                positionInDb.DateofBegin = DateTime.Now;
+                positionInDb.SquadId = headofsquads.SquadId;
+                positionInDb.UniversityHeadquarterId = headofsquads.UniversityHeadquarterId;
+                positionInDb.RegionalHeadquarterId = headofsquads.RegionalHeadquarterId;
+            }
+            //При создании или если изменилась роль, работаем с ролями
+            if (changerole || head.HeadofStudentSquadsId == Guid.Empty)
             {
-                newhead.HasRole = true;
+                var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(_context));
+                //Находим id пользователя, который связан с личностью
+                var id = _context.People.SingleOrDefault(i => i.Id == head.PersonId).ApplicationUserId;
                 string role = "";
                 if (User.IsInRole("SquadManager")) role = "SquadManager";
                 else if (User.IsInRole("UniManager")) role = "UniManager";
                 else if (User.IsInRole("RegionalManager")) role = "RegionalManager";
                 else if (User.IsInRole("DesantManager")) role = "DesantManager";
-                var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(_context));
-                //Находим id пользователя, который связан с личностью
-                var id = _context.People.SingleOrDefault(i => i.Id == head.Id).ApplicationUserId;
-                userManager.AddToRole(id, role);
+                if (head.HasRole)
+                {
+                    positionInDb.HasRole = true;
+                    userManager.AddToRole(id, role);
+                }
+                else 
+                {
+                    positionInDb.HasRole = false;
+                    userManager.RemoveFromRole(id, role);
+                }
             }
-            else newhead.HasRole = false;
-            _context.HeadsOfStudentSquads.Add(newhead);
+            //Добавляем только, если это был новый пользователя
+            if(head.HeadofStudentSquadsId == Guid.Empty)
+            _context.HeadsOfStudentSquads.Add(positionInDb);
             _context.SaveChanges();
             return Ok();
         }

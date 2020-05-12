@@ -15,6 +15,7 @@
 	<div class="form-group">
 		@Html.LabelFor(m => m.Position)
 		@Html.TextBoxFor(m => m.Position, new { @id = "position", @class = "form-control" })
+		@Html.ValidationMessageFor(m => m.Position)
 	</div>
 	<div class="checkbox">
 		<label>
@@ -47,14 +48,14 @@
 				display: 'FIO',
 				source: people
 			}).on("typeahead:select", function (e, person) {
-				vm.Id = person.Id;
+				vm.PersonId = person.Id;
 			});
 			//$("#save").on("click", function () {
 			//	vm.Position = document.getElementById('position').value;
 			//	vm.HasRole = document.getElementById('hasrole').value;
 			//});
 			$.validator.addMethod("validPerson", function () {
-				return vm.Id && vm.Id != null;
+				return vm.PersonId && vm.PersonId != null;
 			}, "Пожалуйста, выберите члена организации");
 			//e-event e.preventDefault чтобы не через HTML форму
 			//$("#newPosition").validate({

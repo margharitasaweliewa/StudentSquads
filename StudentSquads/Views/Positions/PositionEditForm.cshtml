@@ -1,0 +1,73 @@
+﻿@model StudentSquads.ViewModels.DesignationViewModel
+@{
+	ViewBag.Title = "PositionEditForm";
+}
+
+<h2>Управление должностями</h2>
+<button class="btn btn-warning js-change" data-id="@Model.HeadofStudentSquadsId">Сохранить</button>
+
+@using (Html.BeginForm("Dismiss", "Positions"))
+{
+	<button type="submit" class="btn btn-default">Снять с должности</button>
+	<input type="submit" name="button2" value="Удалить" class="btn btn-default" formaction="@Url.Action("Delete", "Positions")" />
+	@Html.HiddenFor(m => m.HeadofStudentSquadsId)
+	@Html.HiddenFor(m => m.PersonId, new { @id = "personId" })
+	<div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.FIO)
+			@Html.TextBoxFor(m => m.FIO, new { @id = "person", @class = "form-control", @readonly = "true" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Position)
+			@Html.TextBoxFor(m => m.Position, new { @id = "position", @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.DateofBegin)
+			@Html.TextBoxFor(m => m.DateofBegin, new { @class = "form-control", @readonly = "true" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.DateofEnd)
+			@Html.TextBoxFor(m => m.DateofEnd, new { @class = "form-control", @readonly = "true" })
+		</div>
+		<div class="checkbox">
+			<label>
+				@Html.CheckBoxFor(m => m.HasRole, new { @id = "hasrole" }) Предоставить доступ к управленческим функциям?
+			</label>
+		</div>
+
+	</div>
+
+}
+@section scripts
+{
+	@Scripts.Render("~/bundles/jqueryval")
+	<script>
+		$(document).ready(function () {
+			$(".js-change").on("click", function () {
+				var button = $(this);
+				var vm = {};
+				vm.HeadofStudentSquadsId = button.attr("data-id");
+				vm.PersonId = document.getElementById('personId').value;
+				vm.Position = document.getElementById('position').value;
+				vm.HasRole = document.getElementById('hasrole').value;
+				$.ajax({
+					url: "/api/Positions",
+					method: "post",
+					data: vm
+				})
+					.done(function () {
+						toastr.success("Успешно сохранено");
+					})
+					.fail(function () {
+						toastr.error("Произошла ошибка сохранения");
+					});
+
+			});
+		});
+	</script>
+}
+
+
+
+
+

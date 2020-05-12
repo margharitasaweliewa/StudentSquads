@@ -31,14 +31,16 @@
 				},
 				columns: [
 					{
-						data: "Id",
+						data: "HeadofStudentSquadsId",
 						render: function (data) {
-						return "<input id="+data+" type=checkbox>"}
+							return "<a href ='/positions/edit/" +data + "'>" +"Открыть"+ "</a>";
+						}
+
 					},
 					{
 						data: "FIO",
 						render: function (data, type, person) {
-							return "<a href ='/people/edit/" + person.Id + "'>" + person.FIO + "</a>";
+							return "<a href ='/people/edit/" + person.PersonId + "'>" + person.FIO + "</a>";
 						}
 					},
 					{

@@ -313,6 +313,10 @@
     <Compile Include="Migrations\202005101113100_AddHasRoletoHeads.Designer.cs">
       <DependentUpon>202005101113100_AddHasRoletoHeads.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005111650189_MadeHasRoleObligatory.cs" />
+    <Compile Include="Migrations\202005111650189_MadeHasRoleObligatory.Designer.cs">
+      <DependentUpon>202005111650189_MadeHasRoleObligatory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
@@ -590,6 +594,7 @@
     <Content Include="Views\Members\ExitApplications.cshtml" />
     <Content Include="Views\Positions\PositionForm.cshtml" />
     <Content Include="Views\Positions\AllPositions.cshtml" />
+    <Content Include="Views\Positions\PositionEditForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -692,6 +697,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005101113100_AddHasRoletoHeads.resx">
       <DependentUpon>202005101113100_AddHasRoletoHeads.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005111650189_MadeHasRoleObligatory.resx">
+      <DependentUpon>202005111650189_MadeHasRoleObligatory.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
