@@ -1,0 +1,87 @@
+﻿@model StudentSquads.ViewModels.WorkViewModel
+
+@{
+	ViewBag.Title = "WorkForm";
+}
+
+<h2>Составление выездного списка</h2>
+<form id="newWork">
+	<button class="btn btn-warning" type="submit">Сохранить</button>
+
+	<div class="form-group">
+		<label>Работодатель</label>
+		<div class="tt-container">
+			<input id="employer" type="text" class="form-control" name="" value="" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label>Член отряда</label>
+		<div class="tt-container">
+			<input id="member" type="text" class="form-control" name="" value="" />
+		</div>
+	</div>
+
+	<div class="checkbox">
+		<label>
+			@Html.CheckBoxFor(m => m.Alternative, new { @id = "alternative" }) Предоставить доступ к управленческим функциям?
+		</label>
+	</div>
+</form>
+@section scripts
+{
+	@Scripts.Render("~/bundles/jqueryval")
+	<script>
+		$(document).ready(function () {
+
+			var vm = {};
+
+			var members = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('FIO'),
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				remote: {
+					url: '/api/members?query=%QUERY',
+					wildcard: '%QUERY'
+				}
+			});
+
+			$('#member').typeahead({
+				minLength: 3,
+				highlight: true
+			}, {
+				name: 'members',
+				display: 'FIO',
+				source: members
+			}).on("typeahead:select", function (e, member) {
+				vm.MemberId = member.Id;
+			});
+			//$.validator.addMethod("validPerson", function () {
+			//	return vm.PersonId && vm.PersonId != null;
+			//}, "Пожалуйста, выберите члена организации");
+			$("#newWork").submit(function (e) {
+				e.preventDefault();
+			 //   vm.Position = document.getElementById('position').value;
+				//vm.HasRole = document.getElementById('hasrole').value;
+				if ($("#newWork").valid()) {
+					$.ajax({
+						url: "/api/Works",
+						method: "post",
+						data: vm
+					})
+						.done(function () {
+							//$("#position").val("");
+							//$("#person").typeahead("val", "");
+							//$("#hasrole").prop('checked', false);
+							toastr.success("Успешно сохранено");
+						})
+						.fail(function () {
+							toastr.error("Произошла ошибка сохранения");
+						});
+				}
+			})
+
+		});
+	</script>
+}
+
+

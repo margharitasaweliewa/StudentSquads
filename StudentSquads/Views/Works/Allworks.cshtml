@@ -1,0 +1,65 @@
+﻿@model List<StudentSquads.ViewModels.WorkViewModel>
+@{
+	ViewBag.Title = "AllWorks";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Информация по трудовому семестру</h2>
+@using (Html.BeginForm("Approve", "Works"))
+{
+	if (User.IsInRole("SquadManager"))
+	{
+		<input type="submit" name="button1" value="Создать" class="btn btn-warning" formaction="@Url.Action("WorkForm", "Works")" />
+	}
+	if (User.IsInRole("RegionalManager"))
+	{
+		<button type="submit" class="btn btn-warning" id="approve">Засчитать целину</button>
+		<input type="submit" name="button2" value="Вынести выговор" class="btn btn-warning" formaction="@Url.Action("Rebuke", "Works")" />
+	}
+	<table id="enterapplications" class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<th></th>
+				<th>ФИО</th>
+				<th>Отряд</th>
+				<th>Штаб</th>
+				<th>Работодатель</th>
+				<th>Трудовой проект</th>
+				<th>Начало</th>
+				<th>Окончание</th>
+				<th>Альтернатива</th>
+				<th>Засчитана</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (int i = 0; i < Model.Count; i++)
+			{
+				<tr>
+					@Html.HiddenFor(m => m[i].Id)
+					@Html.HiddenFor(m => m[i].PersonId)
+					<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
+					<td>@Model[i].Squad</td>
+					<td>@Model[i].Uni</td>
+					<td>@Model[i].Employer</td>
+					<td>@Model[i].WorkProject</td>
+					<td>@Model[i].DateofBegin</td>
+					<td>@Model[i].DateofEnd</td>
+					<td>@Model[i].AlternativeString</td>
+					<td>@Model[i].Affirmed</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	@Html.AntiForgeryToken()
+}
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			$("#enterapplications").DataTable();
+		});
+	</script>
+}
+
+
+
+

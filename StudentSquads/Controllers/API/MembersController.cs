@@ -21,6 +21,31 @@ namespace StudentSquads.Controllers.API
         {
             _context = new ApplicationDbContext();
         }
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
+        [HttpGet]
+        public List<ApplicationsListViewModel> GetMembers(string query = null)
+        {
+            var headofsquads = GetHeadOfStudentSquads();
+            //Нужно добавить функцию лимит
+            List<ApplicationsListViewModel> listmembers = new List<ApplicationsListViewModel>();
+            var allmembers = _context.Members.Include(m => m.Person).Where(m => (m.DateOfEnter != null) && (m.DateOfExit == null)).ToList();
+            allmembers = LimitMembers(allmembers, headofsquads);
+            var members = allmembers.Where(m => m.Person.FIO.Contains(query)).ToList();
+            foreach (var member in members)
+            {
+                ApplicationsListViewModel newmember = new ApplicationsListViewModel
+                {
+                    Id = member.Id,
+                    FIO = member.Person.FIO
+                };
+                listmembers.Add(newmember);
+            }
+            return listmembers;
+        }
+        [HttpPut]
         public HeadsOfStudentSquads GetHeadOfStudentSquads()
         {
             string id = User.Identity.GetUserId();
@@ -32,6 +57,7 @@ namespace StudentSquads.Controllers.API
             //Если активной записи о руководстве не найдено, перенаправляем на главную страницу
             return headofsquad;
         }
+        [HttpPut]
         public List<Member> LimitMembers(List<Member> allmembers, HeadsOfStudentSquads headofsquad)
         {
             List<Member> members = new List<Member>();

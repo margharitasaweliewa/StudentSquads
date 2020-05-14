@@ -36,7 +36,9 @@ namespace StudentSquads.Models
         public DbSet<RegionalHeadquarter> RegionalHeadquarters { get; set; }
         public DbSet<UniversityHeadquarter> UniversityHeadquarters { get; set; }
         public DbSet<Direction> Directions { get; set; }
-
+        public DbSet<Employer> Employers { get; set; }
+        public DbSet<WorkProject> WorkProjects { get; set; }
+        public DbSet<Work> Works { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

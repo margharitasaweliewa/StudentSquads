@@ -50,20 +50,9 @@
 			}).on("typeahead:select", function (e, person) {
 				vm.PersonId = person.Id;
 			});
-			//$("#save").on("click", function () {
-			//	vm.Position = document.getElementById('position').value;
-			//	vm.HasRole = document.getElementById('hasrole').value;
-			//});
 			$.validator.addMethod("validPerson", function () {
 				return vm.PersonId && vm.PersonId != null;
 			}, "Пожалуйста, выберите члена организации");
-			//e-event e.preventDefault чтобы не через HTML форму
-			//$("#newPosition").validate({
-			//	submitHandler: function () {
-			//		vm.Position = document.getElementById('position').value;
-			//		vm.HasRole = document.getElementById('hasrole').value;
-			//	}
-			//});
 			$("#newPosition").submit(function (e) {
 				e.preventDefault();
 			    vm.Position = document.getElementById('position').value;

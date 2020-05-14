@@ -193,11 +193,13 @@
     <Compile Include="Controllers\API\MembersController.cs" />
     <Compile Include="Controllers\API\PeopleController.cs" />
     <Compile Include="Controllers\API\PositionsController.cs" />
+    <Compile Include="Controllers\API\WorksController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\PeopleController.cs" />
     <Compile Include="Controllers\PositionsController.cs" />
+    <Compile Include="Controllers\WorksController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -317,9 +319,14 @@
     <Compile Include="Migrations\202005111650189_MadeHasRoleObligatory.Designer.cs">
       <DependentUpon>202005111650189_MadeHasRoleObligatory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005121454371_AddTablesForWork.cs" />
+    <Compile Include="Migrations\202005121454371_AddTablesForWork.Designer.cs">
+      <DependentUpon>202005121454371_AddTablesForWork.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
+    <Compile Include="Models\Employer.cs" />
     <Compile Include="Models\FeePayment.cs" />
     <Compile Include="Models\HeadsOfStudentSquads.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -331,12 +338,15 @@
     <Compile Include="Models\Squad.cs" />
     <Compile Include="Models\Status.cs" />
     <Compile Include="Models\UniversityHeadquarter.cs" />
+    <Compile Include="Models\Work.cs" />
+    <Compile Include="Models\WorkProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\ApplicationsListViewModel.cs" />
     <Compile Include="ViewModels\DesignationViewModel.cs" />
     <Compile Include="ViewModels\NewPersonViewModel.cs" />
     <Compile Include="ViewModels\PersonMainFormViewModel.cs" />
+    <Compile Include="ViewModels\WorkViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-lumen.css" />
@@ -595,6 +605,9 @@
     <Content Include="Views\Positions\PositionForm.cshtml" />
     <Content Include="Views\Positions\AllPositions.cshtml" />
     <Content Include="Views\Positions\PositionEditForm.cshtml" />
+    <Content Include="Views\Works\AllWorks.cshtml" />
+    <Content Include="Views\Works\WorkForm.cshtml" />
+    <Content Include="Views\Works\WorkEditForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -700,6 +713,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005111650189_MadeHasRoleObligatory.resx">
       <DependentUpon>202005111650189_MadeHasRoleObligatory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005121454371_AddTablesForWork.resx">
+      <DependentUpon>202005121454371_AddTablesForWork.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
