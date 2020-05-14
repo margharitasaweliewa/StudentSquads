@@ -88,8 +88,8 @@ namespace StudentSquads.Controllers
             var headofsquads = GetHeadOfStudentSquads();
             var allworks = _context.Works.Include(w => w.Member).Include(w => w.Employer).Include(w => w.WorkProject)
                 .OrderBy(w => w.Member.SquadId).ToList();
-            //Если нет указания сезона, тогда текущий год
-            if (season == null) allworks = allworks.Where(w => w.Season == DateTime.Now.Year.ToString()).ToList();
+            //Если нет указания сезона, тогда текущий (без указания)
+            if (season == null) allworks = allworks.Where(w => w.Season == null).ToList();
             else allworks = allworks.Where(w => w.Season == season).ToList();
             //Ограничиваем по роли и принадлежности к отряду/штабу
             List<Work> works = LimitWorks(allworks, headofsquads);
@@ -102,8 +102,9 @@ namespace StudentSquads.Controllers
                 if (work.Alternative) alternative = "Да";
                 else alternative = "Нет";
                 //Засчитана целина
-                if (work.Affirmed==true) alternative = "Засчитана";
-                else alternative = "Выговор";
+                if (work.Affirmed==true) affirmed = "Засчитана";
+                else if (work.Affirmed==false)affirmed = "Выговор";
+                else affirmed = "Нет решения";
                 var member = _context.Members
                     .Include(m => m.Person).Include(m => m.Squad).SingleOrDefault(m => m.Id == work.MemberId);
                 WorkViewModel workview = new WorkViewModel
@@ -115,7 +116,7 @@ namespace StudentSquads.Controllers
                     Uni = _context.Squads.Include(u => u.UniversityHeadquarter)
                     .Single(u => u.Id == work.Member.SquadId).UniversityHeadquarter.University,
                     Employer = work.Employer.Name,
-                    WorkProject = work.WorkProject.Name,
+                    WorkProject = work.WorkProject?.Name,
                     DateofBegin = work.DateofBegin,
                     DateofEnd = work.DateofEnd,
                     AlternativeString = alternative,

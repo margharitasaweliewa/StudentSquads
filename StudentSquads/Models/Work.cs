@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using StudentSquads.Models;
@@ -12,7 +13,9 @@ namespace StudentSquads.Models
         public bool? Affirmed { get; set; }
         public string Rebuke { get; set; }
         public int? DUT { get; set; }
+        [DataType(DataType.Date)]
         public DateTime DateofBegin { get; set; }
+        [DataType(DataType.Date)]
         public DateTime DateofEnd { get; set; }
         public bool Alternative { get; set; }
         public string AlternativeReason{ get; set; }

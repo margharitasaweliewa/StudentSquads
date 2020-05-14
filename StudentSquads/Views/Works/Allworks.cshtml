@@ -33,19 +33,20 @@
 		<tbody>
 			@for (int i = 0; i < Model.Count; i++)
 			{
-				<tr>
-					@Html.HiddenFor(m => m[i].Id)
-					@Html.HiddenFor(m => m[i].PersonId)
-					<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
-					<td>@Model[i].Squad</td>
-					<td>@Model[i].Uni</td>
-					<td>@Model[i].Employer</td>
-					<td>@Model[i].WorkProject</td>
-					<td>@Model[i].DateofBegin</td>
-					<td>@Model[i].DateofEnd</td>
-					<td>@Model[i].AlternativeString</td>
-					<td>@Model[i].Affirmed</td>
-				</tr>
+			<tr>
+				@Html.HiddenFor(m => m[i].Id)
+				@Html.HiddenFor(m => m[i].PersonId)
+				<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
+				<td>@Model[i].FIO</td>
+				<td>@Model[i].Squad</td>
+				<td>@Model[i].Uni</td>
+				<td>@Model[i].Employer</td>
+				<td>@Model[i].WorkProject</td>
+				<td>@Model[i].DateofBegin.ToString("dd.MM.yyyy")</td>
+				<td>@Model[i].DateofEnd.ToString("dd.MM.yyyy")</td>
+				<td align="center">@Model[i].AlternativeString</td>
+				<td>@Model[i].Affirmed</td>
+			</tr>
 			}
 		</tbody>
 	</table>

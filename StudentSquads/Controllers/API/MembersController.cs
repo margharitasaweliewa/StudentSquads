@@ -32,8 +32,8 @@ namespace StudentSquads.Controllers.API
             //Нужно добавить функцию лимит
             List<ApplicationsListViewModel> listmembers = new List<ApplicationsListViewModel>();
             var allmembers = _context.Members.Include(m => m.Person).Where(m => (m.DateOfEnter != null) && (m.DateOfExit == null)).ToList();
-            allmembers = LimitMembers(allmembers, headofsquads);
-            var members = allmembers.Where(m => m.Person.FIO.Contains(query)).ToList();
+            var members = LimitMembers(allmembers, headofsquads);
+            if (query!=null) members = allmembers.Where(m => m.Person.FIO.Contains(query)).ToList();
             foreach (var member in members)
             {
                 ApplicationsListViewModel newmember = new ApplicationsListViewModel

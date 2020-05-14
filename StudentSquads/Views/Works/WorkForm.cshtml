@@ -14,17 +14,48 @@
 			<input id="employer" type="text" class="form-control" name="" value="" />
 		</div>
 	</div>
-
+	<div class="form-group">
+		<label>Трудовой проект</label>
+		<div class="tt-container">
+			<input id="workproject" type="text" class="form-control" name="" value="" />
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Дата начала работы</label>
+		<div class="tt-container">
+			<input id="dateofbegin" type="date" class="form-control">
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Дата окончания работы</label>
+		<div class="tt-container">
+			<input id="dateofend" type="date" class="form-control">
+		</div>
+	</div>
+	@*<div class="form-group">
+		@Html.LabelFor(m => m.DateofBegin)
+		@Html.TextBoxFor(m => m.DateofBegin, "{0:dd.MM.yyyy}", new { @id = "dateofbegin", @class = "form-control" })
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(m => m.DateofEnd)
+		<div class="tt-container">
+			@Html.TextBoxFor(m => m.DateofEnd, "{0:dd.MM.yyyy}", new { @id = "dateofend", @class = "form-control" })
+		</div>
+	</div>*@
 	<div class="form-group">
 		<label>Член отряда</label>
 		<div class="tt-container">
 			<input id="member" type="text" class="form-control" name="" value="" />
 		</div>
 	</div>
-
+	<div class="row">
+		<div class="col-md-4 col-sm-4">
+			<ul id="members" class="list-group"></ul>
+		</div>
+	</div>
 	<div class="checkbox">
 		<label>
-			@Html.CheckBoxFor(m => m.Alternative, new { @id = "alternative" }) Предоставить доступ к управленческим функциям?
+			@Html.CheckBoxFor(m => m.Alternative, new { @id = "alternative" }) Альтернативная целина?
 		</label>
 	</div>
 </form>
@@ -34,7 +65,7 @@
 	<script>
 		$(document).ready(function () {
 
-			var vm = {};
+			var vm = { MembersIds: []};
 
 			var members = new Bloodhound({
 				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('FIO'),
@@ -53,14 +84,40 @@
 				display: 'FIO',
 				source: members
 			}).on("typeahead:select", function (e, member) {
-				vm.MemberId = member.Id;
+				//Добавляем запись в список
+				$("#members").append("<li class='list-group-item'>" + member.FIO + "</li>");
+				//Очищаем значение списка
+				$("#member").typeahead("val", "");
+				//Добавляем Id в список Members
+				vm.MembersIds.push(member.Id);
+			});
+			var employers = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('Name'),
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				remote: {
+					url: '/api/Employers?query=%QUERY',
+					wildcard: '%QUERY'
+				}
+			});
+
+			$('#employer').typeahead({
+				minLength: 3,
+				highlight: true
+			}, {
+				name: 'employers',
+				display: 'Name',
+				source: employers
+			}).on("typeahead:select", function (e, employer) {
+				vm.EmployerId = employer.Id;
 			});
 			//$.validator.addMethod("validPerson", function () {
 			//	return vm.PersonId && vm.PersonId != null;
 			//}, "Пожалуйста, выберите члена организации");
 			$("#newWork").submit(function (e) {
 				e.preventDefault();
-			 //   vm.Position = document.getElementById('position').value;
+				vm.Alternative = document.getElementById('alternative').value;
+				vm.DateOfBegin = document.getElementById('dateofbegin').value;
+				vm.DateOfEnd = document.getElementById('dateofend').value;
 				//vm.HasRole = document.getElementById('hasrole').value;
 				if ($("#newWork").valid()) {
 					$.ajax({
@@ -69,17 +126,21 @@
 						data: vm
 					})
 						.done(function () {
-							//$("#position").val("");
-							//$("#person").typeahead("val", "");
-							//$("#hasrole").prop('checked', false);
+							$("#dateofbegin").val("");
+							$("#dateofend").val("");
+							$("#employer").typeahead("val", "");
+							$("#alternative").prop('checked', false);
+							$("#employer").typeahead("val", "");
+							$("#member").typeahead("val", "");
+							$("#members").empty();
 							toastr.success("Успешно сохранено");
+							vm = { movieIds: [] };
 						})
 						.fail(function () {
 							toastr.error("Произошла ошибка сохранения");
 						});
 				}
 			})
-
 		});
 	</script>
 }

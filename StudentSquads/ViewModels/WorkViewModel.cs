@@ -16,17 +16,24 @@ namespace StudentSquads.ViewModels
         public string Uni{ get; set; }
         [Display(Name = "Работодатель")]
         public string Employer { get; set; }
+        [Display(Name = "Работодатель")]
+        public  Guid EmployerId { get; set; }
         [Display(Name = "Трудовой проект")]
         public string WorkProject { get; set; }
+        public Guid? WorkProjectId { get; set; }
         [Display(Name = "Дата начала")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DateofBegin { get; set; }
         [Display(Name = "Дата окончания")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DateofEnd { get; set; }
         [Display(Name = "Альтернативная целина")]
         public bool Alternative { get; set; }
         public string AlternativeString { get; set; }
         public string Affirmed { get; set; }
         public bool Choosen { get; set; }
-        public List<Guid> PeopleId{ get; set; }
+        public List<Guid> MembersIds { get; set; }
     }
 }

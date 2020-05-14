@@ -40,11 +40,24 @@ namespace StudentSquads.Controllers.API
             return headofsquad;
         }
         [HttpPost]
-        public IHttpActionResult CreateNewHead(WorkViewModel work)
+        public IHttpActionResult CreateNewWork(WorkViewModel work)
         {
-            //Определяем текущего пользоватея
-            var headofsquads = GetHeadOfStudentSquads();
-            
+            foreach (var memberId in work.MembersIds)
+            {
+                Work newwork = new Work
+                {
+                    Id = Guid.NewGuid(),
+                    MemberId = memberId,
+                    EmployerId = work.EmployerId,
+                    WorkProjectId = work.WorkProjectId,
+                    DateofBegin = (DateTime)work.DateofBegin,
+                    DateofEnd = (DateTime)work.DateofEnd,
+                Alternative = work.Alternative
+                };
+                System.Type b = newwork.DateofBegin.GetType();
+                _context.Works.Add(newwork);
+            }
+            _context.SaveChanges();
             return Ok();
         }
     
