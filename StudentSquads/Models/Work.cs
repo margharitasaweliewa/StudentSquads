@@ -9,7 +9,7 @@ namespace StudentSquads.Models
 {
     public class Work
     {
-        public Guid  Id { get; set; }
+        public Guid Id { get; set; }
         public bool? Affirmed { get; set; }
         public string Rebuke { get; set; }
         public int? DUT { get; set; }
@@ -18,13 +18,21 @@ namespace StudentSquads.Models
         [DataType(DataType.Date)]
         public DateTime DateofEnd { get; set; }
         public bool Alternative { get; set; }
-        public string AlternativeReason{ get; set; }
-        public string Season{ get; set; }
+        public string AlternativeReason { get; set; }
+        public string Season { get; set; }
         public WorkProject WorkProject { get; set; }
         public Guid? WorkProjectId { get; set; }
         public Member Member { get; set; }
         public Guid MemberId { get; set; }
         public Employer Employer { get; set; }
         public Guid EmployerId { get; set; }
+        public DateTime CreateTima { get; set; }
+        public Work OriginalWork { get; set; }
+        public Guid? OriginalWorkId { get; set; }
+        public bool? Approved { get; set; }
+        public string ExitReason { get; set; }
+        public WorkChangeType WorkChangeType { get; set; }
+        public int? WorkChangeTypeId { get; set; }
+
     }
 }
