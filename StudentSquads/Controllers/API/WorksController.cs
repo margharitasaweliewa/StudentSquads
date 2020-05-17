@@ -147,9 +147,10 @@ namespace StudentSquads.Controllers.API
         {
             foreach (var memberId in work.MembersIds)
             {
-                System.Type a = work.DateofBegin.GetType();
                 Work newwork = new Work
                 {
+                    //DateTime2 нельзя ковертировать в DateTime, когда ты пытаещься нулевую дату вставить, когда nullable = false
+                    CreateTime = DateTime.Now,
                     Id = Guid.NewGuid(),
                     MemberId = memberId,
                     EmployerId = work.EmployerId,
@@ -157,9 +158,8 @@ namespace StudentSquads.Controllers.API
                     //Тут надо снова ошибку исправлять
                     DateofBegin = work.DateofBegin,
                     DateofEnd = work.DateofEnd,
-                Alternative = work.Alternative
+                    Alternative = work.Alternative
                 };
-                System.Type b = newwork.DateofBegin.GetType();
                 _context.Works.Add(newwork);
             }
             _context.SaveChanges();
