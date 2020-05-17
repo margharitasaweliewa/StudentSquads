@@ -39,6 +39,20 @@ namespace StudentSquads.Models
         public DbSet<Employer> Employers { get; set; }
         public DbSet<WorkProject> WorkProjects { get; set; }
         public DbSet<Work> Works { get; set; }
+        public DbSet<EventLevel> EventLevels { get; set; }
+        public DbSet<Raiting> Raitings { get; set; }
+        public DbSet<RaitingEvent> RaitingEvents { get; set; }
+        public DbSet<RaitingSection> RaitingSections { get; set; }
+        public DbSet<RaitingEventInfo> RaitingEventInfos { get; set; }
+        public DbSet<RaitingEventInfoFile> RaitingEventInfoFiles { get; set; }
+        public DbSet<RaitingPlace> RaitingPlaces { get; set; }
+        public DbSet<MembershipType> MembershipTypes { get; set; }
+        public DbSet<Profession> Professions { get; set; }
+        public DbSet<ProfessionSchool> ProfessionSchools { get; set; }
+        public DbSet<ScholAttending> ScholAttendings { get; set; }
+        public DbSet<WorkChangeType> WorkChangeTypes { get; set; }
+
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

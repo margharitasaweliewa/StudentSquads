@@ -7,7 +7,7 @@ namespace StudentSquads.Models
 {
     public class MembershipType
     {
-        public int Guid { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

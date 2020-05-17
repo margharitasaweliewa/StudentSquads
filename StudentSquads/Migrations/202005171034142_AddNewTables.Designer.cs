@@ -7,13 +7,13 @@ namespace StudentSquads.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class AddTableSecondeChance : IMigrationMetadata
+    public sealed partial class AddNewTables : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddTableSecondeChance));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddNewTables));
         
         string IMigrationMetadata.Id
         {
-            get { return "202005171014042_AddTableSecondeChance"; }
+            get { return "202005171034142_AddNewTables"; }
         }
         
         string IMigrationMetadata.Source

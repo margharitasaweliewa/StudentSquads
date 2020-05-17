@@ -12,7 +12,7 @@ namespace StudentSquads.Models
         public EventLevel EventLevel { get; set; }
         public Guid EventLevelId { get; set; }
         public Squad Squad { get; set; }
-        public Guid SquadId { get; set; }
+        public Guid? SquadId { get; set; }
         public UniversityHeadquarter UniversityHeadquarter { get; set; }
         public Guid? UniversityHeadquarterId { get; set; }
         public RegionalHeadquarter RegionalHeadquarter { get; set; }

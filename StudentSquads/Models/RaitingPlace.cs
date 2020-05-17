@@ -5,7 +5,7 @@ using System.Web;
 
 namespace StudentSquads.Models
 {
-    public class RaitingPlaces
+    public class RaitingPlace
     {
         public Guid Id { get; set; }
         public Raiting Raiting { get; set; }

@@ -332,9 +332,9 @@
     <Compile Include="Migrations\202005171007570_AddedAllTables.Designer.cs">
       <DependentUpon>202005171007570_AddedAllTables.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202005171014042_AddTableSecondeChance.cs" />
-    <Compile Include="Migrations\202005171014042_AddTableSecondeChance.Designer.cs">
-      <DependentUpon>202005171014042_AddTableSecondeChance.cs</DependentUpon>
+    <Compile Include="Migrations\202005171034142_AddNewTables.cs" />
+    <Compile Include="Migrations\202005171034142_AddNewTables.Designer.cs">
+      <DependentUpon>202005171034142_AddNewTables.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -355,7 +355,7 @@
     <Compile Include="Models\RaitingEvent.cs" />
     <Compile Include="Models\RaitingEventInfo.cs" />
     <Compile Include="Models\RaitingEventInfoFile.cs" />
-    <Compile Include="Models\RaitingPlaces.cs" />
+    <Compile Include="Models\RaitingPlace.cs" />
     <Compile Include="Models\RaitingSection.cs" />
     <Compile Include="Models\RegionalHeadquarter.cs" />
     <Compile Include="Models\ScholAttending.cs" />
@@ -750,8 +750,8 @@
     <EmbeddedResource Include="Migrations\202005171007570_AddedAllTables.resx">
       <DependentUpon>202005171007570_AddedAllTables.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202005171014042_AddTableSecondeChance.resx">
-      <DependentUpon>202005171014042_AddTableSecondeChance.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202005171034142_AddNewTables.resx">
+      <DependentUpon>202005171034142_AddNewTables.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

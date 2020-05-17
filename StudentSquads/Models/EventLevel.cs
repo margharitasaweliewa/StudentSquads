@@ -7,7 +7,7 @@ namespace StudentSquads.Models
 {
     public class EventLevel
     {
-        public int Guid { get; set; }
+        public int Id { get; set; }
         public string NewName { get; set; }
     }
 }
