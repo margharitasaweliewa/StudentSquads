@@ -14,8 +14,10 @@ namespace StudentSquads.Models
         public string Rebuke { get; set; }
         public int? DUT { get; set; }
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DateofBegin { get; set; }
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{dd.MM.yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DateofEnd { get; set; }
         public bool Alternative { get; set; }
         public string AlternativeReason { get; set; }
@@ -26,13 +28,12 @@ namespace StudentSquads.Models
         public Guid MemberId { get; set; }
         public Employer Employer { get; set; }
         public Guid EmployerId { get; set; }
-        public DateTime CreateTima { get; set; }
+        public DateTime CreateTime { get; set; }
         public Work OriginalWork { get; set; }
         public Guid? OriginalWorkId { get; set; }
         public bool? Approved { get; set; }
         public string ExitReason { get; set; }
         public WorkChangeType WorkChangeType { get; set; }
         public int? WorkChangeTypeId { get; set; }
-
     }
 }

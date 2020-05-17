@@ -328,19 +328,39 @@
     <Compile Include="Migrations\202005141757101_AddAudit.Designer.cs">
       <DependentUpon>202005141757101_AddAudit.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005171007570_AddedAllTables.cs" />
+    <Compile Include="Migrations\202005171007570_AddedAllTables.Designer.cs">
+      <DependentUpon>202005171007570_AddedAllTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005171014042_AddTableSecondeChance.cs" />
+    <Compile Include="Migrations\202005171014042_AddTableSecondeChance.Designer.cs">
+      <DependentUpon>202005171014042_AddTableSecondeChance.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
     <Compile Include="Models\Employer.cs" />
+    <Compile Include="Models\EventLevel.cs" />
     <Compile Include="Models\FeePayment.cs" />
     <Compile Include="Models\HeadsOfStudentSquads.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\MainPosition.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\MembershipType.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\Profession.cs" />
+    <Compile Include="Models\ProfessionSchool.cs" />
+    <Compile Include="Models\Raiting.cs" />
+    <Compile Include="Models\RaitingEvent.cs" />
+    <Compile Include="Models\RaitingEventInfo.cs" />
+    <Compile Include="Models\RaitingEventInfoFile.cs" />
+    <Compile Include="Models\RaitingPlaces.cs" />
+    <Compile Include="Models\RaitingSection.cs" />
     <Compile Include="Models\RegionalHeadquarter.cs" />
+    <Compile Include="Models\ScholAttending.cs" />
     <Compile Include="Models\Squad.cs" />
+    <Compile Include="Models\SquadWork.cs" />
     <Compile Include="Models\Status.cs" />
     <Compile Include="Models\UniversityHeadquarter.cs" />
     <Compile Include="Models\Work.cs" />
@@ -484,6 +504,7 @@
     <Content Include="Content\DataTables\css\common.scss" />
     <Content Include="Content\toastr.scss" />
     <Content Include="Content\toastr.less" />
+    <Content Include="ClassDiagram2.cd" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
@@ -725,6 +746,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005141757101_AddAudit.resx">
       <DependentUpon>202005141757101_AddAudit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005171007570_AddedAllTables.resx">
+      <DependentUpon>202005171007570_AddedAllTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005171014042_AddTableSecondeChance.resx">
+      <DependentUpon>202005171014042_AddTableSecondeChance.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

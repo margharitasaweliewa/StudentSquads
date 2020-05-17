@@ -35,5 +35,8 @@ namespace StudentSquads.ViewModels
         public string Affirmed { get; set; }
         public bool Choosen { get; set; }
         public List<Guid> MembersIds { get; set; }
+        public string DateofBeginString { get; set; }
+        public string DateofEndString { get; set; }
+        public bool Changed { get; set; }
     }
 }

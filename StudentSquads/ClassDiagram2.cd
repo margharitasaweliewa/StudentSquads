@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="StudentSquads.Models.Direction" Collapsed="true">
+    <Position X="7.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Direction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.Squad" Collapsed="true">
+    <Position X="5.5" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAAAAAAAAAACEAAAQAAAAAAAAAAAAAAQAAgAE=</HashCode>
+      <FileName>Models\Squad.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.Employer" Collapsed="true">
+    <Position X="0.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACABAAAAAAAAAABAAAQQQAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Models\Employer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.FeePayment" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIACAAAAAAEAAAAEAAAAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Models\FeePayment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.HeadsOfStudentSquads" Collapsed="true">
+    <Position X="5.5" Y="3.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIACABAAAiIAAAAkSAAAAAAAAAAAAAAAAAQCAAAAgCQ=</HashCode>
+      <FileName>Models\HeadsOfStudentSquads.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.MainPosition" Collapsed="true">
+    <Position X="3.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\MainPosition.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.Member" Collapsed="true">
+    <Position X="3" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIACgAAMADIAQAAEAACAAAAAEAIAAAAAQBCgAAAAAAA=</HashCode>
+      <FileName>Models\Member.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.Person" Collapsed="true">
+    <Position X="3" Y="3.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AgACAEAAACQABBCQAESCQAIQBAIIAAAQIhCAAIBACIg=</HashCode>
+      <FileName>Models\Person.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.RegionalHeadquarter" Collapsed="true">
+    <Position X="7.25" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAiAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\RegionalHeadquarter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.Status" Collapsed="true">
+    <Position X="0.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Status.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.UniversityHeadquarter" Collapsed="true">
+    <Position X="7.25" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAEAAQAAAAAQAAAAAAAIAAAAAAAAAACA=</HashCode>
+      <FileName>Models\UniversityHeadquarter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.Work" Collapsed="true">
+    <Position X="3" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgGAAADAwAAAAAgAAQAAQAAAhIIAABIAAIAAICAgAw=</HashCode>
+      <FileName>Models\Work.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.WorkChangeType" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\WorkChangeType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.WorkProject" Collapsed="true">
+    <Position X="0.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAgAEAAAAAAAAA=</HashCode>
+      <FileName>Models\WorkProject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.SquadWork" Collapsed="true">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\SquadWork.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.RaitingPlaces" Collapsed="true">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\RaitingPlaces.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.RaitingEventInfoFile" Collapsed="true">
+    <Position X="9.5" Y="5.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\RaitingEventInfoFile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.RaitingEventInfo" Collapsed="true">
+    <Position X="9.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\RaitingEventInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.RaitingEvent" Collapsed="true">
+    <Position X="10.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\RaitingEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.Rainting" Collapsed="true">
+    <Position X="8.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Rainting.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.MembershipType" Collapsed="true">
+    <Position X="11.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\MembershipType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.EventLevel" Collapsed="true">
+    <Position X="11.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\EventLevel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.RaitingSection" Collapsed="true">
+    <Position X="10.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\RaitingSection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.Profession" Collapsed="true">
+    <Position X="0.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Profession.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.ProfessionSchool" Collapsed="true">
+    <Position X="0.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ProfessionSchool.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StudentSquads.Models.ScholAttending" Collapsed="true">
+    <Position X="0.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ScholAttending.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
