@@ -4,18 +4,15 @@
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h2>Информация по трудовому семестру</h2>
-@using (Html.BeginForm("Approve", "Works"))
-{
-	if (User.IsInRole("SquadManager"))
+
+	
+@if (User.IsInRole("RegionalManager"))
 	{
-		<input type="submit" name="button1" value="Создать" class="btn btn-warning" formaction="@Url.Action("WorkForm", "Works")" />
+		<a class="btn btn-warning" href="/works/approvelist"> Утвердить список</a>
+		@*<input type="submit" name="button2" value="Вынести выговор" class="btn btn-warning" formaction="@Url.Action("Rebuke", "Works")" />*@
 	}
-	if (User.IsInRole("RegionalManager"))
-	{
-		<button type="submit" class="btn btn-warning" id="approve">Засчитать целину</button>
-		<input type="submit" name="button2" value="Вынести выговор" class="btn btn-warning" formaction="@Url.Action("Rebuke", "Works")" />
-	}
-	<table id="enterapplications" class="table table-bordered table-hover">
+	<a class="btn btn-warning" href="/works/workform">Создать</a>
+	<table id="works" class="table table-bordered table-hover">
 		<thead>
 			<tr>
 				<th></th>
@@ -31,32 +28,57 @@
 			</tr>
 		</thead>
 		<tbody>
-			@for (int i = 0; i < Model.Count; i++)
-			{
-			<tr>
-				@Html.HiddenFor(m => m[i].Id)
-				@Html.HiddenFor(m => m[i].PersonId)
-				<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
-				<td>@Model[i].FIO</td>
-				<td>@Model[i].Squad</td>
-				<td>@Model[i].Uni</td>
-				<td>@Model[i].Employer</td>
-				<td>@Model[i].WorkProject</td>
-				<td>@Model[i].DateofBegin.ToString("dd.MM.yyyy")</td>
-				<td>@Model[i].DateofEnd.ToString("dd.MM.yyyy")</td>
-				<td align="center">@Model[i].AlternativeString</td>
-				<td>@Model[i].Affirmed</td>
-			</tr>
-			}
 		</tbody>
 	</table>
 	@Html.AntiForgeryToken()
-}
 @section scripts
 {
 	<script>
 		$(document).ready(function () {
-			$("#enterapplications").DataTable();
+		var table =	$("#works").DataTable({
+				ajax: {
+					url: "/api/works",
+					dataSrc: ""
+				},
+				columns: [
+					{
+						data: "Id",
+						render: function (data, type, work) {
+							return "<a href ='/works/edit/" + work.Id + "'>" + "Открыть" + "</a>";
+						}
+					},
+					{
+						data: "FIO",
+						render: function (data, type, work) {
+							return "<a href ='/people/edit/" + work.PersonId + "'>" + work.FIO + "</a>";
+						}
+					},
+					{
+						data: "Squad"
+					},
+					{
+						data: "Uni"
+					},
+					{
+						data: "Employer"
+					},
+					{
+						data: "WorkProject"
+					},
+					{
+						data: "DateofBeginString"
+					},
+					{
+						data: "DateofEndString"
+					},
+					{
+						data: "AlternativeString"
+					},
+					{
+						data: "Affirmed"
+					}
+				]
+			});
 		});
 	</script>
 }

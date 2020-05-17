@@ -28,6 +28,7 @@ namespace StudentSquads.Controllers.API
         {
             _context.Dispose();
         }
+        [HttpPut]
         public HeadsOfStudentSquads GetHeadOfStudentSquads()
         {
             string id = User.Identity.GetUserId();
@@ -65,7 +66,7 @@ namespace StudentSquads.Controllers.API
             return works;
         }
         [HttpGet]
-        public List<WorkViewModel> AllWorks(Guid squadId, string season = null)
+        public List<WorkViewModel> AllWorks(Guid? squadId = null, string season = null)
         {
             bool audit = false;
             List<WorkViewModel> listworks = new List<WorkViewModel>();
