@@ -21,7 +21,7 @@ namespace StudentSquads.Models
         public DateTime DateofEnd { get; set; }
         public bool Alternative { get; set; }
         public string AlternativeReason { get; set; }
-        public string Season { get; set; }
+        public int? Season { get; set; }
         public WorkProject WorkProject { get; set; }
         public Guid? WorkProjectId { get; set; }
         public Member Member { get; set; }
@@ -35,5 +35,7 @@ namespace StudentSquads.Models
         public string ExitReason { get; set; }
         public WorkChangeType WorkChangeType { get; set; }
         public int? WorkChangeTypeId { get; set; }
+        //Вот тут вот по поводу новых записей
+        //public bool? AddedToList { get; set; }
     }
 }

@@ -6,7 +6,7 @@
 
 <h2>Составление выездного списка</h2>
 <form id="newWork">
-	<button class="btn btn-warning" type="submit">Сохранить</button>
+	<button id ="audit" audit ="@Model.Audit" class="btn btn-warning js-audit" type="submit">Сохранить</button>
 
 	<div class="form-group">
 		<label>Работодатель</label>
@@ -115,6 +115,7 @@
 			//}, "Пожалуйста, выберите члена организации");
 			$("#newWork").submit(function (e) {
 				e.preventDefault();
+				if ($('#audit').attr("audit")=="True") vm.Audit = true;
 				vm.Alternative = document.getElementById('alternative').value;
 				vm.DateOfBegin = document.getElementById('dateofbegin').value;
 				vm.DateOfEnd = document.getElementById('dateofend').value;

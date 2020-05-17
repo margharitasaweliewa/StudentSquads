@@ -4,6 +4,7 @@ using StudentSquads.Models;
 using StudentSquads.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
@@ -61,13 +62,40 @@ namespace StudentSquads.Controllers
         }
         public ActionResult WorkForm()
         {
-            WorkViewModel viewModel = new WorkViewModel();
+            bool audit = false;
+            //Проверяем, если одобренные записи в текущем сезона
+            var works = _context.Works.Where(w => (w.Season == null)&&(w.Approved!=null)).ToList();
+            //Если они есть, то должен производиться процесс аудита
+            if (works.Count > 0) audit = true;
+            WorkViewModel viewModel = new WorkViewModel {Audit = audit };
             return View(viewModel);
         }
         public ActionResult Edit(Guid id)
         {
-            var work = _context.Works.Include(w => w.Member)
-                .Include(w => w.Employer).Include(w => w.WorkProject).SingleOrDefault(w => w.Id ==id);
+            string view = "WorkEditForm";
+            bool audit = true;
+            Work work = new Work();
+            var works = _context.Works.Include(w => w.Member)
+                .Include(w => w.Employer).Include(w => w.WorkProject).Where(w => w.Id ==id).ToList();
+            //Если нашли только 1 значение и оно ещё не утверждено
+            if (works.Count == 1)
+            {
+                //Ещё не утверждено, процесс аудита не начался
+                if (works[0].OriginalWorkId == null) audit = false;
+                work = works[0];
+            }
+            //Есть записи аудита, надо найти самую старую и не отклоненную
+            else
+            {
+                //Рассматриваем только неотклоненные
+                var  approvedworks = works.Where(w => w.Approved != false).ToList();
+                //Находим максимум по дате создания
+                var time = approvedworks.Max(n => n.CreateTime);
+                //Находим запись с такой датой создания
+                work = _context.Works.Include(w => w.Member)
+                .Include(w => w.Employer).Include(w => w.WorkProject)
+                .SingleOrDefault(w => (w.OriginalWorkId == id) && (w.CreateTime == time));
+            }
             WorkViewModel viewModel = new WorkViewModel
             {
                 Id = work.Id,
@@ -75,55 +103,45 @@ namespace StudentSquads.Controllers
                 FIO = _context.Members.Include(p => p.Person)
                 .SingleOrDefault(p => p.Id == work.MemberId).Person.FIO,
                 Employer = work.Employer.Name,
-                WorkProject = work.WorkProject.Name,
+                WorkProject = work.WorkProject?.Name,
                 DateofBegin = work.DateofBegin,
                 DateofEnd = work.DateofEnd,
                 Alternative = work.Alternative,
+                Audit = audit,
+                MemberId = work.MemberId
             };
-            return View();
+            if (audit)
+            {
+                //Создаем лист для версий
+                List<WorkViewModel> versions = new List<WorkViewModel>();
+                //Проходим по записям
+                foreach(var version in works) 
+                {
+                    WorkViewModel workversion = new WorkViewModel
+                    {
+                        Id = version.Id,
+                        PersonId = version.Member.PersonId,
+                        FIO = _context.Members.Include(p => p.Person)
+                    .SingleOrDefault(p => p.Id == version.MemberId).Person.FIO,
+                        Employer = version.Employer.Name,
+                        WorkProject = version.WorkProject?.Name,
+                        DateofBeginString = version.DateofBegin.ToString("dd.MM.yyyy"),
+                        DateofEndString = version.DateofEnd.ToString("dd.MM.yyyy"),
+                        CreateTime = version.CreateTime.ToString("dd.MM.yyyy"),
+                        Alternative = version.Alternative
+                    };
+                    versions.Add(workversion);
+                }
+                //Добавляем список версий
+                viewModel.Versions = versions;
+                //Настраиваем другое представление
+                view = view + "Audit";
+            }
+            return View(view, viewModel);
         }
         // GET: Work
         public ActionResult AllWorks(string season=null)
         {
-            //List<WorkViewModel> listworks = new List<WorkViewModel>();
-            //var headofsquads = GetHeadOfStudentSquads();
-            //var allworks = _context.Works.Include(w => w.Member).Include(w => w.Employer).Include(w => w.WorkProject)
-            //    .OrderBy(w => w.Member.SquadId).ToList();
-            ////Если нет указания сезона, тогда текущий (без указания)
-            //allworks = allworks.Where(w => w.Season == season).ToList();
-            ////Ограничиваем по роли и принадлежности к отряду/штабу
-            //List<Work> works = LimitWorks(allworks, headofsquads);
-            ////Формируем записи для представления
-            //string alternative = "";
-            //string affirmed = "";
-            //foreach (var work in works)
-            //{
-            //    //Альтернатива
-            //    if (work.Alternative) alternative = "Да";
-            //    else alternative = "Нет";
-            //    //Засчитана целина
-            //    if (work.Affirmed==true) affirmed = "Засчитана";
-            //    else if (work.Affirmed==false)affirmed = "Выговор";
-            //    else affirmed = "Нет решения";
-            //    var member = _context.Members
-            //        .Include(m => m.Person).Include(m => m.Squad).SingleOrDefault(m => m.Id == work.MemberId);
-            //    WorkViewModel workview = new WorkViewModel
-            //    {
-            //        Id = work.Id,
-            //        PersonId = work.Member.PersonId,
-            //        FIO = member.Person.FIO,
-            //        Squad = member.Squad.Name,
-            //        Uni = _context.Squads.Include(u => u.UniversityHeadquarter)
-            //        .Single(u => u.Id == work.Member.SquadId).UniversityHeadquarter.University,
-            //        Employer = work.Employer.Name,
-            //        WorkProject = work.WorkProject?.Name,
-            //        DateofBeginString = work.DateofBegin.ToString(),
-            //        DateofEndString = work.DateofEnd.ToString(),
-            //        AlternativeString = alternative,
-            //        Affirmed = affirmed
-            //    };
-            //    listworks.Add(workview);
-            //}
             return View();
         }
     }

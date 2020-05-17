@@ -8,7 +8,7 @@
 	
 @if (User.IsInRole("RegionalManager"))
 	{
-		<a class="btn btn-warning" href="/works/approvelist"> Утвердить список</a>
+		<a id ="js-approve" class="btn btn-warning"> Утвердить список</a>
 		@*<input type="submit" name="button2" value="Вынести выговор" class="btn btn-warning" formaction="@Url.Action("Rebuke", "Works")" />*@
 	}
 	<a class="btn btn-warning" href="/works/workform">Создать</a>
@@ -78,6 +78,21 @@
 						data: "Affirmed"
 					}
 				]
+		});
+			$("#js-approve").on("click", function () {
+				var button = $(this);
+				bootbox.confirm("Вы уверены, что хотите утвердить выездной список?", function (result) {
+					if (result) {
+						$.ajax({
+							url: "/api/works",
+							method: "Put",
+							success: function () {
+								toastr.success("Список успешно утвержден");
+							}
+
+						});
+					}
+				});
 			});
 		});
 	</script>

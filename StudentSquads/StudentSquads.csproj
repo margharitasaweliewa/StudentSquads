@@ -336,6 +336,10 @@
     <Compile Include="Migrations\202005171034142_AddNewTables.Designer.cs">
       <DependentUpon>202005171034142_AddNewTables.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005171846106_MadeWorkSeasonInt.cs" />
+    <Compile Include="Migrations\202005171846106_MadeWorkSeasonInt.Designer.cs">
+      <DependentUpon>202005171846106_MadeWorkSeasonInt.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
@@ -635,6 +639,7 @@
     <Content Include="Views\Works\AllWorks.cshtml" />
     <Content Include="Views\Works\WorkForm.cshtml" />
     <Content Include="Views\Works\WorkEditForm.cshtml" />
+    <Content Include="Views\Works\WorkEditFormAudit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -752,6 +757,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005171034142_AddNewTables.resx">
       <DependentUpon>202005171034142_AddNewTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005171846106_MadeWorkSeasonInt.resx">
+      <DependentUpon>202005171846106_MadeWorkSeasonInt.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

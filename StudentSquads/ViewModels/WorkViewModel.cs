@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using StudentSquads.Models;
 
 namespace StudentSquads.ViewModels
 {
@@ -38,5 +39,12 @@ namespace StudentSquads.ViewModels
         public string DateofBeginString { get; set; }
         public string DateofEndString { get; set; }
         public bool Changed { get; set; }
+        public List<WorkViewModel> Versions { get; set; }
+        //Ведется ли аудит
+        public bool Audit { get; set; }
+        public string Season{ get; set; }
+        public string CreateTime { get; set; }
+        public Guid MemberId { get; set; }
+        public string AlternativeReason { get; set; }
     }
 }
