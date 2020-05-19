@@ -46,5 +46,7 @@ namespace StudentSquads.ViewModels
         public string CreateTime { get; set; }
         public Guid MemberId { get; set; }
         public string AlternativeReason { get; set; }
+        public string ChangeType { get; set; }
+        public string ApprovedString { get; set; }
     }
 }

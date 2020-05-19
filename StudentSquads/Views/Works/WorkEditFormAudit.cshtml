@@ -47,7 +47,7 @@
 					<th>Работодатель</th>
 					<th>Дата начала</th>
 					<th>Дата окончания</th>
-					@*<th>Дата создания</th>*@
+					<th>Дата создания</th>
 					<th>Вид изменения</th>
 					<th>Утверждено</th>
 				</tr>
@@ -55,14 +55,15 @@
 			<tbody>
 				@for (int i = 0; i < Model.Versions.Count; i++)
 				{
-					<tr>
-						<td>@Model.Versions[i].FIO</td>
-						<td>@Model.Versions[i].Employer</td>
-						<td>@Model.Versions[i].DateofBeginString</td>
-						<td>@Model.Versions[i].DateofEndString</td>
-						<td>Вид изменений</td>
-						<td>"Утверждено"</td>
-					</tr>
+				<tr>
+					<td>@Model.Versions[i].FIO</td>
+					<td>@Model.Versions[i].Employer</td>
+					<td>@Model.Versions[i].DateofBeginString</td>
+					<td>@Model.Versions[i].DateofEndString</td>
+					<td>@Model.Versions[i].CreateTime</td>
+					<td>@Model.Versions[i].ChangeType</td>
+					<td>@Model.Versions[i].ApprovedString</td>
+				</tr>
 				}
 			</tbody>
 		</table>

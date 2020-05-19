@@ -73,17 +73,16 @@ namespace StudentSquads.Controllers
         public ActionResult Edit(Guid id)
         {
             string view = "WorkEditForm";
-            bool audit = true;
+            bool audit = false;
             Work work = new Work();
-            var works = _context.Works.Include(w => w.Member)
-                .Include(w => w.Employer).Include(w => w.WorkProject).Where(w => w.Id ==id).ToList();
-            //Если нашли только 1 значение и оно ещё не утверждено
-            if (works.Count == 1)
-            {
-                //Ещё не утверждено, процесс аудита не начался
-                if (works[0].OriginalWorkId == null) audit = false;
-                work = works[0];
-            }
+            //Проверяем, если одобренные записи в текущем сезона
+            var allworks = _context.Works.Where(w => (w.Season == null) && (w.Approved != null)).ToList();
+            //Если они есть, то должен производиться процесс аудита
+            if (allworks.Count != 0) audit = true;
+            var works = _context.Works.Include(w => w.Member).Include(w => w.Employer).Include(w => w.WorkProject)
+                .Include(w => w.WorkChangeType).Where(w => w.OriginalWorkId == id).ToList();
+            //Если нашли только 1 значение 
+            if (works.Count == 1)work = works[0];
             //Есть записи аудита, надо найти самую старую и не отклоненную
             else
             {
@@ -115,8 +114,11 @@ namespace StudentSquads.Controllers
                 //Создаем лист для версий
                 List<WorkViewModel> versions = new List<WorkViewModel>();
                 //Проходим по записям
+                string approved = "Нет решения";
                 foreach(var version in works) 
                 {
+                    if (version.Approved == true) approved = "Утверждено";
+                    else if (version.Approved == false) approved = "Отклонено";
                     WorkViewModel workversion = new WorkViewModel
                     {
                         Id = version.Id,
@@ -128,7 +130,9 @@ namespace StudentSquads.Controllers
                         DateofBeginString = version.DateofBegin.ToString("dd.MM.yyyy"),
                         DateofEndString = version.DateofEnd.ToString("dd.MM.yyyy"),
                         CreateTime = version.CreateTime.ToString("dd.MM.yyyy"),
-                        Alternative = version.Alternative
+                        Alternative = version.Alternative,
+                        ChangeType = version.WorkChangeType?.Name,
+                        ApprovedString = approved
                     };
                     versions.Add(workversion);
                 }

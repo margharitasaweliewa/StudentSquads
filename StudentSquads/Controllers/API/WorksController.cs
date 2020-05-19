@@ -72,7 +72,8 @@ namespace StudentSquads.Controllers.API
             bool audit = false;
             List<WorkViewModel> listworks = new List<WorkViewModel>();
             var headofsquads = GetHeadOfStudentSquads();
-            var allworks = _context.Works.Include(w => w.Member).Include(w => w.Employer).Include(w => w.WorkProject)
+            //Смотрим только текущий сезон
+            var allworks = _context.Works.Include(w => w.Member).Include(w => w.Employer).Include(w => w.WorkProject).Include(w => w.WorkChangeType)
             .Where(w => w.Season == season).ToList();
             //Определяем по отрядам(Если отряд не определен, то текущий)
             List<Work> works = new List<Work>();
@@ -89,11 +90,8 @@ namespace StudentSquads.Controllers.API
             if (audit)
             {
                 //В группы выделяем только те, которые не были отклонены
-                //Те, которые были созданы после утверждения, не рассматриваем
-                var groups = works.Where(g => (g.Approved != false)&&(g.OriginalWorkId!=Guid.Empty))
+                var groups = works.Where(g => (g.Approved != false)&&(g.Season == null))
                     .GroupBy(g => g.OriginalWorkId).ToList();
-                //Отдельно выделяем добавленных после утверждения
-                var newworks = works.Where(n => n.OriginalWorkId == Guid.Empty).ToList();
                 //Очищаем works
                 works = new List<Work>();
                 //Добавляем к работам на целине записи с последними неотклоненными изменениями
@@ -101,13 +99,11 @@ namespace StudentSquads.Controllers.API
                 {
                     //Находим максимум по дате создания в группе
                     var time = group.Max(n => n.CreateTime);
-                    //Находим запись с такой датой создания
-                    Work work = _context.Works.SingleOrDefault(w => (w.OriginalWorkId == group.Key) && (w.CreateTime == time));
+                    List<Work> groupworks = _context.Works.Where(w => (w.OriginalWorkId == group.Key)).ToList();
+                    Work work = groupworks.Single(w => w.CreateTime==time);
                     //Добавляем только записи с последним изменением
                     works.Add(work);
                 }
-                //Добавляем новодобавленные записи
-                foreach (var newwork in newworks) works.Add(newwork);
 
             }
             //Идем по образованному списку
@@ -136,12 +132,14 @@ namespace StudentSquads.Controllers.API
                     DateofEndString = work.DateofEnd.ToString("dd.MM.yyyy"),
                     AlternativeString = alternative,
                     Affirmed = affirmed,
-                    Season = work.Season.ToString()
+                    Season = work.Season.ToString(),
+                    ChangeType = work.WorkChangeType?.Name
                 };
                 if (audit)
                 {
                     //Проверяем есть ли неподтвержденные изменения
-                    var changes = _context.Works.Where(c => (c.Approved == null) && (c.OriginalWorkId == work.Id));
+                    //Для новых данных отдельное условие - Тип изменения - "добавление"
+                    var changes = _context.Works.Where(c => (c.Approved == null) && ((c.OriginalWorkId == work.Id)||((c.Id ==work.Id)&&(c.WorkChangeTypeId==1))));
                     if (changes.Count() > 0) workview.Changed = true;
                     else workview.Changed = false;
                 }
@@ -153,7 +151,7 @@ namespace StudentSquads.Controllers.API
         public IHttpActionResult CreateNewWork(WorkViewModel work)
         {
             //При создании новых элементов
-            if (work.Id == null)
+            if (work.Id == Guid.Empty)
             {
                 foreach (var memberId in work.MembersIds)
                 {
@@ -171,32 +169,40 @@ namespace StudentSquads.Controllers.API
                         Alternative = work.Alternative,
                         AlternativeReason = work.AlternativeReason
                     };
-                    //if(work.Audit)
+                    //Это первоначальная запись
+                    newwork.OriginalWorkId = newwork.Id;
+                    //Если запись создается после утверждения, то мы присваиваем тип "Добавление"
+                    if (work.Audit) newwork.WorkChangeTypeId = 1;
                     _context.Works.Add(newwork);
                 }
             }
+            //Зашли в созданную ранее запись
             else
             {
-                //Если список уже утвержден, создаем новую запись
-                if (work.Audit)
-                {
-                    Work newwork = new Work
+                    //Если список уже утвержден, создаем новую запись
+                    if (work.Audit)
                     {
-                        //DateTime2 нельзя ковертировать в DateTime, когда ты пытаещься нулевую дату вставить, когда nullable = false
-                        CreateTime = DateTime.Now,
-                        Id = Guid.NewGuid(),
-                        MemberId = work.MemberId,
-                        EmployerId = work.EmployerId,
-                        WorkProjectId = work?.WorkProjectId,
-                        //Тут надо снова ошибку исправлять
-                        DateofBegin = work.DateofBegin,
-                        DateofEnd = work.DateofEnd,
-                        Alternative = work.Alternative,
-                        //Утвержденную запись добавляем в запись
-                        OriginalWorkId = work.Id,
-                    };
-                    _context.Works.Add(newwork);
-                }
+                    foreach (var memberId in work.MembersIds)
+                    {
+                        Work newwork = new Work
+                        {
+                            //DateTime2 нельзя ковертировать в DateTime, когда ты пытаещься нулевую дату вставить, когда nullable = false
+                            CreateTime = DateTime.Now,
+                            Id = Guid.NewGuid(),
+                            MemberId = memberId,
+                            EmployerId = work.EmployerId,
+                            WorkProjectId = work?.WorkProjectId,
+                            //Тут надо снова ошибку исправлять
+                            DateofBegin = work.DateofBegin,
+                            DateofEnd = work.DateofEnd,
+                            Alternative = work.Alternative,
+                            //При создании записи после утверждения списка - тип "Изменение даты"
+                            WorkChangeTypeId = 3,
+                            OriginalWorkId = work.Id
+                        };
+                        _context.Works.Add(newwork);
+                    }
+                 }
                 //Если ещё не утверждено, тогда редактируем просто старую запись
                 else
                 {
@@ -221,8 +227,6 @@ namespace StudentSquads.Controllers.API
             var works = _context.Works.Where(w => w.Season == null).ToList();
             foreach (var workInDb in works)
             {
-                //Проставляем оригинальную работу
-                workInDb.OriginalWorkId = workInDb.Id;
                 workInDb.Approved = true;
             }
             _context.SaveChanges();
