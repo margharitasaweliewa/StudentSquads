@@ -35,6 +35,7 @@ namespace StudentSquads.Models
         public string ExitReason { get; set; }
         public WorkChangeType WorkChangeType { get; set; }
         public int? WorkChangeTypeId { get; set; }
+        public DateTime? Removed { get; set; }
         //Вот тут вот по поводу новых записей
         //public bool? AddedToList { get; set; }
     }

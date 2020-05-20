@@ -340,6 +340,10 @@
     <Compile Include="Migrations\202005171846106_MadeWorkSeasonInt.Designer.cs">
       <DependentUpon>202005171846106_MadeWorkSeasonInt.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005201824197_AddRemovedinWork.cs" />
+    <Compile Include="Migrations\202005201824197_AddRemovedinWork.Designer.cs">
+      <DependentUpon>202005201824197_AddRemovedinWork.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
@@ -760,6 +764,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005171846106_MadeWorkSeasonInt.resx">
       <DependentUpon>202005171846106_MadeWorkSeasonInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005201824197_AddRemovedinWork.resx">
+      <DependentUpon>202005201824197_AddRemovedinWork.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -29,19 +29,6 @@ namespace StudentSquads.Controllers.API
         {
             _context.Dispose();
         }
-        [HttpDelete]
-        public HeadsOfStudentSquads GetHeadOfStudentSquads()
-        {
-            string id = User.Identity.GetUserId();
-            var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
-            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также должность активна
-            var headofsquad = _context.HeadsOfStudentSquads.Include(h => h.MainPosition).Include(h => h.Squad)
-                .Include(h => h.UniversityHeadquarter).Include(h => h.RegionalHeadquarter)
-                .SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null) && (h.DateofBegin != null));
-            //Если активной записи о руководстве не найдено, перенаправляем на главную страницу
-            return headofsquad;
-        }
-        [HttpDelete]
         public List<Work> LimitWorks(List<Work> allworks, HeadsOfStudentSquads headofsquads)
         {
             List<Work> works = allworks;
@@ -71,7 +58,12 @@ namespace StudentSquads.Controllers.API
         {
             bool audit = false;
             List<WorkViewModel> listworks = new List<WorkViewModel>();
-            var headofsquads = GetHeadOfStudentSquads();
+            string id = User.Identity.GetUserId();
+            var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
+            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также должность активна
+            var headofsquads= _context.HeadsOfStudentSquads.Include(h => h.MainPosition).Include(h => h.Squad)
+                .Include(h => h.UniversityHeadquarter).Include(h => h.RegionalHeadquarter)
+                .SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null) && (h.DateofBegin != null));
             //Смотрим только текущий сезон
             var allworks = _context.Works.Include(w => w.Member).Include(w => w.Employer).Include(w => w.WorkProject).Include(w => w.WorkChangeType)
             .Where(w => w.Season == season).ToList();
@@ -89,8 +81,8 @@ namespace StudentSquads.Controllers.API
             //Если ведется Аудит
             if (audit)
             {
-                //В группы выделяем только те, которые не были отклонены
-                var groups = works.Where(g => (g.Approved != false)&&(g.Season == null))
+                //В группы выделяем только те, которые не были отклонены и которые не были удалены
+                var groups = works.Where(g => (g.Approved != false)&&(g.Season == null)&&(g.Removed==null))
                     .GroupBy(g => g.OriginalWorkId).ToList();
                 //Очищаем works
                 works = new List<Work>();
@@ -133,7 +125,8 @@ namespace StudentSquads.Controllers.API
                     AlternativeString = alternative,
                     Affirmed = affirmed,
                     Season = work.Season.ToString(),
-                    ChangeType = work.WorkChangeType?.Name
+                    ChangeType = work.WorkChangeType?.Name,
+                    
                 };
                 if (audit)
                 {
@@ -232,7 +225,31 @@ namespace StudentSquads.Controllers.API
             _context.SaveChanges();
             return Ok();
         }
+        [HttpDelete]
+        public IHttpActionResult DeleteWork(Guid id, string reason)
+        {
+                var work = _context.Works.Single(w => w.Id ==id);
+                //Если есть аудит, создаем новую запись9+
+                Work newwork = new Work
+                {
+                    //DateTime2 нельзя ковертировать в DateTime, когда ты пытаещься нулевую дату вставить, когда nullable = false
+                    CreateTime = DateTime.Now,
+                    Id = Guid.NewGuid(),
+                    MemberId = work.MemberId,
+                    EmployerId = work.EmployerId,
+                    WorkProjectId = work.WorkProjectId,
+                    DateofBegin = work.DateofBegin,
+                    DateofEnd = work.DateofEnd,
+                    Alternative = work.Alternative,
+                    AlternativeReason = work.AlternativeReason,
+                    WorkChangeTypeId = 2,
+                    OriginalWorkId = work.Id,
+                    ExitReason = reason
+                };
+                _context.Works.Add(newwork);
+                _context.SaveChanges();
+            return Ok();
+        }
 
-
-}
+    }
 }

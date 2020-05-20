@@ -5,6 +5,7 @@
 
 <h2>Редактирование выездного списка</h2>
 <button class="btn btn-warning js-change" data-id="@Model.Id">Сохранить</button>
+<button class="btn btn-warning js-delete" data-id="@Model.Id">Удалить</button>
 @using (Html.BeginForm("", ""))
 {
 	@*<button type="submit" class="btn btn-default">Снять с должности</button>
@@ -74,6 +75,7 @@
 	@Scripts.Render("~/bundles/jqueryval")
 	<script>
 		$(document).ready(function () {
+			//Изменение
 			$(".js-change").on("click", function () {
 				var button = $(this);
 				var vm = {};
@@ -93,6 +95,24 @@
 						toastr.error("Произошла ошибка сохранения");
 					});
 
+			});
+			//Удаление
+			$(".js-delete").on("click", function () {
+				var button = $(this);
+				var vm = {};
+				bootbox.prompt("Вы уверены, что хотите удалить запись в выездном списке?\nУкажите причину:", function (result) {
+					if (result) {
+						$.ajax({
+							url: "/api/works/" + button.attr("data-id") + "/" + result,
+							method: "DELETE",
+							success: function () {
+								bootbox.confirm("Запись удалена из списка. Ожидайте утверждения изменений");
+								window.location = "/works/allworks"
+							}
+
+						});
+					}
+				});
 			});
 		});
 	</script>

@@ -74,13 +74,13 @@ namespace StudentSquads.Controllers
         {
             string view = "WorkEditForm";
             bool audit = false;
-            Work work = new Work();
+            Work work = _context.Works.Single(w => w.Id ==id);
             //Проверяем, если одобренные записи в текущем сезона
             var allworks = _context.Works.Where(w => (w.Season == null) && (w.Approved != null)).ToList();
             //Если они есть, то должен производиться процесс аудита
             if (allworks.Count != 0) audit = true;
             var works = _context.Works.Include(w => w.Member).Include(w => w.Employer).Include(w => w.WorkProject)
-                .Include(w => w.WorkChangeType).Where(w => w.OriginalWorkId == id).ToList();
+                .Include(w => w.WorkChangeType).Where(w => w.OriginalWorkId == work.OriginalWorkId).ToList();
             //Если нашли только 1 значение 
             if (works.Count == 1)work = works[0];
             //Есть записи аудита, надо найти самую старую и не отклоненную
@@ -91,9 +91,9 @@ namespace StudentSquads.Controllers
                 //Находим максимум по дате создания
                 var time = approvedworks.Max(n => n.CreateTime);
                 //Находим запись с такой датой создания
-                work = _context.Works.Include(w => w.Member)
-                .Include(w => w.Employer).Include(w => w.WorkProject)
-                .SingleOrDefault(w => (w.OriginalWorkId == id) && (w.CreateTime == time));
+                List<Work> groupworks = _context.Works.Where(w => (w.OriginalWorkId == work.OriginalWorkId)).ToList();
+                work = groupworks.Single(w => w.CreateTime == time);
+                //Добавляем только записи с последним изменением
             }
             WorkViewModel viewModel = new WorkViewModel
             {
@@ -147,6 +147,13 @@ namespace StudentSquads.Controllers
         public ActionResult AllWorks(string season=null)
         {
             return View();
+        }
+        public ActionResult Delete(WorkViewModel work)
+        {
+            var workInDb = _context.Works.Single(w => w.Id == work.Id);
+            _context.Works.Remove(workInDb);
+            _context.SaveChanges();
+            return RedirectToAction("AllWorks","Works");
         }
     }
 }
