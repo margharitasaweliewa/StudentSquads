@@ -29,30 +29,31 @@ namespace StudentSquads.Controllers.API
         {
             _context.Dispose();
         }
-        public List<Work> LimitWorks(List<Work> allworks, HeadsOfStudentSquads headofsquads)
-        {
-            List<Work> works = allworks;
-            if (User.IsInRole("SquadManager"))
-            {
-                works = allworks.Where(w => w.Member.SquadId == headofsquads.SquadId).ToList();
-            }
-            else if (User.IsInRole("UniManager"))
-            {
-                string squadId = "";
-                Squad squad = new Squad();
-                foreach (var work in works)
-                {
-                    if (squadId != work.Member.SquadId.ToString())
-                    {
-                        squadId = work.Member.SquadId.ToString();
-                        squad = _context.Squads.Include(s => s.UniversityHeadquarter).SingleOrDefault(s => s.Id == work.Member.SquadId);
-                    }
-                    if (squad.UniversityHeadquarterId == headofsquads.UniversityHeadquarterId)
-                        works.Add(work);
-                }
-            }
-            return works;
-        }
+        //[HttpGet]
+        //public List<Work> LimitWorks(List<Work> allworks, HeadsOfStudentSquads headofsquads)
+        //{
+        //    List<Work> works = allworks;
+        //    if (User.IsInRole("SquadManager"))
+        //    {
+        //        works = allworks.Where(w => w.Member.SquadId == headofsquads.SquadId).ToList();
+        //    }
+        //    else if (User.IsInRole("UniManager"))
+        //    {
+        //        string squadId = "";
+        //        Squad squad = new Squad();
+        //        foreach (var work in works)
+        //        {
+        //            if (squadId != work.Member.SquadId.ToString())
+        //            {
+        //                squadId = work.Member.SquadId.ToString();
+        //                squad = _context.Squads.Include(s => s.UniversityHeadquarter).SingleOrDefault(s => s.Id == work.Member.SquadId);
+        //            }
+        //            if (squad.UniversityHeadquarterId == headofsquads.UniversityHeadquarterId)
+        //                works.Add(work);
+        //        }
+        //    }
+        //    return works;
+        //}
         [HttpGet]
         public List<WorkViewModel> AllWorks(Guid? squadId = null, int? season = null)
         {
@@ -69,7 +70,33 @@ namespace StudentSquads.Controllers.API
             .Where(w => w.Season == season).ToList();
             //Определяем по отрядам(Если отряд не определен, то текущий)
             List<Work> works = new List<Work>();
-            if (squadId == null) works = LimitWorks(allworks, headofsquads);
+            if (squadId == null)
+            //Вставляю здесь, потому что не могу разобраться, как правильно функции писать
+            {
+                if (User.IsInRole("SquadManager"))
+                {
+                    works = allworks.Where(w => w.Member.SquadId == headofsquads.SquadId).ToList();
+                }
+                else if (User.IsInRole("UniManager"))
+                {
+                    List<Work> newworks = new List<Work>();
+                    string squadIdstr = "";
+                    Squad squad = new Squad();
+                    foreach (var work in works)
+                    {
+                        //Проверяем, рассматриваем ли мы отряд текущего члена организации
+                        if (squadIdstr != work.Member.SquadId.ToString())
+                        {
+                            //Если нет, то текущий отряд = отряд текущего членв
+                            squadIdstr = work.Member.SquadId.ToString();
+                            squad = _context.Squads.Include(s => s.UniversityHeadquarter).SingleOrDefault(s => s.Id == work.Member.SquadId);
+                        }
+                        //Если отряд относится к штабу, тогда добавляем информацт=ию о работе в список
+                        if (squad.UniversityHeadquarterId == headofsquads.UniversityHeadquarterId)
+                            newworks.Add(work);
+                    }
+                }
+            }
             else works = allworks.Where(m => m.Member.SquadId == squadId).ToList();
             //Формируем записи для представления
             string alternative = "";

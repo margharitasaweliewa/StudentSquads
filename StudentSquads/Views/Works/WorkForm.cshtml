@@ -122,8 +122,8 @@
 				//vm.HasRole = document.getElementById('hasrole').value;
 				if ($("#newWork").valid()) {
 					$.ajax({
-						url: "/api/Works",
-						method: "post",
+						url: "/api/works/createnewwork",
+						method: "POST",
 						data: vm
 					})
 						.done(function () {
