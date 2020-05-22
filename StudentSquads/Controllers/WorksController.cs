@@ -102,7 +102,9 @@ namespace StudentSquads.Controllers
                 FIO = _context.Members.Include(p => p.Person)
                 .SingleOrDefault(p => p.Id == work.MemberId).Person.FIO,
                 Employer = work.Employer.Name,
+                EmployerId = work.EmployerId,
                 WorkProject = work.WorkProject?.Name,
+                WorkProjectId = work.WorkProjectId,
                 DateofBegin = work.DateofBegin,
                 DateofEnd = work.DateofEnd,
                 Alternative = work.Alternative,
@@ -148,12 +150,12 @@ namespace StudentSquads.Controllers
         {
             return View();
         }
-        public ActionResult Delete(WorkViewModel work)
-        {
-            var workInDb = _context.Works.Single(w => w.Id == work.Id);
-            _context.Works.Remove(workInDb);
-            _context.SaveChanges();
-            return RedirectToAction("AllWorks","Works");
-        }
+        //public ActionResult Delete(WorkViewModel work)
+        //{
+        //    var workInDb = _context.Works.Single(w => w.Id == work.Id);
+        //    _context.Works.Remove(workInDb);
+        //    _context.SaveChanges();
+        //    return RedirectToAction("AllWorks","Works");
+        //}
     }
 }

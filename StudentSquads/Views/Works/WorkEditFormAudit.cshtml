@@ -79,6 +79,12 @@
 			$(".js-change").on("click", function () {
 				var button = $(this);
 				var vm = {};
+				vm.Alternative = document.getElementById('alternative').value;
+				vm.DateOfBegin = document.getElementById('dateofbegin').value;
+				vm.DateOfEnd = document.getElementById('dateofend').value;
+				vm.EmployerId = document.getElementById('employer').value;
+				vm.WorkProject = document.getElementById('workproject').value;
+				vm.Id = document.getElementById('Id').value;
 				//vm.HeadofStudentSquadsId = button.attr("data-id");
 				//vm.PersonId = document.getElementById('personId').value;
 				//vm.Position = document.getElementById('position').value;
@@ -106,8 +112,10 @@
 							url: "/api/works/" + button.attr("data-id") + "/" + result,
 							method: "DELETE",
 							success: function () {
-								bootbox.confirm("Запись удалена из списка. Ожидайте утверждения изменений");
-								window.location = "/works/allworks"
+								bootbox.alert("Запись удалена из списка. Ожидайте утверждения изменений", function () {
+									window.location = "/works/allworks"
+								});
+								
 							}
 
 						});

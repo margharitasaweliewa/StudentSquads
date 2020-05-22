@@ -13,16 +13,17 @@ namespace StudentSquads
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-            //RouteTable.Routes.MapHttpRoute(
-            //name: "ExitApi",
-            //routeTemplate: "api/{controller}/{action}/{personId}",
-            //defaults: new { personId = System.Web.Http.RouteParameter.Optional }
-            //);
+
             RouteTable.Routes.MapHttpRoute(
             name: "ExcludeApi",
             routeTemplate: "api/{controller}/{id}/{reason}",
             defaults: new { id = System.Web.Http.RouteParameter.Optional }
             );
+            RouteTable.Routes.MapHttpRoute(
+name: "ExitApi",
+routeTemplate: "api/{controller}/{action}/{personId}",
+defaults: new { personId = System.Web.Http.RouteParameter.Optional }
+);
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

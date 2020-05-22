@@ -13,6 +13,7 @@ using System.ComponentModel;
 using Microsoft.AspNet.Identity.EntityFramework;
 using StudentSquads.Controllers;
 using System.Web.Services.Protocols;
+using System.Data;
 
 namespace StudentSquads.Controllers.API
 {
@@ -95,6 +96,10 @@ namespace StudentSquads.Controllers.API
                         if (squad.UniversityHeadquarterId == headofsquads.UniversityHeadquarterId)
                             newworks.Add(work);
                     }
+                }
+                else if (User.IsInRole("RegionalManager"))
+                {
+                    works = allworks;
                 }
             }
             else works = allworks.Where(m => m.Member.SquadId == squadId).ToList();
@@ -229,9 +234,15 @@ namespace StudentSquads.Controllers.API
                     //Находим текущую запись в БД
                     var workInDb = _context.Works.Include(w => w.Member).Include(w => w.WorkProject).Include(w => w.Employer)
                         .SingleOrDefault(w => w.Id == work.Id);
+                    //Если введена новая дата
+                    if(work.DateofBegin.ToString("dd.MM.yyyy")!="01.01.0001")
                     workInDb.DateofBegin = work.DateofBegin;
-                    workInDb.DateofEnd = work.DateofEnd;
+                    if (work.DateofBegin.ToString("dd.MM.yyyy") != "01.01.0001")
+                        workInDb.DateofEnd = work.DateofEnd;
+                    //Если передали новое значение, то мы его изменяем
+                    if(work.EmployerId!=Guid.Empty)
                     workInDb.EmployerId = work.EmployerId;
+                    if(work.WorkProjectId!=Guid.Empty)
                     workInDb.WorkProjectId = work.WorkProjectId;
                     workInDb.Alternative = work.Alternative;
                     workInDb.AlternativeReason = work.AlternativeReason;
@@ -253,10 +264,11 @@ namespace StudentSquads.Controllers.API
             return Ok();
         }
         [HttpDelete]
-        public IHttpActionResult DeleteWork(Guid id, string reason)
+        public IHttpActionResult DeleteWork(Guid id, string reason=null)
         {
                 var work = _context.Works.Single(w => w.Id ==id);
-                //Если есть аудит, создаем новую запись9+
+                if(reason!=null)
+            {
                 Work newwork = new Work
                 {
                     //DateTime2 нельзя ковертировать в DateTime, когда ты пытаещься нулевую дату вставить, когда nullable = false
@@ -274,7 +286,15 @@ namespace StudentSquads.Controllers.API
                     ExitReason = reason
                 };
                 _context.Works.Add(newwork);
+
+            }
+            else
+            {
+                _context.Works.Remove(work);
                 _context.SaveChanges();
+            }
+            _context.SaveChanges();
+
             return Ok();
         }
 

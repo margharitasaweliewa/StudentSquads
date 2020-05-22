@@ -30,7 +30,7 @@ namespace StudentSquads.Controllers.API
         public List<Employer> GetEmployers(string query = null)
         {
             //Нужно добавить функцию лимит
-            List<Employer> employers = _context.Employers.ToList();
+           List<Employer> employers = _context.Employers.ToList();
             if(query!=null)employers = employers.Where(e => e.Name.Contains(query)).ToList();
             return employers;
         }
