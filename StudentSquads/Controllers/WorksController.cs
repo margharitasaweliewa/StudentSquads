@@ -87,7 +87,8 @@ namespace StudentSquads.Controllers
             else
             {
                 //Рассматриваем только неотклоненные
-                var  approvedworks = works.Where(w => w.Approved != false).ToList();
+                var approvedworks = works.Where(w => w.Approved != false)
+                    .OrderByDescending(v => v.CreateTime).ToList();
                 //Находим максимум по дате создания
                 var time = approvedworks.Max(n => n.CreateTime);
                 //Находим запись с такой датой создания
@@ -109,7 +110,8 @@ namespace StudentSquads.Controllers
                 DateofEnd = work.DateofEnd,
                 Alternative = work.Alternative,
                 Audit = audit,
-                MemberId = work.MemberId
+                MemberId = work.MemberId,
+                OriginalWorkId = work.OriginalWorkId
             };
             if (audit)
             {
@@ -121,6 +123,7 @@ namespace StudentSquads.Controllers
                 {
                     if (version.Approved == true) approved = "Утверждено";
                     else if (version.Approved == false) approved = "Отклонено";
+                    else if (version.Approved == null) approved = "Нет решения";
                     WorkViewModel workversion = new WorkViewModel
                     {
                         Id = version.Id,
@@ -132,6 +135,7 @@ namespace StudentSquads.Controllers
                         DateofBeginString = version.DateofBegin.ToString("dd.MM.yyyy"),
                         DateofEndString = version.DateofEnd.ToString("dd.MM.yyyy"),
                         CreateTime = version.CreateTime.ToString("dd.MM.yyyy"),
+                        CreateDateTime = version.CreateTime,
                         Alternative = version.Alternative,
                         ChangeType = version.WorkChangeType?.Name,
                         ApprovedString = approved
@@ -139,9 +143,9 @@ namespace StudentSquads.Controllers
                     versions.Add(workversion);
                 }
                 //Добавляем список версий
-                viewModel.Versions = versions;
+                viewModel.Versions = versions.OrderByDescending(v => v.CreateDateTime).ToList();
                 //Настраиваем другое представление
-                view = view + "Audit";
+                //view = view + "Audit";
             }
             return View(view, viewModel);
         }

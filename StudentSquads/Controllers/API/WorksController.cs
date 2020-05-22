@@ -207,26 +207,29 @@ namespace StudentSquads.Controllers.API
                     //Если список уже утвержден, создаем новую запись
                     if (work.Audit)
                     {
-                    foreach (var memberId in work.MembersIds)
-                    {
-                        Work newwork = new Work
+                    var workInDb = _context.Works.Include(w => w.Member).Include(w => w.WorkProject).Include(w => w.Employer)
+    .SingleOrDefault(w => w.Id == work.Id);
+                    //Если какое-либо поле не было заполнено, заполняем его старым значением
+                    if (work.DateofBegin.ToString("dd.MM.yyyy") == "01.01.0001")
+                        work.DateofBegin = workInDb.DateofBegin;
+                    if (work.DateofEnd.ToString("dd.MM.yyyy") == "01.01.0001")
+                        work.DateofEnd = workInDb.DateofEnd;
+                    Work newwork = new Work
                         {
                             //DateTime2 нельзя ковертировать в DateTime, когда ты пытаещься нулевую дату вставить, когда nullable = false
                             CreateTime = DateTime.Now,
                             Id = Guid.NewGuid(),
-                            MemberId = memberId,
+                            MemberId = work.MemberId,
                             EmployerId = work.EmployerId,
                             WorkProjectId = work?.WorkProjectId,
-                            //Тут надо снова ошибку исправлять
                             DateofBegin = work.DateofBegin,
                             DateofEnd = work.DateofEnd,
                             Alternative = work.Alternative,
-                            //При создании записи после утверждения списка - тип "Изменение даты"
-                            WorkChangeTypeId = 3,
-                            OriginalWorkId = work.Id
+                            //При создании записи после утверждения списка - тип "Изменение"
+                            WorkChangeTypeId = 1004,
+                            OriginalWorkId = work.OriginalWorkId
                         };
                         _context.Works.Add(newwork);
-                    }
                  }
                 //Если ещё не утверждено, тогда редактируем просто старую запись
                 else
@@ -282,8 +285,10 @@ namespace StudentSquads.Controllers.API
                     Alternative = work.Alternative,
                     AlternativeReason = work.AlternativeReason,
                     WorkChangeTypeId = 2,
-                    OriginalWorkId = work.Id,
-                    ExitReason = reason
+                    OriginalWorkId = work.OriginalWorkId,
+                    ExitReason = reason,
+                    Approved = false
+                    
                 };
                 _context.Works.Add(newwork);
 

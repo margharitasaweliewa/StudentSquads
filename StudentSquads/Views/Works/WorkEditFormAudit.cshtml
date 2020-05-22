@@ -11,6 +11,10 @@
 	@*<button type="submit" class="btn btn-default">Снять с должности</button>
 		<input type="submit" name="button2" value="Удалить" class="btn btn-default" formaction="@Url.Action("Delete", "Positions")" />*@
 	@Html.HiddenFor(m => m.Id, new { @id = "Id" })
+	@Html.HiddenFor(m => m.OriginalWorkId, new { @id = "OriginalWorkId" })
+	@Html.HiddenFor(m => m.MemberId, new { @id = "MemberId" })
+	@Html.HiddenFor(m => m.EmployerId, new { @id = "EmployerId" })
+	@Html.HiddenFor(m => m.WorkProjectId, new { @id = "WorkprojectId" })
 	<div class="form-group">
 		@Html.LabelFor(m => m.Employer)
 		@Html.TextBoxFor(m => m.Employer, new { @id = "employer", @class = "form-control", @readonly = "readonly" })
@@ -20,14 +24,12 @@
 		@Html.TextBoxFor(m => m.WorkProject, new { @id = "workproject", @class = "form-control", @readonly = "readonly" })
 	</div>
 	<div class="form-group">
-		@Html.LabelFor(m => m.DateofBegin)
-		@Html.TextBoxFor(m => m.DateofBegin, "{0:dd.MM.yyyy}", new { @id = "dateofbegin", @class = "form-control" })
+		@Html.LabelFor(m => m.DateofBegin) (@Model.DateofBegin.ToString("dd.MM.yyyy"))
+		@Html.TextBoxFor(m => m.DateofBegin, "{0:yyyy.MM.dd}", new { @type = "date", @id = "dateofbegin", @class = "form-control" })
 	</div>
 	<div class="form-group">
-		@Html.LabelFor(m => m.DateofEnd)
-		<div class="tt-container">
-			@Html.TextBoxFor(m => m.DateofEnd, "{0:dd.MM.yyyy}", new { @id = "dateofend", @class = "form-control" })
-		</div>
+		@Html.LabelFor(m => m.DateofEnd) (@Model.DateofEnd.ToString("dd.MM.yyyy"))
+		@Html.TextBoxFor(m => m.DateofEnd, "{0:dd.MM.yyyy}", new { @type = "date", @id = "dateofend", @class = "form-control" })
 	</div>
 	<div class="form-group">
 		@Html.LabelFor(m => m.FIO)
@@ -56,15 +58,15 @@
 			<tbody>
 				@for (int i = 0; i < Model.Versions.Count; i++)
 				{
-				<tr>
-					<td>@Model.Versions[i].FIO</td>
-					<td>@Model.Versions[i].Employer</td>
-					<td>@Model.Versions[i].DateofBeginString</td>
-					<td>@Model.Versions[i].DateofEndString</td>
-					<td>@Model.Versions[i].CreateTime</td>
-					<td>@Model.Versions[i].ChangeType</td>
-					<td>@Model.Versions[i].ApprovedString</td>
-				</tr>
+					<tr>
+						<td>@Model.Versions[i].FIO</td>
+						<td>@Model.Versions[i].Employer</td>
+						<td>@Model.Versions[i].DateofBeginString</td>
+						<td>@Model.Versions[i].DateofEndString</td>
+						<td>@Model.Versions[i].CreateTime</td>
+						<td>@Model.Versions[i].ChangeType</td>
+						<td>@Model.Versions[i].ApprovedString</td>
+					</tr>
 				}
 			</tbody>
 		</table>
@@ -82,9 +84,12 @@
 				vm.Alternative = document.getElementById('alternative').value;
 				vm.DateOfBegin = document.getElementById('dateofbegin').value;
 				vm.DateOfEnd = document.getElementById('dateofend').value;
-				vm.EmployerId = document.getElementById('employer').value;
-				vm.WorkProject = document.getElementById('workproject').value;
 				vm.Id = document.getElementById('Id').value;
+				vm.Audit = true;
+				vm.MemberId = document.getElementById('MemberId').value;
+				vm.OriginalWorkId = document.getElementById('OriginalWorkId').value;
+				vm.EmployerId = document.getElementById('EmployerId').value;
+				vm.WorkProjectId = document.getElementById('WorkProjectId').value;
 				//vm.HeadofStudentSquadsId = button.attr("data-id");
 				//vm.PersonId = document.getElementById('personId').value;
 				//vm.Position = document.getElementById('position').value;
@@ -115,7 +120,7 @@
 								bootbox.alert("Запись удалена из списка. Ожидайте утверждения изменений", function () {
 									window.location = "/works/allworks"
 								});
-								
+
 							}
 
 						});
