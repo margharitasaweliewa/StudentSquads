@@ -9,6 +9,11 @@
 	@Html.ValidationSummary()
 	<button type="submit" class="btn btn-warning">Сохранить</button>
 	<input type="submit" name="button2" value="Удалить" class="btn btn-default" formaction="@Url.Action("DeleteEvent", "Raitings")" />
+	if (User.IsInRole("RegionalManager"))
+	{
+	<input type="submit" name="button3" value="Утвердить" class="btn btn-warning" formaction="@Url.Action("ApproveEvent", "Raitings")" />
+	<input type="submit" name="button4" value="Отклонить" class="btn btn-default" formaction="@Url.Action("RejectEvent", "Raitings")" />
+	}
 	@Html.HiddenFor(m => m.Id)
 	<div>
 		<div class="form-group">
@@ -37,7 +42,7 @@
 
 }
 
-@section scripts
+@*@section scripts
 {
 	@Scripts.Render("~/bundles/jqueryval")
-}
+}*@

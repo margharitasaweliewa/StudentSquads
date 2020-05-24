@@ -38,10 +38,15 @@ namespace StudentSquads.Controllers
         public ActionResult AllRaitingEvents()
         {
             List<RaitingEventViewModel> listofevents = new List<RaitingEventViewModel>();
+            var headofsquads = GetHeadOfStudentSquads();
             //Отображаем только те, которые в текущем рейтинге, т е ещё не составленном DateofCreation = null
+            //Отображаем утвержденные и созданные собственными руками
             var events = _context.RaitingEvents.Include(e => e.Raiting).Include(e => e.EventLevel)
                 .Include(e => e.Squad).Include(e => e.UniversityHeadquarter).Include(e => e.RegionalHeadquarter)
-                .Where(e => e.Raiting.DateofCreation == null).ToList();
+                .Where(e => (e.Raiting.DateofCreation == null)
+                &&((e.Approved==true)||(e.SquadId==headofsquads.SquadId)
+                ||(e.UniversityHeadquarterId == headofsquads.UniversityHeadquarterId)||(User.IsInRole("RegionalManager"))))
+                .ToList();
             foreach (var ev in events)
             {
                 //Находим создателя
@@ -86,7 +91,7 @@ namespace StudentSquads.Controllers
             //Иначе берем текущий
             else raitingId = raiting.Id;
             //При создании
-            if (model.Id == Guid.Empty) 
+            if (model.Id == Guid.Empty)
             {
                 bool? approved = null;
                 //Узнаем, какой пользователь
@@ -111,7 +116,7 @@ namespace StudentSquads.Controllers
             }
             else
             {
-                var raitingeventInDb = _context.RaitingEvents.Single(r => r.Id ==model.Id);
+                var raitingeventInDb = _context.RaitingEvents.Single(r => r.Id == model.Id);
                 if (model.DateofBegin.ToString("dd.MM.yyyy") != "01.01.0001")
                     raitingeventInDb.DateofBegin = model.DateofBegin;
                 if (model.DateofEnd.ToString("dd.MM.yyyy") != "01.01.0001")
@@ -127,14 +132,14 @@ namespace StudentSquads.Controllers
             var eventlevels = _context.EventLevels.ToList();
             var viewModel = new RaitingEventViewModel
             {
-               EventLevels = eventlevels
+                EventLevels = eventlevels
             };
             return View(viewModel);
         }
         public ActionResult EditEvent(Guid id)
         {
             var eventslevels = _context.EventLevels.ToList();
-            RaitingEvent raitingevent = _context.RaitingEvents.SingleOrDefault(e => e.Id ==id);
+            RaitingEvent raitingevent = _context.RaitingEvents.SingleOrDefault(e => e.Id == id);
             RaitingEventViewModel viewModel = new RaitingEventViewModel
             {
                 Id = raitingevent.Id,
@@ -147,6 +152,27 @@ namespace StudentSquads.Controllers
                 EventLevels = eventslevels
             };
             return View("RaitingEventForm", viewModel);
+        }
+        public ActionResult DeleteEvent(Guid id)
+        {
+            var ev = _context.RaitingEvents.Single(r => r.Id == id);
+            _context.RaitingEvents.Remove(ev);
+            _context.SaveChanges();
+            return RedirectToAction("AllRaitingEvents", "Raitings");
+        }
+        public ActionResult ApproveEvent(Guid id)
+        {
+            var ev = _context.RaitingEvents.Single(r => r.Id == id);
+            ev.Approved = true;
+            _context.SaveChanges();
+            return RedirectToAction("AllRaitingEvents", "Raitings");
+        }
+        public ActionResult RejectEvent(Guid id)
+        {
+            var ev = _context.RaitingEvents.Single(r => r.Id == id);
+            ev.Approved = false;
+            _context.SaveChanges();
+            return RedirectToAction("AllRaitingEvents", "Raitings");
         }
     }
 }
