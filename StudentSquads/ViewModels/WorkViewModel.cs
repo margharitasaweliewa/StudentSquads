@@ -51,5 +51,7 @@ namespace StudentSquads.ViewModels
         public Guid? OriginalWorkId { get; set; }
         public DateTime CreateDateTime { get; set; }
         public bool? Approved { get; set; }
+        public List<Guid> ChoosenWorks { get; set; }
+        public string Rebuke { get; set; }
     }
 }

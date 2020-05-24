@@ -51,7 +51,7 @@ namespace StudentSquads.Models
         public DbSet<ProfessionSchool> ProfessionSchools { get; set; }
         public DbSet<ScholAttending> ScholAttendings { get; set; }
         public DbSet<WorkChangeType> WorkChangeTypes { get; set; }
-
+        public DbSet<SquadWork> SquadWorks { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

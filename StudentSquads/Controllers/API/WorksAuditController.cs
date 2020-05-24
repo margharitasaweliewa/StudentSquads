@@ -33,11 +33,15 @@ namespace StudentSquads.Controllers.API
             var workInDb = _context.Works.Single(w => w.Id.ToString() == id);
             //Утверждаем изменения
             workInDb.Approved = true;
-            //Сделать удаленным записи, у которых OriginalWork = текущий OriginalWork
-            var works = _context.Works.Where(w => w.OriginalWorkId == workInDb.OriginalWorkId);
-            foreach (var work in works)
+            //Если удаление, проставлеяем метку "Удалено"
+            if (workInDb.WorkChangeTypeId == 2)
             {
-                work.Removed = DateTime.Now;
+                //Сделать удаленным записи, у которых OriginalWork = текущий OriginalWork
+                var works = _context.Works.Where(w => w.OriginalWorkId == workInDb.OriginalWorkId);
+                foreach (var work in works)
+                {
+                    work.Removed = DateTime.Now;
+                }
             }
             _context.SaveChanges();
             return Ok();
@@ -51,6 +55,21 @@ namespace StudentSquads.Controllers.API
             _context.SaveChanges();
             return Ok();
         }
-
+        [HttpDelete]
+        public IHttpActionResult Rebuke(WorkViewModel model) 
+        {
+            foreach (var work in model.ChoosenWorks)
+            {
+                //Берем все записи аудита
+                var worksInDb = _context.Works.Where(w => w.OriginalWorkId == work);
+                //Для каждой записи проставляем незачет целины и причину выговора
+                foreach (var workInDb in worksInDb)
+                {
+                    workInDb.Rebuke = model.Rebuke;
+                    workInDb.Affirmed = false;
+                }
+            }
+            return Ok();
+        }
     }
 }

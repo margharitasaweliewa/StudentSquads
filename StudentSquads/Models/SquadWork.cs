@@ -13,5 +13,7 @@ namespace StudentSquads.Models
         public int Count { get; set; }
         public int AlternativeCount { get; set; }
         public int BadgesCount { get; set; }
+        public Squad Squad { get; set; }
+        public Guid? SquadId { get; set; }
     }
 }

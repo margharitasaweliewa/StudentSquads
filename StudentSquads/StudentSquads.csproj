@@ -194,6 +194,7 @@
     <Compile Include="Controllers\API\MembersController.cs" />
     <Compile Include="Controllers\API\PeopleController.cs" />
     <Compile Include="Controllers\API\PositionsController.cs" />
+    <Compile Include="Controllers\API\SquadWorksController.cs" />
     <Compile Include="Controllers\API\WorksAuditController.cs" />
     <Compile Include="Controllers\API\WorksController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -344,6 +345,10 @@
     <Compile Include="Migrations\202005201824197_AddRemovedinWork.cs" />
     <Compile Include="Migrations\202005201824197_AddRemovedinWork.Designer.cs">
       <DependentUpon>202005201824197_AddRemovedinWork.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005240954588_AddSquadtoSquadWork.cs" />
+    <Compile Include="Migrations\202005240954588_AddSquadtoSquadWork.Designer.cs">
+      <DependentUpon>202005240954588_AddSquadtoSquadWork.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -768,6 +773,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005201824197_AddRemovedinWork.resx">
       <DependentUpon>202005201824197_AddRemovedinWork.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005240954588_AddSquadtoSquadWork.resx">
+      <DependentUpon>202005240954588_AddSquadtoSquadWork.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -158,6 +158,7 @@ namespace StudentSquads.Controllers.API
                     Affirmed = affirmed,
                     Season = work.Season.ToString(),
                     ChangeType = work.WorkChangeType?.Name,
+                    OriginalWorkId = work.OriginalWorkId
                     
                 };
                 if (audit)

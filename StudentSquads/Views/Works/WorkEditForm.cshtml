@@ -3,8 +3,15 @@
 	ViewBag.Title = "WorkEditForm";
 }
 <h2>Редактирование выездного списка</h2>
-<button id="auditsave" audit="@Model.Audit" class="btn btn-warning js-change" type = "submit">Сохранить</button>
-<button id="auditdelete" audit=@Model.Audit class="btn btn-default js-delete" data-work-id = "@Model.Id" type="submit">Удалить</button>
+@if (User.IsInRole("SquadManager"))
+{
+	<button id="auditsave" audit="@Model.Audit" class="btn btn-warning js-change" type="submit">Сохранить</button>
+	<button id="auditdelete" audit=@Model.Audit class="btn btn-default js-delete" data-work-id ="@Model.Id" type="submit">Удалить</button>
+}
+@if (User.IsInRole("RegionalManager"))
+{
+	<button id="rebuke" data-work-id = "@Model.Id" class="btn btn-warning js-rebuke" type="submit">Выписать выговор</button>
+}
 @using (Html.BeginForm("Delete", "Works"))
 {
 
@@ -41,47 +48,48 @@
 	</div>
 }
 @if (Model.Versions != null)
-	{
-<h4>История изменений</h4>
-<table id="worksaudit" class="table table-bordered table-hover">
-	<thead>
-		<tr>
-			<th>ФИО</th>
-			<th>Работодатель</th>
-			<th>Дата начала</th>
-			<th>Дата окончания</th>
-			<th>Дата создания</th>
-			<th>Вид изменения</th>
-			<th>Утверждено</th>
-			@if ((User.IsInRole("RegionalManager")))
-			{
-				<th>Утвердить</th>
-				<th>Отклонить</th>
-			}
-		</tr>
-	</thead>
-	<tbody>
-		@for (int i = 0; i < Model.Versions.Count; i++)
-		{
-			@Model.Versions[i].Approved
+{
+	<h4>История изменений</h4>
+	<table id="worksaudit" class="table table-bordered table-hover">
+		<thead>
 			<tr>
-				<td>@Model.Versions[i].FIO</td>
-				<td>@Model.Versions[i].Employer</td>
-				<td>@Model.Versions[i].DateofBeginString</td>
-				<td>@Model.Versions[i].DateofEndString</td>
-				<td>@Model.Versions[i].CreateTime</td>
-				<td>@Model.Versions[i].ChangeType</td>
-				<td>@Model.Versions[i].ApprovedString</td>
-				@if (Model.Versions[i].Approved == null && (User.IsInRole("RegionalManager")))
-				{<td><button class='btn-link js-approve' data-work-id = @Model.Versions[i].Id>Утвердить</button></td>
-				<td><button class='btn-link js-reject' data-work-id = @Model.Versions[i].Id>Отклонить</button></td>
+				<th>ФИО</th>
+				<th>Работодатель</th>
+				<th>Дата начала</th>
+				<th>Дата окончания</th>
+				<th>Дата создания</th>
+				<th>Вид изменения</th>
+				<th>Утверждено</th>
+				@if ((User.IsInRole("RegionalManager")))
+				{
+					<th>Утвердить</th>
+					<th>Отклонить</th>
 				}
-				
 			</tr>
-		}
-	</tbody>
-</table>
-	}
+		</thead>
+		<tbody>
+			@for (int i = 0; i < Model.Versions.Count; i++)
+			{
+				@Model.Versions[i].Approved
+				<tr>
+					<td>@Model.Versions[i].FIO</td>
+					<td>@Model.Versions[i].Employer</td>
+					<td>@Model.Versions[i].DateofBeginString</td>
+					<td>@Model.Versions[i].DateofEndString</td>
+					<td>@Model.Versions[i].CreateTime</td>
+					<td>@Model.Versions[i].ChangeType</td>
+					<td>@Model.Versions[i].ApprovedString</td>
+					@if (Model.Versions[i].Approved == null && (User.IsInRole("RegionalManager")))
+					{
+						<td><button class='btn-link js-approve' data-work-id=@Model.Versions[i].Id>Утвердить</button></td>
+						<td><button class='btn-link js-reject' data-work-id=@Model.Versions[i].Id>Отклонить</button></td>
+					}
+
+				</tr>
+			}
+		</tbody>
+	</table>
+}
 
 @section scripts
 {
@@ -157,19 +165,21 @@
 					});
 				}
 				else {
-					bootbox.confirm("Вы уверены, что хотите удалить запись в выездном списке?", function () {
-						$.ajax({
-							url: "/api/works/" + button.attr("data-work-id"),
-							method: "DELETE",
-							success: function () {
-								bootbox.alert("Запись удалена из списка", function () {
-									window.location = "/works/allworks"
+					bootbox.confirm("Вы уверены, что хотите удалить запись в выездном списке?", function (result) {
+						if (result)
+						{
+							$.ajax({
+								url: "/api/works/" + button.attr("data-work-id"),
+								method: "DELETE",
+								success: function () {
+									bootbox.alert("Запись удалена из списка", function () {
+										window.location = "/works/allworks"
+									}
+									);
 								}
-								);
-							}
 
-						});
-
+							});
+						}
 					});
 
 				}
@@ -207,6 +217,25 @@
 					}
 				});
 			});
+			$(".js-rebuke").on("click", function () {
+				var button = $(this);
+				bootbox.prompt("Вы уверены, что хотите вынести выговор?\nУкажите причину:", function (result) {
+					if (result) {
+						$.ajax({
+							url: "/api/squadworks/" + button.attr("data-work-id") + "/" + result,
+							method: "DELETE",
+							success: function ()
+							{
+								bootbox.alert("Выговор вынесен", function () {
+									window.location = "/works/allworks"
+								}
+								);
+							}
+						});
+					}
+				});
+			});
+
 		});
 	</script>
 }

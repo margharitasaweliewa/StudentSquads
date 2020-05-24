@@ -5,39 +5,39 @@
 }
 <h2>Информация по трудовому семестру</h2>
 
-	
 @if (User.IsInRole("RegionalManager"))
-	{
-		<a id ="js-approve" class="btn btn-warning"> Утвердить список</a>
-		@*<input type="submit" name="button2" value="Вынести выговор" class="btn btn-warning" formaction="@Url.Action("Rebuke", "Works")" />*@
-	}
-	<a class="btn btn-warning" href="/works/workform">Создать</a>
-	<a class="btn btn-warning only-changed">Показать с изменениями</a>
-	<table id="works" class="table table-bordered table-hover">
-		<thead>
-			<tr>
-				<th></th>
-				<th>ФИО</th>
-				<th>Отряд</th>
-				<th>Штаб</th>
-				<th>Работодатель</th>
-				<th>Трудовой проект</th>
-				<th>Начало</th>
-				<th>Окончание</th>
-				<th>Альтернатива</th>
-				<th>Засчитана</th>
-				<th>Изменения</th>
-			</tr>
-		</thead>
-		<tbody>
-		</tbody>
-	</table>
-	@Html.AntiForgeryToken()
+{
+	<a id="js-approve" class="btn btn-warning"> Утвердить список</a>
+	<a id="js-season" class="btn btn-warning"> Завершить сезон </a>
+}
+@if (User.IsInRole("SquadManager"))
+{<a class="btn btn-warning" href="/works/workform">Создать</a>}
+
+<table id="works" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th></th>
+			<th>ФИО</th>
+			<th>Отряд</th>
+			<th>Штаб</th>
+			<th>Работодатель</th>
+			<th>Трудовой проект</th>
+			<th>Начало</th>
+			<th>Окончание</th>
+			<th>Альтернатива</th>
+			<th>Засчитана</th>
+			<th>Изменения</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+@Html.AntiForgeryToken()
 @section scripts
 {
 	<script>
 		$(document).ready(function () {
-		var table =	$("#works").DataTable({
+			var table = $("#works").DataTable({
 				ajax: {
 					url: "/api/works/allworks",
 					dataSrc: ""
@@ -84,11 +84,16 @@
 						data: "Changed",
 						render: function (data, type, work) {
 							if (work.Changed == true) return "Есть";
-							else return "";					}
+							else return "";
+						}
 					}
 				]
-		});
-			
+			});
+			$(".choosen").on("change", function () {
+				var check = $(this);
+				if (check.checked) alert("Checked");
+				else alert("Unchecked")
+			});
 			$("#js-approve").on("click", function () {
 				var button = $(this);
 				bootbox.confirm("Вы уверены, что хотите утвердить выездной список?", function (result) {
@@ -104,6 +109,26 @@
 					}
 				});
 			});
+			//Доделать
+				$("#js-season").on("click", function () {
+					var button = $(this);
+					bootbox.confirm("Вы уверены, что хотите завершить сезон и сформировать список на выдачу кирпичей?", function (result) {
+						if (result) {
+							$.ajax({
+								url: "/api/squadworks/",
+								method: "POST",
+								success: function () {
+									bootbox.alert("Сезон завершен. Просмотрите списки на выдачу кирпичей", function () {
+										window.location = "/works/allworks"
+									}
+									);
+								}
+
+							});
+						}
+					});
+				});
+
 		});
 	</script>
 }
