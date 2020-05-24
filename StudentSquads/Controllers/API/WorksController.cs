@@ -170,8 +170,10 @@ namespace StudentSquads.Controllers.API
                 }
                 listworks.Add(workview);
             }
-            return listworks;
+                return listworks;
         }
+
+
         [HttpPost]
         public IHttpActionResult CreateNewWork(WorkViewModel work)
         {
@@ -271,7 +273,7 @@ namespace StudentSquads.Controllers.API
         {
                 var work = _context.Works.Single(w => w.Id ==id);
                 if(reason!=null)
-            {
+                {
                 Work newwork = new Work
                 {
                     //DateTime2 нельзя ковертировать в DateTime, когда ты пытаещься нулевую дату вставить, когда nullable = false

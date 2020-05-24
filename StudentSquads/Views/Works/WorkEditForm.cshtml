@@ -3,8 +3,8 @@
 	ViewBag.Title = "WorkEditForm";
 }
 <h2>Редактирование выездного списка</h2>
-<button id ="auditsave" audit = "@Model.Audit" class="btn btn-warning js-change" type="submit">Сохранить</button>
-<button id ="auditdelete" audit = @Model.Audit class="btn btn-default js-delete" data-id="@Model.Id" type="submit">Удалить</button>
+<button id="auditsave" audit="@Model.Audit" class="btn btn-warning js-change" type = "submit">Сохранить</button>
+<button id="auditdelete" audit=@Model.Audit class="btn btn-default js-delete" data-work-id = "@Model.Id" type="submit">Удалить</button>
 @using (Html.BeginForm("Delete", "Works"))
 {
 
@@ -39,38 +39,49 @@
 			@Html.CheckBoxFor(m => m.Alternative, new { @id = "alternative" }) Альтернативная целина?
 		</label>
 	</div>
-	if (Model.Versions != null)
-	{
-		<h4>История изменений</h4>
-		<table id="enterapplications" class="table table-bordered table-hover">
-			<thead>
-				<tr>
-					<th>ФИО</th>
-					<th>Работодатель</th>
-					<th>Дата начала</th>
-					<th>Дата окончания</th>
-					<th>Дата создания</th>
-					<th>Вид изменения</th>
-					<th>Утверждено</th>
-				</tr>
-			</thead>
-			<tbody>
-				@for (int i = 0; i < Model.Versions.Count; i++)
-				{
-					<tr>
-						<td>@Model.Versions[i].FIO</td>
-						<td>@Model.Versions[i].Employer</td>
-						<td>@Model.Versions[i].DateofBeginString</td>
-						<td>@Model.Versions[i].DateofEndString</td>
-						<td>@Model.Versions[i].CreateTime</td>
-						<td>@Model.Versions[i].ChangeType</td>
-						<td>@Model.Versions[i].ApprovedString</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-	}
 }
+@if (Model.Versions != null)
+	{
+<h4>История изменений</h4>
+<table id="worksaudit" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th>ФИО</th>
+			<th>Работодатель</th>
+			<th>Дата начала</th>
+			<th>Дата окончания</th>
+			<th>Дата создания</th>
+			<th>Вид изменения</th>
+			<th>Утверждено</th>
+			@if ((User.IsInRole("RegionalManager")))
+			{
+				<th>Утвердить</th>
+				<th>Отклонить</th>
+			}
+		</tr>
+	</thead>
+	<tbody>
+		@for (int i = 0; i < Model.Versions.Count; i++)
+		{
+			@Model.Versions[i].Approved
+			<tr>
+				<td>@Model.Versions[i].FIO</td>
+				<td>@Model.Versions[i].Employer</td>
+				<td>@Model.Versions[i].DateofBeginString</td>
+				<td>@Model.Versions[i].DateofEndString</td>
+				<td>@Model.Versions[i].CreateTime</td>
+				<td>@Model.Versions[i].ChangeType</td>
+				<td>@Model.Versions[i].ApprovedString</td>
+				@if (Model.Versions[i].Approved == null && (User.IsInRole("RegionalManager")))
+				{<td><button class='btn-link js-approve' data-work-id = @Model.Versions[i].Id>Утвердить</button></td>
+				<td><button class='btn-link js-reject' data-work-id = @Model.Versions[i].Id>Отклонить</button></td>
+				}
+				
+			</tr>
+		}
+	</tbody>
+</table>
+	}
 
 @section scripts
 {
@@ -132,7 +143,7 @@
 					bootbox.prompt("Вы уверены, что хотите удалить запись в выездном списке?\nУкажите причину:", function (result) {
 						if (result) {
 							$.ajax({
-								url: "/api/works/" + button.attr("data-id") + "/" + result,
+								url: "/api/works/" + button.attr("data-work-id") + "/" + result,
 								method: "DELETE",
 								success: function () {
 									bootbox.alert("Запись удалена из списка. Ожидайте утверждения изменений", function () {
@@ -148,7 +159,7 @@
 				else {
 					bootbox.confirm("Вы уверены, что хотите удалить запись в выездном списке?", function () {
 						$.ajax({
-							url: "/api/works/" + button.attr("data-id"),
+							url: "/api/works/" + button.attr("data-work-id"),
 							method: "DELETE",
 							success: function () {
 								bootbox.alert("Запись удалена из списка", function () {
@@ -164,7 +175,38 @@
 				}
 
 			});
+			//Утверждение изменений
+			$("#worksaudit").on("click", ".js-approve", function () {
+				var button = $(this);
 
+				bootbox.confirm("Вы уверены, что хотите утвердить изменения?", function (result) {
+					if (result) {
+						$.ajax({
+							url: "/api/worksaudit/" + button.attr("data-work-id"),
+							method: "POST",
+							success: function () {
+								toastr.success("Изменения утверждены");
+							}
+						});
+					}
+				});
+			});
+			//Отклонение изменений
+			$("#worksaudit").on("click", ".js-reject", function () {
+				var button = $(this);
+
+				bootbox.confirm("Вы уверены, что хотите отклонить изменения?", function (result) {
+					if (result) {
+						$.ajax({
+							url: "/api/worksaudit/" + button.attr("data-work-id"),
+							method: "PUT",
+							success: function () {
+								toastr.success("Изменения отклонены");
+							}
+						});
+					}
+				});
+			});
 		});
 	</script>
 }

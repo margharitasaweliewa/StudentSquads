@@ -12,6 +12,7 @@
 		@*<input type="submit" name="button2" value="Вынести выговор" class="btn btn-warning" formaction="@Url.Action("Rebuke", "Works")" />*@
 	}
 	<a class="btn btn-warning" href="/works/workform">Создать</a>
+	<a class="btn btn-warning only-changed">Показать с изменениями</a>
 	<table id="works" class="table table-bordered table-hover">
 		<thead>
 			<tr>
@@ -25,6 +26,7 @@
 				<th>Окончание</th>
 				<th>Альтернатива</th>
 				<th>Засчитана</th>
+				<th>Изменения</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -44,7 +46,8 @@
 					{
 						data: "Id",
 						render: function (data, type, work) {
-							return "<a href ='/works/edit/" + work.Id + "'>" + "Открыть" + "</a>";
+							return "<a href ='/works/edit/" + work.Id + "'>" +
+								"<img src='https://icons.iconarchive.com/icons/icons8/windows-8/512/Editing-Edit-icon.png' width='25' height = '25'>" + "</a>";
 						}
 					},
 					{
@@ -76,9 +79,16 @@
 					},
 					{
 						data: "Affirmed"
+					},
+					{
+						data: "Changed",
+						render: function (data, type, work) {
+							if (work.Changed == true) return "Есть";
+							else return "";					}
 					}
 				]
 		});
+			
 			$("#js-approve").on("click", function () {
 				var button = $(this);
 				bootbox.confirm("Вы уверены, что хотите утвердить выездной список?", function (result) {

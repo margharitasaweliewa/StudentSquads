@@ -20,7 +20,7 @@ namespace StudentSquads
             defaults: new { id = System.Web.Http.RouteParameter.Optional }
             );
             RouteTable.Routes.MapHttpRoute(
-name: "ExitApi",
+            name: "ExitApi",
 routeTemplate: "api/{controller}/{action}/{personId}",
 defaults: new { personId = System.Web.Http.RouteParameter.Optional }
 );

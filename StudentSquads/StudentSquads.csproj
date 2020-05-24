@@ -194,6 +194,7 @@
     <Compile Include="Controllers\API\MembersController.cs" />
     <Compile Include="Controllers\API\PeopleController.cs" />
     <Compile Include="Controllers\API\PositionsController.cs" />
+    <Compile Include="Controllers\API\WorksAuditController.cs" />
     <Compile Include="Controllers\API\WorksController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />

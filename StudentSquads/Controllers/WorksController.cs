@@ -111,7 +111,8 @@ namespace StudentSquads.Controllers
                 Alternative = work.Alternative,
                 Audit = audit,
                 MemberId = work.MemberId,
-                OriginalWorkId = work.OriginalWorkId
+                OriginalWorkId = work.OriginalWorkId,
+                Approved = work.Approved
             };
             if (audit)
             {
@@ -138,7 +139,8 @@ namespace StudentSquads.Controllers
                         CreateDateTime = version.CreateTime,
                         Alternative = version.Alternative,
                         ChangeType = version.WorkChangeType?.Name,
-                        ApprovedString = approved
+                        ApprovedString = approved,
+                        Approved = version.Approved
                     };
                     versions.Add(workversion);
                 }

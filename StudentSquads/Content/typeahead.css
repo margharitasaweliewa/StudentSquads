@@ -54,3 +54,6 @@
 .tt-container {
 	position: relative;
 }
+.changed-row {
+	background-color:firebrick;
+}

@@ -50,5 +50,6 @@ namespace StudentSquads.ViewModels
         public string ApprovedString { get; set; }
         public Guid? OriginalWorkId { get; set; }
         public DateTime CreateDateTime { get; set; }
+        public bool? Approved { get; set; }
     }
 }
