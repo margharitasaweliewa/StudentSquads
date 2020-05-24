@@ -386,6 +386,7 @@
     <Compile Include="ViewModels\DesignationViewModel.cs" />
     <Compile Include="ViewModels\NewPersonViewModel.cs" />
     <Compile Include="ViewModels\PersonMainFormViewModel.cs" />
+    <Compile Include="ViewModels\SquadWorkViewModel.cs" />
     <Compile Include="ViewModels\WorkViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -650,6 +651,7 @@
     <Content Include="Views\Works\WorkForm.cshtml" />
     <Content Include="Views\Works\WorkEditForm.cshtml" />
     <Content Include="Views\Works\WorkEditFormAudit.cshtml" />
+    <Content Include="Views\Works\AllSquadWorks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

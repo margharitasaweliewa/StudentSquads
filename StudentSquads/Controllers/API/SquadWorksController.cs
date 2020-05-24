@@ -101,6 +101,33 @@ namespace StudentSquads.Controllers.API
             _context.SaveChanges();
             return Ok();
         }
+        [HttpGet]
+        public List<SquadWorkViewModel> AllSquadWorks()
+        {
+            List<SquadWorkViewModel> listsquadworks = new List<SquadWorkViewModel>();
+            var squadworks = _context.SquadWorks.Include(w => w.Squad)
+                .OrderByDescending(w => w.Season).ThenBy(w => w.Squad.Name).ToList();
+            foreach(var squadwork in squadworks)
+            {
+                string affirmed = "Не зачтено";
+                if (squadwork.Affirmed) affirmed = "Зачтено";
+                string uni = _context.Squads.Include(s => s.UniversityHeadquarter)
+                    .Single(s => s.Id == squadwork.SquadId).UniversityHeadquarter.University;
+                SquadWorkViewModel work = new SquadWorkViewModel
+                {
+                    Id = squadwork.Id,
+                    Season = squadwork.Season.ToString(),
+                    Squad = squadwork.Squad.Name,
+                    Uni = uni,
+                    Count = squadwork.Count,
+                    AlternativeCount = squadwork.AlternativeCount,
+                    BudgesCount = squadwork.BadgesCount,
+                    Affirmed = affirmed
+                };
+                listsquadworks.Add(work);
+            }
+            return listsquadworks;
+        }
 
     }
 }

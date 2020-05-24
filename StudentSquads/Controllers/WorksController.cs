@@ -156,12 +156,9 @@ namespace StudentSquads.Controllers
         {
             return View();
         }
-        //public ActionResult Delete(WorkViewModel work)
-        //{
-        //    var workInDb = _context.Works.Single(w => w.Id == work.Id);
-        //    _context.Works.Remove(workInDb);
-        //    _context.SaveChanges();
-        //    return RedirectToAction("AllWorks","Works");
-        //}
+        public ActionResult AllSquadWorks()
+        {
+            return View();
+        }
     }
 }

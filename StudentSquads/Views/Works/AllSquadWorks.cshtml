@@ -1,0 +1,64 @@
+﻿@model List<StudentSquads.ViewModels.WorkViewModel>
+@{
+	ViewBag.Title = "AllSquadWorks";
+}
+<h2>Иcтория трудовой деятельности</h2>
+
+
+<table id="squadworks" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th>Отряд</th>
+			<th>Штаб</th>
+			<th>Сезон</th>
+			<th>Выехавших</th>
+			<th>Альтернатива</th>
+			<th>Кирпичей</th>
+			<th>Целина</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+@Html.AntiForgeryToken()
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			var table = $("#squadworks").DataTable({
+				ajax: {
+					url: "/api/squadworks",
+					dataSrc: ""
+				},
+				columns: [
+					{
+						data: "Squad"
+					},
+					{
+						data: "Uni"
+					},
+					{
+						data: "Season"
+					},
+					{
+						data: "Count"
+					},
+					{
+						data: "AlternativeCount"
+					},
+					{
+						data: "BudgesCount"
+					},
+					{
+						data: "Affirmed"
+					}
+				]
+			});
+
+		});
+	</script>
+}
+
+
+
+
