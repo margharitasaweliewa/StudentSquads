@@ -8,6 +8,6 @@ namespace StudentSquads.Models
     public class EventLevel
     {
         public int Id { get; set; }
-        public string NewName { get; set; }
+        public string Name { get; set; }
     }
 }

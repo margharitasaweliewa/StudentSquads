@@ -1,0 +1,43 @@
+﻿@model StudentSquads.ViewModels.RaitingEventViewModel
+@{
+	ViewBag.Title = "RaitingEventForm";
+}
+
+<h2>Добавление мероприятия</h2>
+@using (Html.BeginForm("SaveEvent", "Raitings", new { enctype = "multipart/form-data" }))
+{
+	@Html.ValidationSummary()
+	<button type="submit" class="btn btn-warning">Сохранить</button>
+	<input type="submit" name="button2" value="Удалить" class="btn btn-default" formaction="@Url.Action("DeleteEvent", "Raitings")" />
+	@Html.HiddenFor(m => m.Id)
+	<div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.Name)
+			@Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.EventLevelId)
+			@Html.DropDownListFor(m => m.EventLevelId, new SelectList(Model.EventLevels, "Id", "Name"), "", new { @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.DateofBegin) (@Model.DateofBeginString)
+			@Html.TextBoxFor(m => m.DateofBegin, "{0:dd.MM.yyyy}", new { @type = "date", @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.DateofEnd) (@Model.DateofEndString)
+			@Html.TextBoxFor(m => m.DateofEnd, "{0:dd.MM.yyyy}", new { @type = "date", @class = "form-control" })
+		</div>
+		<div class="form-group">
+			@Html.LabelFor(m => m.DocumentPath)
+			@Html.TextBoxFor(m => m.DocumentPath, new { @class = "custom-file-input", type = "file", name = "upload" })
+		</div>
+
+	</div>
+	@Html.AntiForgeryToken()
+
+}
+
+@section scripts
+{
+	@Scripts.Render("~/bundles/jqueryval")
+}
