@@ -14,6 +14,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using StudentSquads.Controllers;
 using System.Web.Services.Protocols;
 using System.Data;
+using DocumentFormat.OpenXml.Office2010.PowerPoint;
 
 namespace StudentSquads.Controllers.API
 {
@@ -32,18 +33,24 @@ namespace StudentSquads.Controllers.API
         [HttpPost]
         public IHttpActionResult NewSection(RaitingSectionViewModel model)
         {
-            //Добавляем показатель
-            RaitingSection section = new RaitingSection
+            RaitingSection section = new RaitingSection();
+            if (model.Id == Guid.Empty) 
             {
-                Id = Guid.NewGuid(),
-                Name = model.Name,
-            MembershipTypeId = Convert.ToInt32(model.MembershipIdString),
-            Removed = false
-            };
-            try { section.Coef = Convert.ToDouble(model.Coef); }
-            catch (Exception) { return BadRequest(); }
-
-            _context.RaitingSections.Add(section);
+                //Добавляем показатель
+                    section.Id = Guid.NewGuid();
+                    section.Name = model.Name;
+                    section.MembershipTypeId = Convert.ToInt32(model.MembershipIdString);
+                    section.Removed = false;
+                try { section.Coef = Convert.ToDouble(model.Coef); }
+                catch (Exception) { return BadRequest(); }
+                _context.RaitingSections.Add(section);
+            }
+            else
+            {
+                section = _context.RaitingSections.Single(s => s.Id == model.Id);
+                section.Name = model.Name;
+                section.MembershipTypeId = Convert.ToInt32(model.MembershipIdString);
+            }
             //Добавлеяем уровень показателя
             foreach (var levelId in model.LevelIds)
             {
@@ -55,19 +62,24 @@ namespace StudentSquads.Controllers.API
                 };
                 _context.RaitingSectionLevels.Add(newlevel);
             }
+
             _context.SaveChanges();
             return Ok();
         }
         [HttpPut]
-        public IHttpActionResult SaveSection()
+        public IHttpActionResult DeleteSectionLevel(Guid id)
         {
-
+            var raitinglevel = _context.RaitingSectionLevels.Single(r => r.Id == id);
+            _context.RaitingSectionLevels.Remove(raitinglevel);
+            _context.SaveChanges();
             return Ok();
         }
         [HttpDelete]
-        public IHttpActionResult DeleteSection()
+        public IHttpActionResult DeleteSection(Guid id)
         {
-
+            var sectionInDb = _context.RaitingSections.Single(s => s.Id == id);
+            sectionInDb.Removed = true;
+            _context.SaveChanges();
             return Ok();
         }
     }

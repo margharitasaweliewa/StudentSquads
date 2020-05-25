@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using DocumentFormat.OpenXml.Packaging;
+using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using StudentSquads.Models;
 using StudentSquads.ViewModels;
@@ -178,8 +179,9 @@ namespace StudentSquads.Controllers
         public ActionResult AllRaitingSections()
         {
             List<RaitingSectionViewModel> listsections = new List<RaitingSectionViewModel>();
-            //Выбираем все показатели
+            //Выбираем все активные показатели
             var raitingsections = _context.RaitingSections.Include(r => r.MembershipType)
+                .Where(r => r.Removed==false)
                 .ToList();
             foreach(var section in raitingsections)
             {
@@ -218,6 +220,23 @@ namespace StudentSquads.Controllers
                 MembershipTypes = membershiptypes
             };
             return View(viewModel);
+        }
+        public ActionResult EditSection(Guid id)
+        {
+            var section = _context.RaitingSections.Single(s => s.Id == id);
+            var levels = _context.RaitingSectionLevels.Include(s => s.EventLevel)
+                .Where(s => s.RaitingSectionId == id).ToList();
+            var membershiptypes = _context.MembershipTypes.ToList();
+            RaitingSectionViewModel viewModel = new RaitingSectionViewModel
+            {
+                Id = section.Id,
+                Name = section.Name,
+                Coef = section.Coef.ToString(),
+                Levels = levels,
+                MembershipTypeId = section.MembershipTypeId,
+                MembershipTypes = membershiptypes
+            };
+            return View("RaitingSectionForm", viewModel);
         }
     }
 }

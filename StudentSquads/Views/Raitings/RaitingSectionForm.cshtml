@@ -4,7 +4,8 @@
 }
 
 <h2>Рейтинговый показатель</h2>
-<button  class="btn btn-warning js-save" type="submit">Сохранить</button>
+<button  class="btn btn-warning js-save"  type="submit">Сохранить</button>
+<button class="btn btn-warning js-delete"  data-id = "@Model.Id" type="submit">Удалить</button>
 @Html.HiddenFor(m => m.Id, new { @id = "Id" })
 <div class="form-group">
 	<div class="form-group">
@@ -46,7 +47,7 @@
 			{
 				<tr>
 					<td>@Model.Levels[i].EventLevel.Name</td>
-					<td><button class='btn-link js-delete' data-work-id=@Model.Levels[i].Id>Удалить</button></td>
+					<td><button class='btn-link js-leveldown' data-id = @Model.Levels[i].Id>Удалить</button></td>
 				</tr>
 			}
 		</tbody>
@@ -58,6 +59,23 @@
 	<script>
 		$(document).ready(function () {
 
+			$(".js-leveldown").on("click", function () {
+				var button = $(this);
+				bootbox.confirm("Вы уверены, что хотите удалить уровень?", function (result) {
+					if (result) {
+						$.ajax({
+							url: "/api/raitingsections/" + button.attr("data-id"),
+							method: "Put",
+							success: function () {
+								//Я бы поправила с API контроллером
+								//$("#levels").row(button.parents("tr")).remove().draw();
+								toastr.success("Успешно удалено");
+							}
+
+						});
+					}
+				});
+			});
 			var vm = {
 				LevelIds: [],
 				MembershipTypes: []
@@ -106,10 +124,28 @@
 					.fail(function () {
 						toastr.error("Произошла ошибка сохранения");
 					});
+			});
+			$(".js-delete").on("click", function () {
+				var button = $(this);
+					bootbox.confirm("Вы уверены, что хотите удалить показатель?", function (result) {
+						if (result) {
+							$.ajax({
+								url: "/api/raitingsections/" + button.attr("data-id"),
+								method: "DELETE",
+								success: function () {
+									bootbox.alert("Показатель удален", function () {
+										window.location = "/raitings/allraitingsections"
+									}
+									);
+								}
+
+							});
+						}
+					});
 
 			});
+
+			
 		});
 	</script>
 }
-
-
