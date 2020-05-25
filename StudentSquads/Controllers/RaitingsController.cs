@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using DocumentFormat.OpenXml.Office2010.PowerPoint;
+using DocumentFormat.OpenXml.Packaging;
 using Microsoft.AspNet.Identity;
 using StudentSquads.Models;
 using StudentSquads.ViewModels;
@@ -173,6 +174,48 @@ namespace StudentSquads.Controllers
             ev.Approved = false;
             _context.SaveChanges();
             return RedirectToAction("AllRaitingEvents", "Raitings");
+        }
+        public ActionResult AllRaitingSections()
+        {
+            List<RaitingSectionViewModel> listsections = new List<RaitingSectionViewModel>();
+            //Выбираем все показатели
+            var raitingsections = _context.RaitingSections.Include(r => r.MembershipType)
+                .ToList();
+            foreach(var section in raitingsections)
+            {
+                //Находим все уровени, связанные с показателем
+                var levels = _context.RaitingSectionLevels.Include(l => l.EventLevel)
+                    .Where(l => l.RaitingSectionId == section.Id);
+                //Создаем строку для всех уровней
+                string alllevels = "";
+                foreach(var level in levels)
+                    alllevels = alllevels + level.EventLevel.Name + ";";
+                //Находим статус
+                string status = "Активно";
+                if (section.Removed) status = "Удалено";
+                RaitingSectionViewModel newsection = new RaitingSectionViewModel
+                {
+                    Id = section.Id,
+                    Name = section.Name,
+                    MembershipType = section.MembershipType.Name,
+                    Level = alllevels,
+                    Status = status,
+                    Coef = section.Coef.ToString()
+                };
+                listsections.Add(newsection);
+            }
+            listsections.OrderBy(l => l.Name);
+            return View(listsections);
+        }
+        public ActionResult RaitingSectionForm()
+        {
+            //Находим все типы участия
+            var membershiptypes = _context.MembershipTypes.ToList();
+            RaitingSectionViewModel viewModel = new RaitingSectionViewModel
+            {
+                MembershipTypes = membershiptypes
+            };
+            return View(viewModel);
         }
     }
 }

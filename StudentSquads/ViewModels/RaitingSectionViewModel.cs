@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+using StudentSquads.Models;
+
+namespace StudentSquads.ViewModels
+{
+    public class RaitingSectionViewModel
+    {
+        public Guid Id { get; set; }
+        [Display(Name = "Наименование")]
+        public string Name { get; set; }
+        [Display(Name = "Тип участия")]
+        public string MembershipType{ get; set; }
+        [Display(Name = "Уровень")]
+        public string Level { get; set; }
+        //Для уровней
+        public List<Guid> LevelIds { get; set; }
+        public List<RaitingSectionLevel> Levels { get; set; }
+        [Display(Name = "Тип участия")]
+        public Guid MembershipTypeId { get; set; }
+        public string Status { get; set; }
+        [Display(Name = "Коэффициент")]
+        public string Coef { get; set; }
+        public List<MembershipType> MembershipTypes { get; set; }
+    }
+}

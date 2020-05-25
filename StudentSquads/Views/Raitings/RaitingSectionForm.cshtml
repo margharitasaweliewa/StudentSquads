@@ -1,0 +1,116 @@
+﻿@model StudentSquads.ViewModels.RaitingSectionViewModel
+@{
+	ViewBag.Title = "RaitingSectionForm";
+}
+
+<h2>Рейтинговый показатель</h2>
+@*<input type="submit" name="button2" value="Удалить" class="btn btn-default" formaction="@Url.Action("Delete", "Works")" />*@
+@Html.HiddenFor(m => m.Id, new { @id = "Id" })
+<div class="form-group">
+	<div class="form-group">
+		@Html.LabelFor(m => m.Name)
+		@Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(m => m.Coef) (В формате 0.5)
+		@Html.TextBoxFor(m => m.Coef, new { @class = "form-control" })
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(m => m.MembershipTypeId)
+		@Html.DropDownListFor(m => m.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "", new { @class = "form-control" })
+	</div>
+</div>
+<div class="form-group">
+	<label>Уровень</label>
+	<div class="tt-container">
+		<input id="level" type="text" class="form-control" name="" value="" />
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-4 col-sm-4">
+		<ul id="levels" class="list-group"></ul>
+	</div>
+</div>
+@if (Model.Id != Guid.Empty)
+{
+	<h4>Уровни</h4>
+	<table id="levels" class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>Уровень</th>
+				<th>Удалить</th>
+			</tr>
+		</thead>
+		<tbody>
+			@for (int i = 0; i < Model.Levels.Count; i++)
+			{
+				<tr>
+					<td>@Model.Levels[i].EventLevel.Name</td>
+					<td><button class='btn-link js-delete' data-work-id=@Model.Levels[i].Id>Удалить</button></td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+@section scripts
+{
+	@Scripts.Render("~/bundles/jqueryval")
+	<script>
+		$(document).ready(function () {
+
+			var vm = { LevelIds: [] };
+
+			var eventlevels = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('Name'),
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				remote: {
+					url: '/api/EventLevels?query=%QUERY',
+					wildcard: '%QUERY'
+				}
+			});
+
+			$('#level').typeahead({
+				minLength: 1,
+				highlight: true
+			}, {
+				name: 'eventlevels',
+				display: 'Name',
+				source: eventlevels
+			}).on("typeahead:select", function (e, level) {
+				//Добавляем запись в список
+				$("#levels").append("<li class='list-group-item'>" + level.Name + "</li>");
+				//Очищаем значение списка
+				$("#level").typeahead("val", "");
+				//Добавляем Id в список Members
+				vm.LevelIds.push(level.Id);
+			});
+			$(".js-change").on("click", function () {
+				var button = $(this);
+				//vm.HeadofStudentSquadsId = button.attr("data-id");
+				//vm.PersonId = document.getElementById('personId').value;
+				//vm.Position = document.getElementById('position').value;
+				//vm.Alternative = document.getElementById('alternative').value;
+				//vm.DateOfBegin = document.getElementById('dateofbegin').value;
+				//vm.DateOfEnd = document.getElementById('dateofend').value;
+				//vm.Id = document.getElementById('Id').value;
+				//vm.MemberId = document.getElementById('MemberId').value;
+				//vm.OriginalWorkId = document.getElementById('OriginalWorkId').value;
+				if ($('#auditsave').attr("audit") == "True") vm.Audit = true;
+				$.ajax({
+					url: "/api/raitingsections",
+					method: "post",
+					data: vm
+				})
+					.done(function () {
+						toastr.success("Успешно сохранено");
+					})
+					.fail(function () {
+						toastr.error("Произошла ошибка сохранения");
+					});
+
+			});
+		});
+	</script>
+}
+
+

@@ -191,10 +191,12 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\API\EmployersController.cs" />
+    <Compile Include="Controllers\API\EventLevelsController.cs" />
     <Compile Include="Controllers\API\MembersController.cs" />
     <Compile Include="Controllers\API\PeopleController.cs" />
     <Compile Include="Controllers\API\PositionsController.cs" />
     <Compile Include="Controllers\API\RaitingEventsController.cs" />
+    <Compile Include="Controllers\API\RaitingSectionsController.cs" />
     <Compile Include="Controllers\API\SquadWorksController.cs" />
     <Compile Include="Controllers\API\WorksAuditController.cs" />
     <Compile Include="Controllers\API\WorksController.cs" />
@@ -360,6 +362,14 @@
     <Compile Include="Migrations\202005241814589_MadeEventLevelIdInt.Designer.cs">
       <DependentUpon>202005241814589_MadeEventLevelIdInt.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005251410175_AddTableForEventLevelsBySection.cs" />
+    <Compile Include="Migrations\202005251410175_AddTableForEventLevelsBySection.Designer.cs">
+      <DependentUpon>202005251410175_AddTableForEventLevelsBySection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005251419110_AddedParametsinRaitingSection.cs" />
+    <Compile Include="Migrations\202005251419110_AddedParametsinRaitingSection.Designer.cs">
+      <DependentUpon>202005251419110_AddedParametsinRaitingSection.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
@@ -381,6 +391,7 @@
     <Compile Include="Models\RaitingEventInfoFile.cs" />
     <Compile Include="Models\RaitingPlace.cs" />
     <Compile Include="Models\RaitingSection.cs" />
+    <Compile Include="Models\RaitingSectionLevel.cs" />
     <Compile Include="Models\RegionalHeadquarter.cs" />
     <Compile Include="Models\ScholAttending.cs" />
     <Compile Include="Models\Squad.cs" />
@@ -397,6 +408,7 @@
     <Compile Include="ViewModels\NewPersonViewModel.cs" />
     <Compile Include="ViewModels\PersonMainFormViewModel.cs" />
     <Compile Include="ViewModels\RaitingEventViewModel.cs" />
+    <Compile Include="ViewModels\RaitingSectionViewModel.cs" />
     <Compile Include="ViewModels\SquadWorkViewModel.cs" />
     <Compile Include="ViewModels\WorkViewModel.cs" />
   </ItemGroup>
@@ -665,6 +677,8 @@
     <Content Include="Views\Works\AllSquadWorks.cshtml" />
     <Content Include="Views\Raitings\AllRaitingEvents.cshtml" />
     <Content Include="Views\Raitings\RaitingEventForm.cshtml" />
+    <Content Include="Views\Raitings\AllRaitingSections.cshtml" />
+    <Content Include="Views\Raitings\RaitingSectionForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -797,6 +811,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005241814589_MadeEventLevelIdInt.resx">
       <DependentUpon>202005241814589_MadeEventLevelIdInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005251410175_AddTableForEventLevelsBySection.resx">
+      <DependentUpon>202005251410175_AddTableForEventLevelsBySection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005251419110_AddedParametsinRaitingSection.resx">
+      <DependentUpon>202005251419110_AddedParametsinRaitingSection.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
