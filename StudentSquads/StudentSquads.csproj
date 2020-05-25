@@ -370,6 +370,14 @@
     <Compile Include="Migrations\202005251419110_AddedParametsinRaitingSection.Designer.cs">
       <DependentUpon>202005251419110_AddedParametsinRaitingSection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005251603157_MadeMembershipTypeIdInt.cs" />
+    <Compile Include="Migrations\202005251603157_MadeMembershipTypeIdInt.Designer.cs">
+      <DependentUpon>202005251603157_MadeMembershipTypeIdInt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005251636572_MadeEventLevelIdInt1.cs" />
+    <Compile Include="Migrations\202005251636572_MadeEventLevelIdInt1.Designer.cs">
+      <DependentUpon>202005251636572_MadeEventLevelIdInt1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
@@ -817,6 +825,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005251419110_AddedParametsinRaitingSection.resx">
       <DependentUpon>202005251419110_AddedParametsinRaitingSection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005251603157_MadeMembershipTypeIdInt.resx">
+      <DependentUpon>202005251603157_MadeMembershipTypeIdInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005251636572_MadeEventLevelIdInt1.resx">
+      <DependentUpon>202005251636572_MadeEventLevelIdInt1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

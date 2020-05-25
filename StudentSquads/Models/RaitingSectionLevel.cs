@@ -11,6 +11,6 @@ namespace StudentSquads.Models
         public RaitingSection RaitingSection { get; set; }
         public Guid RaitingSectionId { get; set; }
         public EventLevel EventLevel { get; set; }
-        public Guid EventLevelId { get; set; }
+        public int EventLevelId { get; set; }
     }
 }

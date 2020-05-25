@@ -189,7 +189,9 @@ namespace StudentSquads.Controllers
                 //Создаем строку для всех уровней
                 string alllevels = "";
                 foreach(var level in levels)
-                    alllevels = alllevels + level.EventLevel.Name + ";";
+                    alllevels = alllevels + level.EventLevel.Name + ", ";
+                alllevels = alllevels.Substring(0, alllevels.Length - 2);
+                int i = alllevels.Length;
                 //Находим статус
                 string status = "Активно";
                 if (section.Removed) status = "Удалено";

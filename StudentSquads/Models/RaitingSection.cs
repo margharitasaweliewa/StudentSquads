@@ -12,7 +12,7 @@ namespace StudentSquads.Models
         public string Name { get; set; }
         public double Coef{ get; set; }
         public MembershipType MembershipType { get; set; }
-        public Guid MembershipTypeId { get; set; }
+        public int MembershipTypeId { get; set; }
         public bool Removed { get; set; }
     }
 }

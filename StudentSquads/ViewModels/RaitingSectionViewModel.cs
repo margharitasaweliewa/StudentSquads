@@ -17,13 +17,14 @@ namespace StudentSquads.ViewModels
         [Display(Name = "Уровень")]
         public string Level { get; set; }
         //Для уровней
-        public List<Guid> LevelIds { get; set; }
+        public List<int> LevelIds { get; set; }
         public List<RaitingSectionLevel> Levels { get; set; }
         [Display(Name = "Тип участия")]
-        public Guid MembershipTypeId { get; set; }
+        public int MembershipTypeId { get; set; }
         public string Status { get; set; }
         [Display(Name = "Коэффициент")]
         public string Coef { get; set; }
         public List<MembershipType> MembershipTypes { get; set; }
+        public string MembershipIdString { get; set; }
     }
 }

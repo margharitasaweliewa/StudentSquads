@@ -4,20 +4,20 @@
 }
 
 <h2>Рейтинговый показатель</h2>
-@*<input type="submit" name="button2" value="Удалить" class="btn btn-default" formaction="@Url.Action("Delete", "Works")" />*@
+<button  class="btn btn-warning js-save" type="submit">Сохранить</button>
 @Html.HiddenFor(m => m.Id, new { @id = "Id" })
 <div class="form-group">
 	<div class="form-group">
 		@Html.LabelFor(m => m.Name)
-		@Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+		@Html.TextBoxFor(m => m.Name, new { @id = "Name", @class = "form-control" })
 	</div>
 	<div class="form-group">
-		@Html.LabelFor(m => m.Coef) (В формате 0.5)
-		@Html.TextBoxFor(m => m.Coef, new { @class = "form-control" })
+		@Html.LabelFor(m => m.Coef) (В формате 0,5)
+		@Html.TextBoxFor(m => m.Coef, new { @id = "Coef", @class = "form-control" })
 	</div>
 	<div class="form-group">
 		@Html.LabelFor(m => m.MembershipTypeId)
-		@Html.DropDownListFor(m => m.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "", new { @class = "form-control" })
+		@Html.DropDownListFor(m => m.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "", new { @id = "MembershipId", @class = "form-control" })
 	</div>
 </div>
 <div class="form-group">
@@ -58,8 +58,10 @@
 	<script>
 		$(document).ready(function () {
 
-			var vm = { LevelIds: [] };
-
+			var vm = {
+				LevelIds: [],
+				MembershipTypes: []
+			};
 			var eventlevels = new Bloodhound({
 				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('Name'),
 				queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -70,7 +72,7 @@
 			});
 
 			$('#level').typeahead({
-				minLength: 1,
+				minLength: 0,
 				highlight: true
 			}, {
 				name: 'eventlevels',
@@ -84,25 +86,22 @@
 				//Добавляем Id в список Members
 				vm.LevelIds.push(level.Id);
 			});
-			$(".js-change").on("click", function () {
+			$(".js-save").on("click", function () {
 				var button = $(this);
-				//vm.HeadofStudentSquadsId = button.attr("data-id");
-				//vm.PersonId = document.getElementById('personId').value;
-				//vm.Position = document.getElementById('position').value;
-				//vm.Alternative = document.getElementById('alternative').value;
-				//vm.DateOfBegin = document.getElementById('dateofbegin').value;
-				//vm.DateOfEnd = document.getElementById('dateofend').value;
-				//vm.Id = document.getElementById('Id').value;
-				//vm.MemberId = document.getElementById('MemberId').value;
-				//vm.OriginalWorkId = document.getElementById('OriginalWorkId').value;
-				if ($('#auditsave').attr("audit") == "True") vm.Audit = true;
+				vm.MembershipIdString  = document.getElementById('MembershipId').value;
+				vm.Coef = document.getElementById('Coef').value;
+				vm.Name = document.getElementById('Name').value;
+				vm.Id = document.getElementById('Id').value;
 				$.ajax({
 					url: "/api/raitingsections",
 					method: "post",
 					data: vm
 				})
 					.done(function () {
-						toastr.success("Успешно сохранено");
+						bootbox.alert("Показатель рейтинга сохранен", function () {
+							window.location = "/raitings/allraitingsections"
+						});
+					
 					})
 					.fail(function () {
 						toastr.error("Произошла ошибка сохранения");
