@@ -11,5 +11,6 @@ namespace StudentSquads.Models
         public RaitingEventInfo RaitingEventInfo { get; set; }
         public Guid RaitingEventInfoId { get; set; }
         public string Path { get; set; }
+        public string Description { get; set; }
     }
 }

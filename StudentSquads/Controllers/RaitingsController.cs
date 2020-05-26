@@ -238,5 +238,19 @@ namespace StudentSquads.Controllers
             };
             return View("RaitingSectionForm", viewModel);
         }
+        public ActionResult AllRaitingEventInfos()
+        {
+            return View();
+        }
+        public ActionResult RaitingEventInfoForm()
+        {
+            //Находим все типы участия
+            var membershiptypes = _context.MembershipTypes.ToList();
+            RaitingEventInfoViewModel viewModel = new RaitingEventInfoViewModel
+            {
+                MembershipTypes = membershiptypes
+            };
+            return View(viewModel);
+        }
     }
 }

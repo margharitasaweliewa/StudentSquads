@@ -195,6 +195,7 @@
     <Compile Include="Controllers\API\MembersController.cs" />
     <Compile Include="Controllers\API\PeopleController.cs" />
     <Compile Include="Controllers\API\PositionsController.cs" />
+    <Compile Include="Controllers\API\RaitingEventInfosController.cs" />
     <Compile Include="Controllers\API\RaitingEventsController.cs" />
     <Compile Include="Controllers\API\RaitingSectionsController.cs" />
     <Compile Include="Controllers\API\SquadWorksController.cs" />
@@ -378,6 +379,18 @@
     <Compile Include="Migrations\202005251636572_MadeEventLevelIdInt1.Designer.cs">
       <DependentUpon>202005251636572_MadeEventLevelIdInt1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005261734050_ChangedRaitingEventInfos.cs" />
+    <Compile Include="Migrations\202005261734050_ChangedRaitingEventInfos.Designer.cs">
+      <DependentUpon>202005261734050_ChangedRaitingEventInfos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005261903390_ChangedRaiting.cs" />
+    <Compile Include="Migrations\202005261903390_ChangedRaiting.Designer.cs">
+      <DependentUpon>202005261903390_ChangedRaiting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005262018411_MadeSquadIdNullAble.cs" />
+    <Compile Include="Migrations\202005262018411_MadeSquadIdNullAble.Designer.cs">
+      <DependentUpon>202005262018411_MadeSquadIdNullAble.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
@@ -415,6 +428,7 @@
     <Compile Include="ViewModels\DesignationViewModel.cs" />
     <Compile Include="ViewModels\NewPersonViewModel.cs" />
     <Compile Include="ViewModels\PersonMainFormViewModel.cs" />
+    <Compile Include="ViewModels\RaitingEventInfoViewModel.cs" />
     <Compile Include="ViewModels\RaitingEventViewModel.cs" />
     <Compile Include="ViewModels\RaitingSectionViewModel.cs" />
     <Compile Include="ViewModels\SquadWorkViewModel.cs" />
@@ -687,6 +701,8 @@
     <Content Include="Views\Raitings\RaitingEventForm.cshtml" />
     <Content Include="Views\Raitings\AllRaitingSections.cshtml" />
     <Content Include="Views\Raitings\RaitingSectionForm.cshtml" />
+    <Content Include="Views\Raitings\AllRaitingEventInfos.cshtml" />
+    <Content Include="Views\Raitings\RaitingEventInfoForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -831,6 +847,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005251636572_MadeEventLevelIdInt1.resx">
       <DependentUpon>202005251636572_MadeEventLevelIdInt1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005261734050_ChangedRaitingEventInfos.resx">
+      <DependentUpon>202005261734050_ChangedRaitingEventInfos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005261903390_ChangedRaiting.resx">
+      <DependentUpon>202005261903390_ChangedRaiting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005262018411_MadeSquadIdNullAble.resx">
+      <DependentUpon>202005262018411_MadeSquadIdNullAble.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

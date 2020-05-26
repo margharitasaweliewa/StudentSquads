@@ -1,0 +1,75 @@
+﻿
+@{
+	ViewBag.Title = "AllRaitingEventInfos";
+}
+
+<h2>Материалы текущего рейтинга</h2>
+@if (User.IsInRole("SquadManager"))
+{
+	<a class="btn btn-warning" href="/raitings/raitingeventinfoform">Создать</a>
+}
+<table id="raitingeventinfos" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th></th>
+			<th>Отряд</th>
+			<th>Штаб</th>
+			<th>Мероприятие</th>
+			<th>Тип участия</th>
+			<th>Участников</th>
+			<th>Вложений</th>
+			<th>Добавлено</th>
+			<th>Статус</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			//Используем плагин для поиска и сортировки
+			var table = $('#raitingeventinfos').DataTable({
+				ajax: {
+					url: "/api/raitingeventinfos",
+					dataSrc: ""
+				},
+				columns: [
+					{
+						data: "Id",
+						render: function (data) {
+							return "<a href ='/positions/edit/" + data + "'>" + "Открыть" + "</a>";
+						}
+
+					},
+					{
+						data: "Squad"
+					},
+					{
+						data: "Uni"
+					},
+					{
+						data: "Event"
+					},
+					{
+						data: "MembershipType"
+					},
+					{
+						data: "MembershipCount"
+					},
+					{
+						data: "FilesCount"
+					},
+					{
+						data: "CreateDate"
+					},
+					{
+						data: "Status"
+					}
+				]
+			});
+		});
+	</script>
+}
+

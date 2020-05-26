@@ -29,13 +29,14 @@ namespace StudentSquads.Controllers.API
             _context.Dispose();
         }
         [HttpGet]
-        public List<RaitingEventViewModel> AllRaitingEvents()
+        public List<RaitingEventViewModel> AllRaitingEvents(string query = null)
         {
             List<RaitingEventViewModel> listofevents = new List<RaitingEventViewModel>();
             //Отображаем только те, которые в текущем рейтинге, т е ещё не составленном DateofCreation = null
             var events = _context.RaitingEvents.Include(e => e.Raiting).Include(e => e.EventLevel)
                 .Include(e => e.Squad).Include(e => e.UniversityHeadquarter).Include(e => e.RegionalHeadquarter)
                 .Where(e => e.Raiting.DateofCreation==null).ToList();
+            if (query != null) events = events.Where(e => e.Name.Contains(query)).ToList();
             foreach (var ev in events)
             {
                 //Находим создателя

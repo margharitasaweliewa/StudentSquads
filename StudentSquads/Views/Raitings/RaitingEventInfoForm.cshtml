@@ -1,0 +1,136 @@
+﻿@model StudentSquads.ViewModels.RaitingEventInfoViewModel
+@{
+	ViewBag.Title = "RaitingEventInfoForm";
+}
+
+<h2>Добавление материалов рейтинга</h2>
+@if (User.IsInRole("SquadManager"))
+{
+	<button class="btn btn-warning js-save" data-id="@Model.Id" type="submit">Сохранить</button>
+	<button class="btn btn-warning js-delete" data-id="@Model.Id" type="submit">Удалить</button>
+}
+@if (User.IsInRole("RegionalManager"))
+{
+	<button class="btn btn-warning js-approve" data-id="@Model.Id" type="submit">Принять</button>
+	<button class="btn btn-warning js-reject" data-id="@Model.Id" type="submit">Отклонить</button>
+}
+@Html.HiddenFor(m => m.Id, new { @id = "Id" })
+<div class="form-group">
+	@Html.LabelFor(m => m.Event)
+	<div class="tt-container">
+		@Html.TextBoxFor(m => m.Event, new { @dataId = Model.EventId, @id = "raitingevent", @class = "form-control" })
+	</div>
+</div>
+<div class="form-group">
+	@Html.LabelFor(m => m.MembershipCount)
+	@Html.TextBoxFor(m => m.MembershipCount, new { @id = "MembershipCount", @class = "form-control" })
+</div>
+<div class="form-group">
+	@Html.LabelFor(m => m.MembershipTypeId)
+	@Html.DropDownListFor(m => m.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "", new { @id = "MembershipId", @class = "form-control" })
+</div>
+<h4>Сслыки на материалы</h4>
+<div class="form-group">
+	<label>Ссылка</label>
+	<input id="reference" type="text" class="form-control" name="" value="" />
+</div>
+<div class="form-group">
+	<label>Описание</label>
+	<input id="describe" type="text" class="form-control" name="" value="" />
+</div>
+<div class="form-group">
+	<button class="btn btn-default js-addreference" type="submit">Добавить ссылку</button>
+</div>
+<table id="referencetable" class="table table-bordered table-hover">
+</table>
+@section scripts
+{
+	@Scripts.Render("~/bundles/jqueryval")
+<script>
+		$(document).ready(function () {
+			var vm = { ReferenceDescriptions: [], MembershipTypes:[]};
+			var raitingevents = new Bloodhound({
+				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('Name'),
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				remote: {
+					url: '/api/RaitingEvents?query=%QUERY',
+					wildcard: '%QUERY'
+				}
+			});
+
+			$('#raitingevent').typeahead({
+				minLength: 3,
+				highlight: true
+			}, {
+				name: 'raitingevents',
+				display: 'Name',
+			    source: raitingevents
+			}).on("typeahead:select", function (e, event) {
+				raitingevent.setAttribute('dataid', event.Id);
+				//Добавляем Id
+				vm.EventId = event.Id;
+			});
+			$(".js-addreference").on("click", function () {
+				var button = $(this);
+				//Добавляем запись в список
+				var reference = document.getElementById('reference').value;
+				var describe = document.getElementById('describe').value;
+				//Находим элемент "Таблица"
+				var table = document.getElementById('referencetable');
+				var row = table.insertRow(0);
+				var cell = row.insertCell(0);
+				cell.innerHTML = reference;
+				var cell2 = row.insertCell(0);
+				cell2.innerHTML = describe;
+				//Очищаем значение списка
+				$("#reference").val("");
+				$("#describe").val("");
+				vm.ReferenceDescriptions.push({
+					key: reference,
+					value: describe
+				});
+			});
+			$(".js-save").on("click", function () {
+				var button = $(this);
+				vm.MembershipTypeId  = document.getElementById('MembershipId').value;
+				vm.MembershipCount = document.getElementById('MembershipCount').value;
+			    vm.Id = document.getElementById('Id').value;
+				$.ajax({
+					url: "/api/raitingeventinfos",
+					method: "post",
+					data: vm
+				})
+					.done(function () {
+						toastr.error("Успешно сохранено");
+
+					})
+					.fail(function () {
+						toastr.error("Произошла ошибка сохранения");
+					});
+			});
+			$(".js-delete").on("click", function () {
+				var button = $(this);
+					bootbox.confirm("Вы уверены, что хотите удалить показатель?", function (result) {
+						if (result) {
+							$.ajax({
+								url: "/api/raitingsections/" + button.attr("data-id"),
+								method: "DELETE",
+								success: function () {
+									bootbox.alert("Показатель удален", function () {
+										window.location = "/raitings/allraitingsections"
+									}
+									);
+								}
+
+							});
+						}
+					});
+
+			});
+
+
+		});
+</script>
+}
+
+
