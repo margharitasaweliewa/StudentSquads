@@ -46,9 +46,10 @@ namespace StudentSquads.Controllers
             var events = _context.RaitingEvents.Include(e => e.Raiting).Include(e => e.EventLevel)
                 .Include(e => e.Squad).Include(e => e.UniversityHeadquarter).Include(e => e.RegionalHeadquarter)
                 .Where(e => (e.Raiting.DateofCreation == null)
-                &&((e.Approved==true)||(e.SquadId==headofsquads.SquadId)
-                ||(e.UniversityHeadquarterId == headofsquads.UniversityHeadquarterId)||(User.IsInRole("RegionalManager"))))
+                &&((e.Approved==true)))
                 .ToList();
+            events = events.Where(e => (e.SquadId == headofsquads.SquadId)
+                || (e.UniversityHeadquarterId == headofsquads.UniversityHeadquarterId) || (User.IsInRole("RegionalManager"))).ToList();
             foreach (var ev in events)
             {
                 //Находим создателя
@@ -251,6 +252,44 @@ namespace StudentSquads.Controllers
                 MembershipTypes = membershiptypes
             };
             return View(viewModel);
+        }
+        public ActionResult EditRaitingEventInfo(Guid id)
+        {
+            var viewModel = _context.RaitingEventInfos.Include(v => v.RaitingSection).Include(v => v.RaitingEvent)
+                .Single(v => v.Id == id);
+            var references = _context.RaitingEventInfoFiles.Where(v => v.RaitingEventInfoId == id).ToList();
+            var membershiptypes = _context.MembershipTypes.ToList();
+            //Составляем список ссылок
+            Dictionary<string, string> referencedescriptions = new Dictionary<string, string>();
+            foreach (var reference in references)
+            {
+                referencedescriptions.Add(reference.Path, reference.Description);
+            }
+            RaitingEventInfoViewModel raitinginfo = new RaitingEventInfoViewModel
+            {
+                Id = viewModel.Id,
+                EventId = viewModel.RaitingEventId,
+                MembershipCount = viewModel.MembershipCount.ToString(),
+                MembershipTypes = membershiptypes,
+                ReferenceDescriptions = referencedescriptions,
+                MembershipTypeId = viewModel.RaitingSection.MembershipTypeId.ToString(),
+                Event = viewModel.RaitingEvent.Name
+            };
+            return View("RaitingEventInfoForm", raitinginfo);
+        }
+        public ActionResult DeleteRaitingEventInfo(Guid id)
+        {
+            //Удаляем все связанные файлы
+            var references = _context.RaitingEventInfoFiles.Where(r => r.RaitingEventInfoId == id).ToList();
+            foreach(var reference in references)
+            {
+                _context.RaitingEventInfoFiles.Remove(reference);
+            }
+            //Удаляем сам Info
+            var info = _context.RaitingEventInfos.Single(r => r.Id==id);
+            _context.RaitingEventInfos.Remove(info);
+            _context.SaveChanges();
+            return RedirectToAction("AllRaitingEventInfos","Raitings");
         }
     }
 }

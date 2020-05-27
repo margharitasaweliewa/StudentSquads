@@ -7,8 +7,9 @@
 @if (User.IsInRole("SquadManager"))
 {
 	<button class="btn btn-warning js-save" data-id="@Model.Id" type="submit">Сохранить</button>
-	<button class="btn btn-warning js-delete" data-id="@Model.Id" type="submit">Удалить</button>
+	<a class="btn btn-warning" href="/raitings/deleteraitingeventinfo/@Model.Id">Удалить</a>
 }
+@*<button class="btn btn-warning js-delete" data-id="@Model.Id" type="submit">Удалить</button>*@
 @if (User.IsInRole("RegionalManager"))
 {
 	<button class="btn btn-warning js-approve" data-id="@Model.Id" type="submit">Принять</button>
@@ -43,12 +44,38 @@
 </div>
 <table id="referencetable" class="table table-bordered table-hover">
 </table>
+@if (Model.ReferenceDescriptions.Count > 0)
+{
+	<h4>Добавленные ранее</h4>
+	<table id="oldreferences" class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>Ссылка</th>
+				<th>Описание</th>
+				@if ((User.IsInRole("SquadManager")))
+				{
+					<th>Удалить</th>
+				}
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (KeyValuePair<string, string> keyValue in Model.ReferenceDescriptions)
+			{
+				<tr>
+					<td>@keyValue.Key</td>
+					<td>@keyValue.Value</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
 @section scripts
 {
 	@Scripts.Render("~/bundles/jqueryval")
-<script>
+	<script>
 		$(document).ready(function () {
-			var vm = { ReferenceDescriptions: [], MembershipTypes:[]};
+			var vm = { ReferenceDescriptions: [], MembershipTypes: [] };
 			var raitingevents = new Bloodhound({
 				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('Name'),
 				queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -64,7 +91,7 @@
 			}, {
 				name: 'raitingevents',
 				display: 'Name',
-			    source: raitingevents
+				source: raitingevents
 			}).on("typeahead:select", function (e, event) {
 				raitingevent.setAttribute('dataid', event.Id);
 				//Добавляем Id
@@ -92,45 +119,65 @@
 			});
 			$(".js-save").on("click", function () {
 				var button = $(this);
-				vm.MembershipTypeId  = document.getElementById('MembershipId').value;
+				vm.MembershipTypeId = document.getElementById('MembershipId').value;
 				vm.MembershipCount = document.getElementById('MembershipCount').value;
-			    vm.Id = document.getElementById('Id').value;
+				vm.Id = document.getElementById('Id').value;
 				$.ajax({
 					url: "/api/raitingeventinfos",
 					method: "post",
 					data: vm
 				})
 					.done(function () {
-						toastr.error("Успешно сохранено");
+						toastr.success("Успешно сохранено");
 
 					})
 					.fail(function () {
 						toastr.error("Произошла ошибка сохранения");
 					});
 			});
-			$(".js-delete").on("click", function () {
+			$(".js-approve").on("click", function () {
 				var button = $(this);
-					bootbox.confirm("Вы уверены, что хотите удалить показатель?", function (result) {
-						if (result) {
-							$.ajax({
-								url: "/api/raitingsections/" + button.attr("data-id"),
-								method: "DELETE",
-								success: function () {
-									bootbox.alert("Показатель удален", function () {
-										window.location = "/raitings/allraitingsections"
-									}
-									);
+				bootbox.confirm("Вы уверены, что хотите принять материалы рейтинга?", function (result) {
+					if (result) {
+						$.ajax({
+							url: "/api/raitingeventinfos/" + button.attr("data-id"),
+							method: "Put",
+							success: function () {
+								bootbox.alert("Успешно принято", function () {
+									window.location = "/raitings/allraitingeventinfos"
 								}
+								);
+							}
 
-							});
-						}
-					});
+						});
+					}
+				});
+
+			});
+
+			$(".js-reject").on("click", function () {
+				var button = $(this);
+				bootbox.confirm("Вы уверены, что хотите отклонить материалы?", function (result) {
+					if (result) {
+						$.ajax({
+							url: "/api/raitingeventinfos/" + button.attr("data-id"),
+							method: "DELETE",
+							success: function () {
+								bootbox.alert("Материалы отправлены на доработку", function () {
+									window.location = "/raitings/allraitingeventinfos"
+								}
+								);
+							}
+
+						});
+					}
+				});
 
 			});
 
 
 		});
-</script>
+	</script>
 }
 
 

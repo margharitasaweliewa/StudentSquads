@@ -85,36 +85,47 @@ namespace StudentSquads.Controllers.API
                 //Пытаемся конвертировать int
                 try { count = Convert.ToInt32(model.MembershipCount); }
                 catch (Exception) { return BadRequest(); }
-                RaitingEventInfo newinfo = new RaitingEventInfo
+                RaitingEventInfo newinfo = new RaitingEventInfo();
+                //Если новая запись
+                if (model.Id == Guid.Empty)
                 {
-                    Id = Guid.NewGuid(),
-                    MembershipCount = count,
-                    RaitingEventId = model.EventId,
-                    CreateTime = DateTime.Now,
-                    SquadId = headofsquad.SquadId
-                };
+                    newinfo.CreateTime = DateTime.Now;
+                    newinfo.SquadId = headofsquad.SquadId;
+                }
+                //Если запись редактируется
+                else newinfo = _context.RaitingEventInfos.Single(n => n.Id ==model.Id);
+                newinfo.MembershipCount = count;
                 //Находим показатель, к которому относится
                 RaitingSection thissection = new RaitingSection();
-                //Какого уровня текущее мероприятие
-                var level = _context.RaitingEvents.Include(e => e.EventLevel)
-                    .Single(e => e.Id == model.EventId);
-                //Находим все показатели с таким типом участия
-                var raitingsections = _context.RaitingSections.Include(r => r.MembershipType)
-                    .Where(r => r.MembershipTypeId == Convert.ToInt32(model.MembershipTypeId));
-                foreach (var section in raitingsections)
-                {
-                    //Уровени
-                    var levels = _context.RaitingSectionLevels
-                        .Where(l => l.RaitingSectionId == section.Id).Select(l => l.EventLevelId).ToList();
-                    if(levels.Contains(level.EventLevelId))
+                if (model.EventId != Guid.Empty) 
+                { newinfo.RaitingEventId = model.EventId;
+                    //Какого уровня текущее мероприятие
+                    var level = _context.RaitingEvents.Include(e => e.EventLevel)
+                        .Single(e => e.Id == model.EventId);
+                    //Находим все показатели с таким типом участия
+                    int membershipTypeId = Convert.ToInt32(model.MembershipTypeId);
+                    var raitingsections = _context.RaitingSections.Include(r => r.MembershipType)
+                        .Where(r => r.MembershipTypeId == membershipTypeId).ToList();
+                    foreach (var section in raitingsections)
                     {
-                        thissection = section;
-                        break;
+                        //Уровени
+                        var levels = _context.RaitingSectionLevels
+                            .Where(l => l.RaitingSectionId == section.Id).Select(l => l.EventLevelId).ToList();
+                        if (levels.Contains(level.EventLevelId))
+                        {
+                            thissection = section;
+                            break;
+                        }
                     }
+                    if (thissection.Id == Guid.Empty) return BadRequest();
+                    newinfo.RaitingSectionId = thissection.Id;
                 }
-                if (thissection.Id == Guid.Empty) return BadRequest();
-                newinfo.RaitingSectionId = thissection.Id;
-                _context.RaitingEventInfos.Add(newinfo);
+                //Если новая запись, добавляем ей Id и добавляем запись в базу
+                if (newinfo.Id==Guid.Empty) 
+                {
+                    newinfo.Id = Guid.NewGuid();
+                    _context.RaitingEventInfos.Add(newinfo);
+                }
                 //Добавляем ссылки
                 foreach(var refer in model.ReferenceDescriptions)
                 {
@@ -132,6 +143,22 @@ namespace StudentSquads.Controllers.API
             }
             else return BadRequest();
 
+        }
+        [HttpPut]
+        public IHttpActionResult ApproveInfo(Guid id)
+        {
+            var info = _context.RaitingEventInfos.Single(r => r.Id == id);
+            info.Approved = true;
+            _context.SaveChanges();
+            return Ok();
+        }
+        [HttpDelete]
+        public IHttpActionResult RejectInfo(Guid id)
+        {
+            var info = _context.RaitingEventInfos.Single(r => r.Id == id);
+            info.Approved = false;
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }
