@@ -10,6 +10,9 @@ namespace StudentSquads.ViewModels
     public class NewPersonViewModel
     {
         public IEnumerable<Squad> Squads { get; set; }
+        public IEnumerable<UniversityHeadquarter> UniversityHeadquarters { get; set; }
+        [Display(Name = "Штаб")]
+        public Guid UniverityId { get; set; }
         public Person Person { get; set; }
         public Member Member { get; set; }
         public IEnumerable<MainPosition> MainPositions { get; set; }

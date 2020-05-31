@@ -101,11 +101,13 @@ namespace StudentSquads.Controllers
         {//Определяем вид для отображения
             var squads = _context.Squads.ToList();
             var mainpositions = _context.MainPositions.ToList();
+            var universities = _context.UniversityHeadquarters.ToList();
             var viewModel = new NewPersonViewModel
             {
                 Member = new Member(),
                 Squads = squads,
-                MainPositions = mainpositions
+                MainPositions = mainpositions,
+                UniversityHeadquarters = universities
             };
             string id = User.Identity.GetUserId();
             var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
@@ -150,8 +152,32 @@ namespace StudentSquads.Controllers
                 newModel.Person.ApplicationUserId = id;
                 //Если является членом организации, сразу проставляем дату вступления
                 if (newModel.Person.MembershipNumber != null) newModel.Person.DateOfEnter = DateTime.Now;
+                //Если является ком. составом отряда,создаем запись в таблице "HeadsofStudentSquads"
+                if (newModel.HeadsOfStudentSquads.MainPositionId != null)
+                {
+                    //И добавляем пользователю Роль "Руководитель отряда"
+                    var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(_context));
+                    newModel.HeadsOfStudentSquads.Id = Guid.NewGuid();
+                    newModel.HeadsOfStudentSquads.PersonId = personId;
+                    //Если заполнен отряд, тогда делаем его руководителем отряда
+                    if (newModel.Member.SquadId != null) 
+                    {
+                        newModel.HeadsOfStudentSquads.SquadId = newModel.Member.SquadId;
+                        userManager.AddToRole(id, "SquadManager");
+                    }
+                    //Если выбран штаб и руководящая роль
+                    else if (newModel.UniverityId != null)
+                    {
+                        newModel.HeadsOfStudentSquads.UniversityHeadquarterId = newModel.UniverityId;
+                        userManager.AddToRole(id, "UniManager");
+                    }
+                    newModel.HeadsOfStudentSquads.DateofBegin = DateTime.Now;
+                    _context.HeadsOfStudentSquads.Add(newModel.HeadsOfStudentSquads);
+                    //Добавлеяем статус "Член ком. состава"
+                    newModel.Member.StatusId = 8;
+                }
                 //Если является членом отряда, создаем запись в таблице "Member"
-                if (newModel.SquadId != null)
+                if (newModel.Member.SquadId != null)
                 {
                     newModel.Member.Id = Guid.NewGuid();
                     newModel.Member.PersonId = personId;
@@ -159,25 +185,24 @@ namespace StudentSquads.Controllers
                     newModel.Member.ApprovedByCommandStaff = true;
                     newModel.Member.ApplicationStatus = "Член отряда";
                     _context.Members.Add(newModel.Member);
-                    //Если является ком. составом отряда,создаем запись в таблице "HeadsofStudentSquads"
-                    if (newModel.HeadsOfStudentSquads.MainPositionId != null)
-                    {
-                        newModel.HeadsOfStudentSquads.Id = Guid.NewGuid();
-                        newModel.HeadsOfStudentSquads.PersonId = personId;
-                        newModel.HeadsOfStudentSquads.SquadId = newModel.Member.SquadId;
-                        newModel.HeadsOfStudentSquads.DateofBegin = DateTime.Now;
-                        _context.HeadsOfStudentSquads.Add(newModel.HeadsOfStudentSquads);
-                        //Добавлеяем статус "Член ком. состава"
-                        newModel.Member.StatusId = 8;
-                    }
                 }
-                _context.People.Add(newModel.Person);
-                if (newModel.HeadsOfStudentSquads.MainPositionId != null)
+                else if (newModel.UniverityId != null) 
                 {
-                    //И добавляем пользователю Роль "Руководитель отряда"
-                    var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(_context));
-                    userManager.AddToRole(id, "SquadManager");
+                    newModel.Member.Id = Guid.NewGuid();
+                    newModel.Member.PersonId = personId;
+                    newModel.Member.DateOfEnter = DateTime.Now;
+                    newModel.Member.ApprovedByCommandStaff = true;
+                    newModel.Member.ApplicationStatus = "Член штаба";
+                    //Найдем отряд "Без отрядв" для данного штаба
+                    var withoutsquad = _context.Squads
+                        .Single(s => (s.UniversityHeadquarterId == newModel.UniverityId) && (s.Name == "Без отряда"));
+                    //Заносим его в найденный отряд
+                    newModel.Member.SquadId = withoutsquad.Id;
+                    _context.Members.Add(newModel.Member);
                 }
+               
+                _context.People.Add(newModel.Person);
+               
             }
             else
             {

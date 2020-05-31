@@ -401,6 +401,10 @@
     <Compile Include="Migrations\202005281559495_ChangedRaitingOnemoreTime.Designer.cs">
       <DependentUpon>202005281559495_ChangedRaitingOnemoreTime.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005312045041_AddShortContentToUniversityHeadQuarter.cs" />
+    <Compile Include="Migrations\202005312045041_AddShortContentToUniversityHeadQuarter.Designer.cs">
+      <DependentUpon>202005312045041_AddShortContentToUniversityHeadQuarter.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
@@ -879,6 +883,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005281559495_ChangedRaitingOnemoreTime.resx">
       <DependentUpon>202005281559495_ChangedRaitingOnemoreTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005312045041_AddShortContentToUniversityHeadQuarter.resx">
+      <DependentUpon>202005312045041_AddShortContentToUniversityHeadQuarter.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

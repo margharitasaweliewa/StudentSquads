@@ -14,5 +14,6 @@ namespace StudentSquads.Models
         public string UniversityNumber{ get; set; }
         public RegionalHeadquarter RegionalHeadquarter { get; set; }
         public Guid? RegionalHeadquarterId { get; set; }
+        public string ShortContent { get; set; }
     }
 }
