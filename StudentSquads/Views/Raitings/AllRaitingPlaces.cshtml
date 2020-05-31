@@ -1,0 +1,55 @@
+﻿
+@{
+	ViewBag.Title = "AllRaitingPlaces";
+}
+
+<h2>История рейтинга</h2>
+<table id="raitingplaces" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th></th>
+			<th>Отряд</th>
+			<th>Штаб</th>
+			<th>Сформирован</th>
+			<th>Место</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			//Используем плагин для поиска и сортировки
+			var table = $('#raitingplaces').DataTable({
+				ajax: {
+					url: "/api/raitingplaces",
+					dataSrc: ""
+				},
+				columns: [
+					{
+						data: "SquadId",
+						render: function (data) {
+							return "<a href ='/raitings/editraitingeventinfo/" + data + "'>" + "<img src='https://image.flaticon.com/icons/png/512/62/62319.png' width='25' height='25'>" + "</a>";
+						}
+					},
+					{
+						data: "Squad"
+					},
+					{
+						data: "Uni"
+					},
+					{
+						data: "Raiting"
+					},
+					{
+						data: "MainPlace"
+					}
+			
+				]
+			});
+		});
+	</script>
+}
+

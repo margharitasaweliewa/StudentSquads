@@ -239,7 +239,15 @@ namespace StudentSquads.Controllers
             _context.SaveChanges();
             return RedirectToAction("AllPeople", "People");
         }
-        
+        public ActionResult AllOldPeople()
+        {
+            return View();
+        }
+        public ActionResult AllHeadsofStudentSquads()
+        {
+            return View();
+        }
+
 
     }
 }

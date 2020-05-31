@@ -102,10 +102,11 @@ namespace StudentSquads.Controllers.API
                     //Какого уровня текущее мероприятие
                     var level = _context.RaitingEvents.Include(e => e.EventLevel)
                         .Single(e => e.Id == model.EventId);
-                    //Находим все показатели с таким типом участия
+                   //Тип участия
                     int membershipTypeId = Convert.ToInt32(model.MembershipTypeId);
+                    //Находим все показатели с таким типом участия, которые не были удалены
                     var raitingsections = _context.RaitingSections.Include(r => r.MembershipType)
-                        .Where(r => r.MembershipTypeId == membershipTypeId).ToList();
+                        .Where(r => (r.MembershipTypeId == membershipTypeId)&&(r.Removed!=true)).ToList();
                     foreach (var section in raitingsections)
                     {
                         //Уровени

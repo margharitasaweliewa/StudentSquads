@@ -53,11 +53,18 @@ namespace StudentSquads.Controllers.API
         public List<DesignationViewModel> GetPositions()
         {
             List<DesignationViewModel> listpositions = new List<DesignationViewModel>();
-            var headofSquads = memberscontr.GetHeadOfStudentSquads();
+            //var headofSquads = memberscontr.GetHeadOfStudentSquads();
+            string id = User.Identity.GetUserId();
+            var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
+            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также должность активна
+            var headofsquad = _context.HeadsOfStudentSquads.Include(h => h.MainPosition).Include(h => h.Squad)
+                .Include(h => h.UniversityHeadquarter).Include(h => h.RegionalHeadquarter)
+                .SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null) && (h.DateofBegin != null));
+            //Если активной записи о руководстве не найдено, перенаправляем на главную страницу
             var positions = _context.HeadsOfStudentSquads.Include(p => p.Person).Include(p => p.MainPosition)
                 .OrderBy(p => p.DateofEnd).ThenByDescending(p => p.DateofBegin)
                 .ToList();
-            positions = LimitPositions(positions, headofSquads);
+            positions = LimitPositions(positions, headofsquad);
             string hasrole = "";
             foreach (var position in positions)
             {
@@ -82,7 +89,14 @@ namespace StudentSquads.Controllers.API
         public IHttpActionResult CreateNewHead(DesignationViewModel head)
         {
             //Определяем текущего пользоватея
-            var headofsquads = memberscontr.GetHeadOfStudentSquads();
+            //var headofsquads = memberscontr.GetHeadOfStudentSquads();
+            string Id = User.Identity.GetUserId();
+            var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == Id);
+            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также должность активна
+            var headofsquad = _context.HeadsOfStudentSquads.Include(h => h.MainPosition).Include(h => h.Squad)
+                .Include(h => h.UniversityHeadquarter).Include(h => h.RegionalHeadquarter)
+                .SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null) && (h.DateofBegin != null));
+            //Если активной записи о руководстве не найдено, перенаправляем на главную страницу
             bool changerole = false;
             //Объект "роль"
             HeadsOfStudentSquads positionInDb = new HeadsOfStudentSquads();
@@ -110,9 +124,9 @@ namespace StudentSquads.Controllers.API
                 positionInDb.MainPositionId = mainposition;
                 //Если не позволять самим подставлять дату начала работы
                 positionInDb.DateofBegin = DateTime.Now;
-                positionInDb.SquadId = headofsquads.SquadId;
-                positionInDb.UniversityHeadquarterId = headofsquads.UniversityHeadquarterId;
-                positionInDb.RegionalHeadquarterId = headofsquads.RegionalHeadquarterId;
+                positionInDb.SquadId = headofsquad.SquadId;
+                positionInDb.UniversityHeadquarterId = headofsquad.UniversityHeadquarterId;
+                positionInDb.RegionalHeadquarterId = headofsquad.RegionalHeadquarterId;
             }
             //При создании или если изменилась роль, работаем с ролями
             if (changerole || head.HeadofStudentSquadsId == Guid.Empty)

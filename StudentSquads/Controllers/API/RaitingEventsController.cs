@@ -35,7 +35,7 @@ namespace StudentSquads.Controllers.API
             //Отображаем только те, которые в текущем рейтинге, т е ещё не составленном DateofCreation = null
             var events = _context.RaitingEvents.Include(e => e.Raiting).Include(e => e.EventLevel)
                 .Include(e => e.Squad).Include(e => e.UniversityHeadquarter).Include(e => e.RegionalHeadquarter)
-                .Where(e => e.Raiting.DateofCreation==null).ToList();
+                .Where(e => (e.Raiting.DateofCreation==null)&&(e.Approved==true)).ToList();
             if (query != null) events = events.Where(e => e.Name.Contains(query)).ToList();
             foreach (var ev in events)
             {

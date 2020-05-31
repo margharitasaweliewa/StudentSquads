@@ -15,6 +15,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Packaging;
 using System.Xml;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Owin.Security;
 
 namespace StudentSquads.Controllers
 {
@@ -668,6 +669,14 @@ namespace StudentSquads.Controllers
                     break;
             }
             _context.SaveChanges();
+        }
+        public ActionResult ChangeSquadManagerApplications()
+        {
+            return View();
+        }
+        public ActionResult AddFeeApplications()
+        {
+            return View();
         }
 
     }

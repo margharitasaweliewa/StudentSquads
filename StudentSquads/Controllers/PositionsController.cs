@@ -63,5 +63,14 @@ namespace StudentSquads.Controllers
             _context.SaveChanges();
             return RedirectToAction("AllPositions", "Positions");
         }
+        public ActionResult ChangeSquadManager()
+        {
+           var mainPositions = _context.MainPositions.ToList();
+            DesignationViewModel newModel = new DesignationViewModel
+            {
+                MainPositions = mainPositions
+            };
+            return View(newModel);
+        }
     }
 }

@@ -10,6 +10,10 @@ namespace StudentSquads.ViewModels
 {
     public class DesignationViewModel
     {
+        public string Place { get; set; }
+        [Display(Name = "Протокол собрания")]
+        public string DocumentPath { get; set; }
+
         [Display(Name = "Член организации")]
         public string FIO { get; set; }
         [Required(ErrorMessage = "Введите должность")]
@@ -25,6 +29,7 @@ namespace StudentSquads.ViewModels
         public Guid PersonId { get; set; }
         public List<Person> People { get; set; }
         public List<MainPosition> MainPositions { get; set; }
+        [Display(Name = "Основная должность")]
         public int MainPositionId { get; set; }
         public Guid HeadofStudentSquadsId{ get; set; }
 

@@ -1,0 +1,54 @@
+﻿@model List<StudentSquads.ViewModels.ApplicationsListViewModel>
+@{
+	ViewBag.Title = "AddFeeApplications";
+}
+
+<h2>Заявки на внесение информации о взносах</h2>
+@if (User.IsInRole("RegionalManager"))
+{
+	<input type="submit" name="button3" value="Подтвердить" class="btn btn-warning" formaction="@Url.Action("CreateEnterProtocol", "Members")" />
+	<input type="submit" name="button4" value="Отклонить" class="btn btn-warning" formaction="@Url.Action("CreateEnterProtocol", "Members")" />
+}
+@using (Html.BeginForm("ApproveEnterApllications", "Members"))
+{
+	<table id="addfeeapplications" class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<th></th>
+				<th>Отряд</th>
+				<th>Штаб</th>
+				<th>ФИО</th>
+				<th>Внесено</th>
+				<th>Сумма</th>
+			</tr>
+		</thead>
+		<tbody>
+			@*@for (int i = 0; i < Model.Count; i++)
+				{
+					<tr>
+						@Html.HiddenFor(m => m[i].Id)
+						@Html.HiddenFor(m => m[i].PersonId)
+						<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
+						<td>@Model[i].FIO</td>
+						<td>@Model[i].Sex</td>
+						<td>@Model[i].DateOfBirth</td>
+						<td>@Model[i].PhoneNumber</td>
+						<td>@Model[i].PlaceOfStudy</td>
+						<td>@Model[i].Squad</td>
+					</tr>
+				}*@
+		</tbody>
+	</table>
+	@Html.AntiForgeryToken()
+}
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			$("#addfeeapplications").DataTable();
+		});
+	</script>
+}
+
+
+

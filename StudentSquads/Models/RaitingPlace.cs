@@ -13,8 +13,9 @@ namespace StudentSquads.Models
         public RaitingSection RaitingSection { get; set; }
         public Guid RaitingSectionId { get; set; }
         public Squad Squad { get; set; }
-        public Guid SquadId { get; set; }
+        public Guid? SquadId { get; set; }
         public int Place { get; set; }
+        public double Points { get; set; }
         public int? MainPlace { get; set; }
     }
 }

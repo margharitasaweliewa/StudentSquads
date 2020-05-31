@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using StudentSquads.Models;
@@ -9,8 +10,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 
 namespace StudentSquads.Controllers
 {
@@ -45,8 +48,7 @@ namespace StudentSquads.Controllers
             //Отображаем утвержденные и созданные собственными руками
             var events = _context.RaitingEvents.Include(e => e.Raiting).Include(e => e.EventLevel)
                 .Include(e => e.Squad).Include(e => e.UniversityHeadquarter).Include(e => e.RegionalHeadquarter)
-                .Where(e => (e.Raiting.DateofCreation == null)
-                &&((e.Approved==true)))
+                .Where(e => (e.Raiting.DateofCreation == null))
                 .ToList();
             events = events.Where(e => (e.SquadId == headofsquads.SquadId)
                 || (e.UniversityHeadquarterId == headofsquads.UniversityHeadquarterId) || (User.IsInRole("RegionalManager"))).ToList();
@@ -180,18 +182,17 @@ namespace StudentSquads.Controllers
         public ActionResult AllRaitingSections()
         {
             List<RaitingSectionViewModel> listsections = new List<RaitingSectionViewModel>();
-            //Выбираем все активные показатели
+            //Выбираем все показатели
             var raitingsections = _context.RaitingSections.Include(r => r.MembershipType)
-                .Where(r => r.Removed==false)
                 .ToList();
-            foreach(var section in raitingsections)
+            foreach (var section in raitingsections)
             {
                 //Находим все уровени, связанные с показателем
                 var levels = _context.RaitingSectionLevels.Include(l => l.EventLevel)
                     .Where(l => l.RaitingSectionId == section.Id);
                 //Создаем строку для всех уровней
                 string alllevels = "";
-                foreach(var level in levels)
+                foreach (var level in levels)
                     alllevels = alllevels + level.EventLevel.Name + ", ";
                 alllevels = alllevels.Substring(0, alllevels.Length - 2);
                 int i = alllevels.Length;
@@ -281,15 +282,21 @@ namespace StudentSquads.Controllers
         {
             //Удаляем все связанные файлы
             var references = _context.RaitingEventInfoFiles.Where(r => r.RaitingEventInfoId == id).ToList();
-            foreach(var reference in references)
+            foreach (var reference in references)
             {
                 _context.RaitingEventInfoFiles.Remove(reference);
             }
             //Удаляем сам Info
-            var info = _context.RaitingEventInfos.Single(r => r.Id==id);
+            var info = _context.RaitingEventInfos.Single(r => r.Id == id);
             _context.RaitingEventInfos.Remove(info);
             _context.SaveChanges();
-            return RedirectToAction("AllRaitingEventInfos","Raitings");
+            return RedirectToAction("AllRaitingEventInfos", "Raitings");
         }
+        public ActionResult AllRaitingPlaces()
+        {
+            return View();
+        }
+       
+        
     }
 }

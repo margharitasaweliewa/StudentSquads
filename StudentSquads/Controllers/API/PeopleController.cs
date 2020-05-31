@@ -32,21 +32,29 @@ namespace StudentSquads.Controllers.API
             //Для формирования списка
             List<NewPersonViewModel> listofmembers = new List<NewPersonViewModel>();
             //Находим руководящую позицию пользователя
-            var headofsquads = memberscontr.GetHeadOfStudentSquads();
+            //var headofsquads = memberscontr.GetHeadOfStudentSquads();
+            string id = User.Identity.GetUserId();
+            var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
+            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также должность активна
+            var headofsquad = _context.HeadsOfStudentSquads.Include(h => h.MainPosition).Include(h => h.Squad)
+                .Include(h => h.UniversityHeadquarter).Include(h => h.RegionalHeadquarter)
+                .SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null) && (h.DateofBegin != null));
+            //Если активной записи о руководстве не найдено, перенаправляем на главную страницу
             //Для найденных members
             List<Member> members = _context.Members.Include(m => m.Person).Include(m => m.Squad).Include(m => m.Status)
-                    .Where(m => (m.DateOfEnter != null) && (m.DateOfExit == null) && (m.Person.DateOfExit == null)).ToList();
+                    .Where(m => (m.DateOfEnter != null) && (m.DateOfExit == null)&& (m.Person.DateOfExit == null))
+                    .ToList();
             if (!String.IsNullOrWhiteSpace(query))
                 members = members.Where(m => m.Person.FIO.Contains(query)).ToList();
             members = members.OrderBy(m => m.Squad.UniversityHeadquarterId).ToList();
             //Выделяем список только под Id личностей
             var personmembers = members.Select(p => p.PersonId).ToList();
-            members = memberscontr.LimitMembers(members, headofsquads);
+            members = memberscontr.LimitMembers(members, headofsquad);
             if (User.IsInRole("UniManager"))
             {
                 //Найдем всех руководителей штаба
                 var allheads = _context.HeadsOfStudentSquads.Include(h => h.Person).Include(h => h.UniversityHeadquarter)
-                    .Where(h => h.UniversityHeadquarterId==headofsquads.UniversityHeadquarterId).ToList();
+                    .Where(h => h.UniversityHeadquarterId==headofsquad.UniversityHeadquarterId).ToList();
                 //Формируем список, если PersonId совпадают, оставляем информацию о принадлежности отряду
                 foreach (var member in allheads)
                 {
@@ -60,7 +68,10 @@ namespace StudentSquads.Controllers.API
                             DateofBirth = member.Person.DateofBirth.ToString("dd.MM.yyyy"),
                             PhoneNumber = member.Person.PhoneNumber,
                             MembershipNumber = member.Person.MembershipNumber,
-                            Uni = headofsquads.UniversityHeadquarter.University
+                            Uni = headofsquad.UniversityHeadquarter.University,
+                            DateofEnterString = member.Person.DateOfEnter?.ToString("dd.MM.yyyy"),
+                            DateofExitString = member.Person.DateOfExit?.ToString("dd.MM.yyyy"),
+                            ExitReason = member.Person.ExitReason
                         };
                         listofmembers.Add(newmember);
                     }
@@ -89,6 +100,9 @@ namespace StudentSquads.Controllers.API
                             PhoneNumber = member.Person.PhoneNumber,
                             MembershipNumber = member.Person.MembershipNumber,
                             Uni = uni,
+                            DateofEnterString = member.Person.DateOfEnter?.ToString("dd.MM.yyyy"),
+                            DateofExitString = member.Person.DateOfExit?.ToString("dd.MM.yyyy"),
+                            ExitReason = member.Person.ExitReason
                         };
                         listofmembers.Add(newmember);
                     }
@@ -112,8 +126,11 @@ namespace StudentSquads.Controllers.API
                         SquadId = member.Squad.Id,
                         SquadName = member.Squad.Name,
                         StatusName = (member.StatusId == null ? String.Empty : member.Status.Name),
-                        Uni = uni
-                    };
+                        Uni = uni,
+                        DateofEnterString = member.Person.DateOfEnter?.ToString("dd.MM.yyyy"),
+                        DateofExitString = member.Person.DateOfExit?.ToString("dd.MM.yyyy"),
+                        ExitReason = member.Person.ExitReason
+                };
                     listofmembers.Add(newmember);
             }
             //dynamic model = new ExpandoObject();

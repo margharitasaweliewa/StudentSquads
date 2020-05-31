@@ -1,0 +1,76 @@
+﻿@model dynamic
+@{
+	ViewBag.Title = "AllPeople";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Исключенные члены организации</h2>
+<table id="people" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th>ФИО</th>
+			<th>Дата рождения</th>
+			<th>Телефон</th>
+			<th>Номер членского билета</th>
+			<th>Отряд</th>
+			<th>Штаб</th>
+			<th>Вступление</th>
+			<th>Исключение</th>
+			<th>Причина</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			//Используем плагин для поиска и сортировки
+			var table = $('#people').DataTable({
+				ajax: {
+					url: "/api/people",
+					dataSrc: ""
+				},
+				columns: [
+					//{
+					//	data: "Id",
+					//	render: function (data) {
+					//	return "<input id="+data+" type=checkbox>"}
+					//},
+					{
+						data: "FIO",
+						render: function (data, type, person) {
+							return "<a href ='/people/edit/" + person.Id + "'>" + person.FIO + "</a>";
+						}
+					},
+					{
+						data: "DateofBirth"
+					},
+					{
+						data: "PhoneNumber"
+					},
+					{
+						data: "MembershipNumber"
+					},
+					{
+						data: "SquadName"
+					},
+					{
+						data: "Uni"
+					},
+					{
+						data: "DateofEnterString"
+					},
+					{
+						data: "DateofExitString"
+					},
+					{
+						data: "ExitReason"
+					}
+
+				]
+			});
+		});
+	</script>
+}

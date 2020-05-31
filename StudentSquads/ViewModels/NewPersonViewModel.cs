@@ -18,6 +18,9 @@ namespace StudentSquads.ViewModels
         public Guid Id { get; set; }
         //Для отображения в списке
         public DateTime DateOfExit { get; set; }
+        public string DateofEnterString { get; set; }
+        public string DateofExitString { get; set; }
+        public string ExitReason { get; set; }
         public string FIO { get; set; }
         public string DateofBirth { get; set; }
         public string PhoneNumber { get; set; }

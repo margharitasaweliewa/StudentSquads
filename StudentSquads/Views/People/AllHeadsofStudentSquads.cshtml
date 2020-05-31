@@ -1,0 +1,55 @@
+﻿
+@model dynamic
+@{
+	ViewBag.Title = "AllHeadsofStudentSquads";
+}
+
+<h2>Руководители организации</h2>
+<table id="people" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th>Руководство</th>
+			<th>ФИО</th>
+			<th>Должность</th>
+			<th>Назначение</th>
+			<th>Снятие</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</table>
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+			//Используем плагин для поиска и сортировки
+			var table = $('#people').DataTable({
+				ajax: {
+					url: "/api/headsofstudentsquads",
+					dataSrc: ""
+				},
+				columns: [
+					{
+						data: "Place"
+					},
+					{
+						data: "FIO",
+						render: function (data, type, person) {
+							return "<a href ='/people/edit/" + person.Id + "'>" + person.FIO + "</a>";
+						}
+					},
+					{
+						data: "Position"
+					},
+					{
+						data: "DateofBegin"
+					},
+					{
+						data: "DateofEnd"
+					}
+
+				]
+			});
+		});
+	</script>
+}
