@@ -11,7 +11,7 @@
 			<th>ФИО</th>
 			<th>Дата рождения</th>
 			<th>Телефон</th>
-			<th>Номер членского билета</th>
+			<th>Членский билет</th>
 			<th>Отряд</th>
 			<th>Штаб</th>
 			<th>Вступление</th>
@@ -29,7 +29,7 @@
 			//Используем плагин для поиска и сортировки
 			var table = $('#people').DataTable({
 				ajax: {
-					url: "/api/people",
+					url: "/api/oldpeople",
 					dataSrc: ""
 				},
 				columns: [

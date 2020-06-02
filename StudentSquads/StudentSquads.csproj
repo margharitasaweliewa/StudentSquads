@@ -194,6 +194,7 @@
     <Compile Include="Controllers\API\EventLevelsController.cs" />
     <Compile Include="Controllers\API\HeadsofStudentSquadsController.cs" />
     <Compile Include="Controllers\API\MembersController.cs" />
+    <Compile Include="Controllers\API\OldPeopleController.cs" />
     <Compile Include="Controllers\API\PeopleController.cs" />
     <Compile Include="Controllers\API\PositionsController.cs" />
     <Compile Include="Controllers\API\RaitingEventInfosController.cs" />

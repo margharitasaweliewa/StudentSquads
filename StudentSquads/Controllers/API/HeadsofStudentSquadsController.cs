@@ -38,7 +38,7 @@ namespace StudentSquads.Controllers.API
             var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
             //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также должность активна
             var headofsquad = _context.HeadsOfStudentSquads.Include(h => h.MainPosition).Include(h => h.Squad)
-                .Include(h => h.UniversityHeadquarter).Include(h => h.RegionalHeadquarter)
+                .Include(h => h.UniversityHeadquarter).Include(h => h.RegionalHeadquarter).ToList()
                 .SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null) && (h.DateofBegin != null));
             //Сокращаем по штабу, если руководитель штаба
             if (headofsquad.UniversityHeadquarterId != null)
