@@ -676,7 +676,32 @@ namespace StudentSquads.Controllers
         }
         public ActionResult AddFeeApplications()
         {
-            return View();
+            List<ApplicationsListViewModel> listapplications = new List<ApplicationsListViewModel>();
+            var fees = _context.FeePayments.Include(f => f.Person)
+                .Where(f => f.Approved == null).ToList();
+            foreach (var fee in fees)
+            {
+                var member = _context.Members.Include(m => m.Squad)
+                    .SingleOrDefault(m => (m.PersonId ==fee.PersonId)&&(m.DateOfEnter!=null)&&(m.DateOfExit==null));
+                if (member != null) 
+                {
+                    string uni = _context.Squads.Include(s => s.UniversityHeadquarter)
+                        .Single(s => s.Id == member.SquadId).UniversityHeadquarter.ShortContent;
+                    ApplicationsListViewModel newFee = new ApplicationsListViewModel
+                    {
+                        FIO = fee.Person.FIO,
+                        Squad = member.Squad.Name,
+                        Id = fee.Id,
+                        FeePayment = fee.DateofPayment.ToString("dd.MM.yyyy"),
+                        SumOfPayment = 300,
+                        Uni = uni,
+                        Choosen = false
+                    };
+                    listapplications.Add(newFee);
+                }
+               
+            }
+            return View(listapplications);
         }
 
     }

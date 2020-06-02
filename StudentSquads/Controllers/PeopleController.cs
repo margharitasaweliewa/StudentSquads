@@ -29,11 +29,78 @@ namespace StudentSquads.Controllers
         {
             _context.Dispose();
         }
+        public HeadsOfStudentSquads GetHeadOfStudentSquads()
+        {
+            string id = User.Identity.GetUserId();
+            var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
+            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также должность активна
+            var headofsquad = _context.HeadsOfStudentSquads.Include(h => h.MainPosition)
+                .SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null) && (h.DateofBegin != null));
+            //Если активной записи о руководстве не найдено, перенаправляем на главную страницу
+            return headofsquad;
+        }
         // GET: People
         //Нам не нужна эта функция, так как мы используем api для отображения личностей
         public ActionResult AllPeople(int? pageIndex, string sortBy)
         {
-            return View();
+            List<NewPersonViewModel> listofpeople = new List<NewPersonViewModel>();
+            //Находим текущего пользователя
+            var headofsquad = GetHeadOfStudentSquads();
+            if (User.IsInRole("RegionalManager"))
+            {
+                //Находим всех активных членов
+                var allpeople = _context.People
+                    .Where(p => (p.DateOfEnter != null) && (p.DateOfExit == null)).ToList();
+                foreach (var person in allpeople)
+                {
+                    //Находим последнего активного члена отряда для личности (который не перемещался в другой отряд)
+                    var member = _context.Members.Include(m => m.Person).Include(m => m.Squad).Include(m => m.Status)
+                        .SingleOrDefault(m => (m.PersonId == person.Id) && (m.DateOfEnter != null) && (m.ToSquadId == null));
+                    string uni = "";
+                    if (member != null)
+                        uni = _context.Squads.Include(u => u.UniversityHeadquarter).Single(u => u.Id == member.SquadId).UniversityHeadquarter.ShortContent;
+                    NewPersonViewModel newPerson = new NewPersonViewModel
+                    {
+                        Id = person.Id,
+                        FIO = person.FIO,
+                        DateofBirth = person.DateofBirth.ToString("dd.MM.yyyy"),
+                        PhoneNumber = person.PhoneNumber,
+                        MembershipNumber = person.MembershipNumber,
+                        SquadName = member?.Squad.Name,
+                        Uni = uni,
+                        StatusName = (member.StatusId == null ? String.Empty : member.Status.Name),
+                        Choosen = false
+                    };
+                    listofpeople.Add(newPerson);
+
+                }
+            }
+            //Иначе находим членов
+            else
+            {
+                //Находим выбывших
+                var members = _context.Members.Include(m => m.Squad).Include(m => m.Person).Include(m => m.Status)
+                    .Where(m => (m.DateOfEnter != null) && (m.DateOfExit == null) &&
+                    ((m.SquadId == headofsquad.SquadId) || (m.Squad.UniversityHeadquarterId == headofsquad.UniversityHeadquarterId))).ToList();
+                foreach (var member in members)
+                {
+                    string uni = _context.Squads.Include(u => u.UniversityHeadquarter).Single(u => u.Id == member.SquadId).UniversityHeadquarter.ShortContent;
+                    NewPersonViewModel newPerson = new NewPersonViewModel
+                    {
+                        Id = member.Person.Id,
+                        FIO = member.Person.FIO,
+                        DateofBirth = member.Person.DateofBirth.ToString("dd.MM.yyyy"),
+                        PhoneNumber = member.Person.PhoneNumber,
+                        MembershipNumber = member.Person.MembershipNumber,
+                        SquadName = member.Squad.Name,
+                        Uni = uni,
+                        StatusName = (member.StatusId == null ? String.Empty : member.Status.Name),
+                        Choosen = false
+                    };
+                    listofpeople.Add(newPerson);
+                }
+            }
+            return View(listofpeople);
         }
         //public FileResult GetFile()
         //{
@@ -271,6 +338,26 @@ namespace StudentSquads.Controllers
         public ActionResult AllHeadsofStudentSquads()
         {
             return View();
+        }
+        public ActionResult AddFeeInfo(List<NewPersonViewModel> people)
+        {
+            foreach (var person in people)
+            {//Если выбрали для одобрения
+                if (person.Choosen)
+                {
+                    FeePayment newPayment = new FeePayment
+                    {
+                        DateofPayment = DateTime.Now,
+                        Id = Guid.NewGuid(),
+                        PersonId = person.Id,
+                        SumofPayment = 300
+                    };
+                    _context.FeePayments.Add(newPayment);
+                }
+
+            }
+            _context.SaveChanges();
+            return RedirectToAction("AllPeople", "People");
         }
 
 

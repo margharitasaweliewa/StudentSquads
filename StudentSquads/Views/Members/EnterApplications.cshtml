@@ -35,7 +35,8 @@
 			{
 				<tr>
 					@Html.HiddenFor(m => m[i].Id)
-					@Html.HiddenFor(m => m[i].PersonId)					<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
+					@Html.HiddenFor(m => m[i].PersonId)
+					<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
 					<td>@Model[i].FIO</td>
 					<td>@Model[i].Sex</td>
 					<td>@Model[i].DateOfBirth</td>

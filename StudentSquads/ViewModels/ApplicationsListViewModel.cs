@@ -24,5 +24,7 @@ namespace StudentSquads.ViewModels
         public Guid OldId { get; set; }
         public string Status { get; set; }
         public bool Choosen { get; set; }
+        public int SumOfPayment { get; set; }
+        public string Uni { get; set; }
     }
 }

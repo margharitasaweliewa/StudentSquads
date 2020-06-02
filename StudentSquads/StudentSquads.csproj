@@ -406,6 +406,10 @@
     <Compile Include="Migrations\202005312045041_AddShortContentToUniversityHeadQuarter.Designer.cs">
       <DependentUpon>202005312045041_AddShortContentToUniversityHeadQuarter.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006022130515_AddApprovedToFeePayment.cs" />
+    <Compile Include="Migrations\202006022130515_AddApprovedToFeePayment.Designer.cs">
+      <DependentUpon>202006022130515_AddApprovedToFeePayment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
@@ -694,8 +698,6 @@
     <Content Include="Views\Members\ChangeSquadManagerApplications.cshtml" />
     <Content Include="Views\Members\EnterApplications.cshtml" />
     <Content Include="Views\Members\ExitApplications.cshtml" />
-    <Content Include="Views\Members\ShowAll.cshtml" />
-    <Content Include="Views\Members\SquadManager.cshtml" />
     <Content Include="Views\Members\TransitionApplications.cshtml" />
     <Content Include="Views\People\AllHeadsofStudentSquads.cshtml" />
     <Content Include="Views\People\AllOldPeople.cshtml" />
@@ -722,7 +724,6 @@
     <Content Include="Views\Works\AllSquadWorks.cshtml" />
     <Content Include="Views\Works\Allworks.cshtml" />
     <Content Include="Views\Works\WorkEditForm.cshtml" />
-    <Content Include="Views\Works\WorkEditFormAudit.cshtml" />
     <Content Include="Views\Works\WorkForm.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
   </ItemGroup>
@@ -887,6 +888,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005312045041_AddShortContentToUniversityHeadQuarter.resx">
       <DependentUpon>202005312045041_AddShortContentToUniversityHeadQuarter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006022130515_AddApprovedToFeePayment.resx">
+      <DependentUpon>202006022130515_AddApprovedToFeePayment.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

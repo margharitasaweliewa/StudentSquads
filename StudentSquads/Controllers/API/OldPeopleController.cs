@@ -50,6 +50,7 @@ namespace StudentSquads.Controllers.API
                         uni = _context.Squads.Include(u => u.UniversityHeadquarter).Single(u => u.Id == member.SquadId).UniversityHeadquarter.ShortContent;
                     NewPersonViewModel newPerson = new NewPersonViewModel
                     {
+                        Id = person.Id,
                         FIO = person.FIO,
                         DateofBirth = person.DateofBirth.ToString("dd.MM.yyyy"),
                         PhoneNumber = person.PhoneNumber,
@@ -76,6 +77,7 @@ namespace StudentSquads.Controllers.API
                     string uni = _context.Squads.Include(u => u.UniversityHeadquarter).Single(u => u.Id == member.SquadId).UniversityHeadquarter.ShortContent;
                     NewPersonViewModel newPerson = new NewPersonViewModel
                     {
+                        Id = member.Person.Id,
                         FIO = member.Person.FIO,
                         DateofBirth = member.Person.DateofBirth.ToString("dd.MM.yyyy"),
                         PhoneNumber = member.Person.PhoneNumber,

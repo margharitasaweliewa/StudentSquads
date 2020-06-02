@@ -13,5 +13,6 @@ namespace StudentSquads.Models
         public int SumofPayment { get; set; }
         public Person Person { get; set; }
         public Guid PersonId { get; set; }
+        public bool? Approved { get; set; }
     }
 }

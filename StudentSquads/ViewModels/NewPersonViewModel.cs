@@ -35,6 +35,6 @@ namespace StudentSquads.ViewModels
         [Display(Name ="Ваши документы")]
         public HttpPostedFileBase file { get; set; }
         public string Uni { get; set; }
-
-    }
+        public bool Choosen{ get; set; }
+}
 }

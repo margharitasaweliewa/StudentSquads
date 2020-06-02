@@ -23,20 +23,18 @@
 			</tr>
 		</thead>
 		<tbody>
-			@*@for (int i = 0; i < Model.Count; i++)
+			@for (int i = 0; i < Model.Count; i++)
 				{
 					<tr>
 						@Html.HiddenFor(m => m[i].Id)
-						@Html.HiddenFor(m => m[i].PersonId)
 						<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
 						<td>@Model[i].FIO</td>
-						<td>@Model[i].Sex</td>
-						<td>@Model[i].DateOfBirth</td>
-						<td>@Model[i].PhoneNumber</td>
-						<td>@Model[i].PlaceOfStudy</td>
 						<td>@Model[i].Squad</td>
+						<td>@Model[i].Uni</td>
+						<td>@Model[i].FeePayment</td>
+						<td>@Model[i].SumOfPayment</td>
 					</tr>
-				}*@
+				}
 		</tbody>
 	</table>
 	@Html.AntiForgeryToken()
