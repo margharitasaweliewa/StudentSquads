@@ -31,6 +31,8 @@ namespace StudentSquads.ViewModels
         public List<MainPosition> MainPositions { get; set; }
         [Display(Name = "Основная должность")]
         public int MainPositionId { get; set; }
+        //ID в виде строки
+        public string MainPosition { get; set; }
         public Guid HeadofStudentSquadsId{ get; set; }
 
     }

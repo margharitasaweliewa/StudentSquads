@@ -5,6 +5,8 @@
 
 <h2>Управление должностями</h2>
 <a class="btn btn-warning" href ="/positions/positionform">Создать</a>
+@if (User.IsInRole("SquadManager"))
+{ <a class="btn btn-warning" href="/positions/changesquadmanager">Изменить ком. состав</a>}
 <table id="positions" class="table table-bordered table-hover">
 	<thead>
 		<tr>
@@ -33,7 +35,7 @@
 					{
 						data: "HeadofStudentSquadsId",
 						render: function (data) {
-							return "<a href ='/positions/edit/" +data + "'>" +"Открыть"+ "</a>";
+							return "<a href ='/positions/edit/" + data + "'>" +"<img src='https://icons.iconarchive.com/icons/icons8/windows-8/512/Editing-Edit-icon.png' width='25' height = '25'>"+ "</a>";
 						}
 
 					},

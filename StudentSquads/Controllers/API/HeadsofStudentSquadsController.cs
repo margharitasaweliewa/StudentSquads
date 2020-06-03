@@ -68,5 +68,30 @@ namespace StudentSquads.Controllers.API
             }
             return listofheads;
         }
+        [HttpPost]
+        public IHttpActionResult ApplyForManagersChange(DesignationViewModel head)
+        {
+            //Находим текущего пользователя
+            string id = User.Identity.GetUserId();
+            var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
+            //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также должность активна
+            var headofsquad = _context.HeadsOfStudentSquads.Include(h => h.MainPosition).Include(h => h.Squad)
+                .Include(h => h.UniversityHeadquarter).Include(h => h.RegionalHeadquarter)
+                .SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null) && (h.DateofBegin != null));
+            ////Находим, кто ноходится в настоящее время на должности
+            //var manager = _context.HeadsOfStudentSquads
+            //    .SingleOrDefault(m => (m.MainPositionId.ToString()==head.MainPosition)&&(m.DateofBegin!=null)&&(m.DateofEnd==null)&&(m.SquadId ==headofsquad.SquadId));
+            //if(manager)
+            HeadsOfStudentSquads newhead = new HeadsOfStudentSquads
+            {
+                PersonId = head.PersonId,
+                MainPositionId = Convert.ToInt32(head.MainPosition),
+                SquadId = headofsquad.SquadId,
+                HasRole = true
+            };
+            _context.HeadsOfStudentSquads.Add(newhead);
+            _context.SaveChanges();
+            return Ok();
+        }
     }
 }

@@ -72,5 +72,6 @@ namespace StudentSquads.Controllers
             };
             return View(newModel);
         }
+ 
     }
 }

@@ -156,5 +156,6 @@ namespace StudentSquads.Controllers.API
             _context.SaveChanges();
             return Ok();
         }
-        }
+      
+    }
 }
