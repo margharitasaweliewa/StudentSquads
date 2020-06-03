@@ -17,10 +17,11 @@
 				<th>ФИО</th>
 				<th>Дата рождения</th>
 				<th>Телефон</th>
-				<th>Номер членского билета</th>
+				<th>Членский билет</th>
 				<th>Отряд</th>
 				<th>Штаб</th>
 				<th>Статус</th>
+				<th>Взнос</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -36,7 +37,7 @@
 					<td>@Model[i].SquadName</td>
 					<td>@Model[i].Uni</td>
 					<td>@Model[i].StatusName</td>
-					<td></td>
+					<td>@Model[i].LastFee</td>
 				</tr>
 			}
 		</tbody>

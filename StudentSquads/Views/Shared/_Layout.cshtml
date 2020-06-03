@@ -47,10 +47,13 @@
 							<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Заявки</a>
 							<div class="dropdown-menu">
 								<a class="dropdown-item" href="/Members/EnterApplications">Заявки на вступление</a>
+								@if (User.IsInRole("RegionalManager"))
+								{
 								<div class="dropdown-divider"></div>
 								<a class="dropdown-item" href="/Members/AddFeeApplications">Заявки на внесение информации о взносах</a>
 								<div class="dropdown-divider"></div>
 								<a class="dropdown-item" href="/Members/ChangeSquadManagerApplications">Заявки на смену ком. состава</a>
+								}
 								<div class="dropdown-divider"></div>
 								<a class="dropdown-item" href="/Members/ExitApplications">Заявки на исключение</a>
 								<div class="dropdown-divider"></div>

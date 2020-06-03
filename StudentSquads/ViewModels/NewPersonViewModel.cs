@@ -36,5 +36,6 @@ namespace StudentSquads.ViewModels
         public HttpPostedFileBase file { get; set; }
         public string Uni { get; set; }
         public bool Choosen{ get; set; }
-}
+        public string LastFee { get; set; }
+    }
 }

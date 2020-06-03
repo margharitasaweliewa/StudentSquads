@@ -57,10 +57,19 @@ namespace StudentSquads.Controllers
                     var member = _context.Members.Include(m => m.Person).Include(m => m.Squad).Include(m => m.Status)
                         .SingleOrDefault(m => (m.PersonId == person.Id) && (m.DateOfEnter != null) && (m.ToSquadId == null));
                     string uni = "";
+                    string lastfee = "";
                     if (member != null)
-                        uni = _context.Squads.Include(u => u.UniversityHeadquarter).Single(u => u.Id == member.SquadId).UniversityHeadquarter.ShortContent;
+                    {
+                        uni = _context.Squads.Include(u => u.UniversityHeadquarter)
+                              .Single(u => u.Id == member.SquadId).UniversityHeadquarter.ShortContent;
+                        //Находим все принятые взносы
+                        var fees = _context.FeePayments.Where(f => (f.PersonId == person.Id)&&(f.Approved==true)).Select(f => f.DateofPayment).ToList();
+                        if(fees.Count!=0)
+                        lastfee = fees.Max().ToString("dd.MM.yyyy");
                     NewPersonViewModel newPerson = new NewPersonViewModel
                     {
+                        
+                        LastFee = lastfee,
                         Id = person.Id,
                         FIO = person.FIO,
                         DateofBirth = person.DateofBirth.ToString("dd.MM.yyyy"),
@@ -72,6 +81,7 @@ namespace StudentSquads.Controllers
                         Choosen = false
                     };
                     listofpeople.Add(newPerson);
+                    }
 
                 }
             }

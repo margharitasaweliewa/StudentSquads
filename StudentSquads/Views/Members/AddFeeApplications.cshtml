@@ -4,13 +4,11 @@
 }
 
 <h2>Заявки на внесение информации о взносах</h2>
-@if (User.IsInRole("RegionalManager"))
+
+@using (Html.BeginForm("ApproveFee", "Members"))
 {
-	<input type="submit" name="button3" value="Подтвердить" class="btn btn-warning" formaction="@Url.Action("CreateEnterProtocol", "Members")" />
-	<input type="submit" name="button4" value="Отклонить" class="btn btn-warning" formaction="@Url.Action("CreateEnterProtocol", "Members")" />
-}
-@using (Html.BeginForm("ApproveEnterApllications", "Members"))
-{
+	<input type="submit" name="button3" value="Подтвердить" class="btn btn-warning"/>
+	<input type="submit" name="button4" value="Отклонить" class="btn btn-warning" formaction="@Url.Action("RejectFee", "Members")" />
 	<table id="addfeeapplications" class="table table-bordered table-hover">
 		<thead>
 			<tr>
@@ -24,17 +22,17 @@
 		</thead>
 		<tbody>
 			@for (int i = 0; i < Model.Count; i++)
-				{
-					<tr>
-						@Html.HiddenFor(m => m[i].Id)
-						<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
-						<td>@Model[i].FIO</td>
-						<td>@Model[i].Squad</td>
-						<td>@Model[i].Uni</td>
-						<td>@Model[i].FeePayment</td>
-						<td>@Model[i].SumOfPayment</td>
-					</tr>
-				}
+			{
+				<tr>
+					@Html.HiddenFor(m => m[i].Id)
+					<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
+					<td>@Model[i].FIO</td>
+					<td>@Model[i].Squad</td>
+					<td>@Model[i].Uni</td>
+					<td>@Model[i].FeePayment</td>
+					<td>@Model[i].SumOfPayment</td>
+				</tr>
+			}
 		</tbody>
 	</table>
 	@Html.AntiForgeryToken()

@@ -703,6 +703,32 @@ namespace StudentSquads.Controllers
             }
             return View(listapplications);
         }
+        public ActionResult ApproveFee(List<ApplicationsListViewModel> applications)
+        {
+            foreach(var application in applications)
+            {
+                if (application.Choosen)
+                {
+                    var feeInDb = _context.FeePayments.Single(f => f.Id == application.Id);
+                    feeInDb.Approved = true;
+                }
+            }
+            _context.SaveChanges();
+            return RedirectToAction("AddFeeApplications","Members");
+        }
+        public ActionResult RejectFee(List<ApplicationsListViewModel> applications)
+        {
+            foreach (var application in applications)
+            {
+                if (application.Choosen)
+                {
+                    var feeInDb = _context.FeePayments.Single(f => f.Id == application.Id);
+                    feeInDb.Approved = false;
+                }
+            }
+            _context.SaveChanges();
+            return RedirectToAction("AddFeeApplications", "Members");
+        }
 
     }
 }
