@@ -672,7 +672,32 @@ namespace StudentSquads.Controllers
         }
         public ActionResult ChangeSquadManagerApplications()
         {
-            return View();
+            List<ApplicationsListViewModel> listofapplications = new List<ApplicationsListViewModel>();
+            //Находим все неутвержденные должности
+            var managers = _context.HeadsOfStudentSquads.Include(h => h.Person).Include(h => h.Squad).Include(h => h.MainPosition)
+                .Where(h => (h.DateofBegin==null)&&(h.DateofEnd==null)).ToList();
+            foreach(var manager in managers)
+            {
+                string oldmanagerstring = "Отсутсвует";
+                //Находим того, кто сейчас на этой должности
+                var oldmanager = _context.HeadsOfStudentSquads.Include(h => h.Person)
+                    .SingleOrDefault(h => (h.DateofBegin!=null)&&(h.DateofEnd==null)
+                    &&(h.MainPositionId==manager.MainPositionId)&&(h.SquadId==manager.SquadId));
+                if (oldmanager != null) oldmanagerstring = oldmanager.Person.FIO;
+                ApplicationsListViewModel newapplication = new ApplicationsListViewModel
+                {
+                    FIO = manager.Person.FIO,
+                    Squad = manager.Squad.Name,
+                    Uni = _context.Squads
+                    .Include(u => u.UniversityHeadquarter)
+                    .Single(u => u.Id == manager.SquadId).UniversityHeadquarter.ShortContent,
+                    Id = manager.Id,
+                    OldFIO = oldmanagerstring,
+                    Position = manager.MainPosition.Name
+                };
+                listofapplications.Add(newapplication);
+            }
+            return View(listofapplications);
         }
         public ActionResult AddFeeApplications()
         {
@@ -728,6 +753,52 @@ namespace StudentSquads.Controllers
             }
             _context.SaveChanges();
             return RedirectToAction("AddFeeApplications", "Members");
+        }
+        public ActionResult ApproveChange (List<ApplicationsListViewModel> applications)
+        {
+            var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(_context));
+            foreach (var application in applications)
+            {
+                if (application.Choosen)
+                {
+                    var managerInDb = _context.HeadsOfStudentSquads.SingleOrDefault(m => m.Id==application.Id);
+                    //Находим того, у кого была старая должность
+                    var oldmanager = _context.HeadsOfStudentSquads
+                        .SingleOrDefault(m => (m.DateofBegin != null) && (m.DateofEnd == null)
+                        && (m.SquadId == managerInDb.SquadId) && (m.MainPositionId == managerInDb.MainPositionId));
+                   //Если есть старый, то снимаем его с должности
+                    if (oldmanager != null)
+                    {
+                        oldmanager.DateofEnd = DateTime.Now;
+                        //Убираем роль у пользователя
+                        //Находим id пользователя, который связан с личностью
+                        var newid = _context.People.SingleOrDefault(i => i.Id == oldmanager.PersonId).ApplicationUserId;
+                        userManager.RemoveFromRole(newid, "SquadManager");
+                    }
+                    //Нового назначаем
+                    managerInDb.DateofBegin = DateTime.Now;
+                    //Добавляем роль
+                    //Находим id пользователя, который связан с личностью
+                    var oldid = _context.People.SingleOrDefault(i => i.Id == managerInDb.PersonId).ApplicationUserId;
+                    userManager.AddToRole(oldid, "SquadManager");
+                }
+            }
+            _context.SaveChanges();
+            return RedirectToAction("ChangeSquadManagerApplications", "Members");
+        }
+        public ActionResult RejectChange(List<ApplicationsListViewModel> applications)
+        {
+            foreach (var application in applications)
+            {
+                if (application.Choosen)
+                {
+                    var managerInDb = _context.HeadsOfStudentSquads.SingleOrDefault(m => m.Id == application.Id);
+                    //Нового отклоняем, ставя ему дату окончания
+                    managerInDb.DateofEnd = DateTime.Now;
+                }
+            }
+            _context.SaveChanges();
+            return RedirectToAction("ChangeSquadManagerApplications", "Members");
         }
 
     }

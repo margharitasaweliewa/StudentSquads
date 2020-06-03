@@ -108,7 +108,7 @@ namespace StudentSquads.Controllers.API
         //[HttpPut]
         public List<Member> LimitMembers(List<Member> allmembers, HeadsOfStudentSquads headofsquad)
         {
-           List<Member> members = new List<Member>();
+         List<Member> members = new List<Member>();
             if (User.IsInRole("SquadManager"))
             {
                 //Для руководителей отрядов ограничиваем отрядом

@@ -26,5 +26,7 @@ namespace StudentSquads.ViewModels
         public bool Choosen { get; set; }
         public int SumOfPayment { get; set; }
         public string Uni { get; set; }
+        public string OldFIO { get; set; }
+        public string Position { get; set; }
     }
 }

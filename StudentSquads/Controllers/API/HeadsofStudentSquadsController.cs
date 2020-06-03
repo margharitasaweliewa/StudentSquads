@@ -84,6 +84,7 @@ namespace StudentSquads.Controllers.API
             //if(manager)
             HeadsOfStudentSquads newhead = new HeadsOfStudentSquads
             {
+                Id = Guid.NewGuid(),
                 PersonId = head.PersonId,
                 MainPositionId = Convert.ToInt32(head.MainPosition),
                 SquadId = headofsquad.SquadId,
