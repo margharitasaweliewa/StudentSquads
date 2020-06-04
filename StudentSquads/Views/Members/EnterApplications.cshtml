@@ -9,7 +9,7 @@
 {
 	if (User.IsInRole("RegionalManager") || User.IsInRole("SquadManager"))
 	{
-		<button type="submit" class="btn btn-warning" id="approve">Одобрить</button>
+		<button type="submit" class="btn btn-warning" id="approve">Принять</button>
 		if (User.IsInRole("RegionalManager"))
 		{
 			<input type="submit" name="button3" value="Составить протокол о принятии" class="btn btn-warning" formaction="@Url.Action("CreateEnterProtocol", "Members")" />

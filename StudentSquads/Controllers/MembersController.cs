@@ -176,6 +176,7 @@ namespace StudentSquads.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RejectEnterApplications(List<ApplicationsListViewModel> applications)
         {
+            if (applications == null) return RedirectToAction("EnterApplications", "Members");
             foreach (var member in applications)
             {//Если выбрали для одобрения
                 if (member.Choosen)
@@ -205,6 +206,7 @@ namespace StudentSquads.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateEnterProtocol(List<ApplicationsListViewModel> applications)
         {//Проверяем (на всякий случай) роль
+            if (applications == null) return RedirectToAction("EnterApplications", "Members");
             if (User.IsInRole("RegionalManager"))
             { //Идем по всем в списке
                 foreach (var member in applications)
@@ -249,12 +251,19 @@ namespace StudentSquads.Controllers
                     allnumbers.Add(Convert.ToInt32(number.Replace(regnumber, "")));
                 }
             }
-            //Находим самое большое из найденных значений
-            int max = allnumbers.Max();
-            //Тут ещё надо спросить, что происходит при 999
-            //Формируем рег. номер
-            string newregnumber = regnumber + Convert.ToString(max + 1);
-            return newregnumber;
+            //Если найдены значения
+            if (allnumbers.Count != 0)
+            { //Находим самое большое из найденных значений
+                int max = allnumbers.Max();
+                //Тут ещё надо спросить, что происходит при 999
+                //Формируем рег. номер
+                regnumber = regnumber + Convert.ToString(max + 1);
+            }
+            else
+            {
+                regnumber = regnumber + "01";
+            }
+            return regnumber;
         }
         //Функции для перехода в другой отряд
         [HttpPost]
@@ -284,6 +293,7 @@ namespace StudentSquads.Controllers
         [HttpGet]
         public ActionResult TransitionApplications()
         {
+           
             List<ApplicationsListViewModel> listmodel = new List<ApplicationsListViewModel>();
             //Объявили список для отображения
             var headofsquad = GetHeadOfStudentSquads();
@@ -320,6 +330,7 @@ namespace StudentSquads.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ApproveTransitionApllications(List<ApplicationsListViewModel> applications)
         {
+            if (applications == null) return RedirectToAction("TransitionApplications", "Members");
             foreach (var member in applications)
             {//Если выбрали для одобрения
                 if (member.Choosen)
@@ -350,6 +361,7 @@ namespace StudentSquads.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RejectTransitionApplications(List<ApplicationsListViewModel> applications)
         {
+            if (applications == null) return RedirectToAction("TransitionApplications", "Members");
             foreach (var member in applications)
             {//Если выбрали для одобрения
                 if (member.Choosen)
@@ -464,12 +476,10 @@ namespace StudentSquads.Controllers
                 var people = _context.People.Where(p => (p.DateOfEnter != null) && (p.DateOfExit != null) && (p.ExitDocumentPath == null)).ToList();
                 foreach (var person in people)
                 {
-                    Guid memberid = new Guid();
-                    string squad = "";
-                    //Исправить!!!
                     var memberInDb = _context.Members.Include(m => m.Squad).SingleOrDefault(m => (m.PersonId ==person.Id)&&(m.DateOfEnter!=null)&&(m.DateOfExit==null));
-                    if (memberInDb != null) { memberid = memberInDb.Id; squad = memberInDb.Squad.Name; }
-                    ApplicationsListViewModel newapplication = new ApplicationsListViewModel
+                        Guid memberid = memberInDb.Id;
+                        string squad = memberInDb.Squad.Name;
+                        ApplicationsListViewModel newapplication = new ApplicationsListViewModel
                         {
                             Id = memberid,
                             Squad = squad,
@@ -480,7 +490,6 @@ namespace StudentSquads.Controllers
                             MembershipNumber = person.MembershipNumber,
                         };
                         listmodel.Add(newapplication);
-       
                 }
             }
             return View(listmodel);
@@ -489,12 +498,17 @@ namespace StudentSquads.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateExitProtocol(List<ApplicationsListViewModel> applications)
         {
+            if (applications == null) return RedirectToAction("ExitApplications", "Members");
             foreach (var member in applications)
             {//Если выбран для протокола об исключении
                 if (member.Choosen)
                 {
                     var memberInDb = _context.Members.SingleOrDefault(m => m.Id == member.Id);
                     memberInDb.ApplicationStatus = "Исключен";
+                    memberInDb.DateOfExit = DateTime.Now;
+                    var personInDb = _context.People.SingleOrDefault(p => p.Id == member.PersonId);
+                    //Здесь нужно составить протокол об исключении
+                    personInDb.ExitDocumentPath = "Путь к документу на исключение";
                 }
 
             }
@@ -730,7 +744,8 @@ namespace StudentSquads.Controllers
         }
         public ActionResult ApproveFee(List<ApplicationsListViewModel> applications)
         {
-            foreach(var application in applications)
+            if (applications == null) return RedirectToAction("AddFeeApplications", "Members");
+            foreach (var application in applications)
             {
                 if (application.Choosen)
                 {
@@ -743,6 +758,7 @@ namespace StudentSquads.Controllers
         }
         public ActionResult RejectFee(List<ApplicationsListViewModel> applications)
         {
+            if (applications == null) return RedirectToAction("AddFeeApplications", "Members");
             foreach (var application in applications)
             {
                 if (application.Choosen)
@@ -756,6 +772,7 @@ namespace StudentSquads.Controllers
         }
         public ActionResult ApproveChange (List<ApplicationsListViewModel> applications)
         {
+            if (applications == null) return RedirectToAction("ChangeSquadManagerApplications", "Members");
             var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(_context));
             foreach (var application in applications)
             {
@@ -788,6 +805,7 @@ namespace StudentSquads.Controllers
         }
         public ActionResult RejectChange(List<ApplicationsListViewModel> applications)
         {
+            if (applications == null) return RedirectToAction("ChangeSquadManagerApplications", "Members");
             foreach (var application in applications)
             {
                 if (application.Choosen)

@@ -8,7 +8,7 @@
 {
 	if (User.IsInRole("RegionalManager") || User.IsInRole("SquadManager"))
 	{
-		<button type="submit" class="btn btn-warning" id="approve">Одобрить</button>
+		<button type="submit" class="btn btn-warning" id="approve">Принять</button>
 		<input type="submit" name="button2" value="Отклонить" class="btn btn-default" formaction="@Url.Action("RejectTransitionApplications", "Members")" />
 	}
 	<table id="transitionapplications" class="table table-bordered table-hover">

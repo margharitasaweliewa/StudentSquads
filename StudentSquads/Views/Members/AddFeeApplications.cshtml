@@ -7,8 +7,8 @@
 
 @using (Html.BeginForm("ApproveFee", "Members"))
 {
-	<input type="submit" name="button3" value="Подтвердить" class="btn btn-warning"/>
-	<input type="submit" name="button4" value="Отклонить" class="btn btn-warning" formaction="@Url.Action("RejectFee", "Members")" />
+	<input type="submit" name="button3" value="Принять" class="btn btn-warning"/>
+	<input type="submit" name="button4" value="Отклонить" class="btn btn-default" formaction="@Url.Action("RejectFee", "Members")" />
 	<table id="addfeeapplications" class="table table-bordered table-hover">
 		<thead>
 			<tr>

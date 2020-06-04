@@ -7,8 +7,8 @@
 
 @using (Html.BeginForm("ApproveChange", "Members"))
 {
-		<input type="submit" name="button3" value="Утвердить" class="btn btn-warning" />
-		<input type="submit" name="button4" value="Отклонить" class="btn btn-warning" formaction="@Url.Action("RejectChange", "Members")" />
+		<input type="submit" name="button3" value="Принять" class="btn btn-warning" />
+		<input type="submit" name="button4" value="Отклонить" class="btn btn-default" formaction="@Url.Action("RejectChange", "Members")" />
 	
 	<table id="changesquadmanagerapplications" class="table table-bordered table-hover">
 		<thead>
