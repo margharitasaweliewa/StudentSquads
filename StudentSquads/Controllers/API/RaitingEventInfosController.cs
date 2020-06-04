@@ -127,7 +127,9 @@ namespace StudentSquads.Controllers.API
                     newinfo.Id = Guid.NewGuid();
                     _context.RaitingEventInfos.Add(newinfo);
                 }
-                //Добавляем ссылки
+                //Если ссылки есть, добавляем ссылки
+                if (model.ReferenceDescriptions != null) 
+                { 
                 foreach(var refer in model.ReferenceDescriptions)
                 {
                     RaitingEventInfoFile newref = new RaitingEventInfoFile
@@ -138,6 +140,7 @@ namespace StudentSquads.Controllers.API
                         RaitingEventInfoId = newinfo.Id
                     };
                     _context.RaitingEventInfoFiles.Add(newref);
+                }
                 }
                 _context.SaveChanges();
                 return Ok();

@@ -3,14 +3,15 @@
 	ViewBag.Title = "WorkEditForm";
 }
 <h2>Редактирование выездного списка</h2>
+@Html.HiddenFor(m => m.Audit, new { @id = "audit" })
 @if (User.IsInRole("SquadManager"))
 {
-	<button id="auditsave" audit="@Model.Audit" class="btn btn-warning js-change" type="submit">Сохранить</button>
-	<button id="auditdelete" audit=@Model.Audit class="btn btn-default js-delete" data-work-id ="@Model.Id" type="submit">Удалить</button>
+	<button id="auditsave"  class="btn btn-warning js-change" type="submit">Сохранить</button>
+	<button id="auditdelete" class="btn btn-default js-delete" data-work-id="@Model.Id" type="submit">Удалить</button>
 }
 @if (User.IsInRole("RegionalManager"))
 {
-	<button id="rebuke" data-work-id = "@Model.Id" class="btn btn-warning js-rebuke" type="submit">Выписать выговор</button>
+	<button id="rebuke" data-work-id="@Model.Id" class="btn btn-warning js-rebuke" type="submit">Выписать выговор</button>
 }
 @using (Html.BeginForm("Delete", "Works"))
 {
@@ -129,7 +130,8 @@
 				vm.Id = document.getElementById('Id').value;
 				vm.MemberId = document.getElementById('MemberId').value;
 				vm.OriginalWorkId = document.getElementById('OriginalWorkId').value;
-				if ($('#auditsave').attr("audit") == "True") vm.Audit = true;
+				var aud = document.getElementById('audit').value;
+				if (aud == "True") vm.Audit = true;
 				$.ajax({
 					url: "/api/works",
 					method: "post",
@@ -146,8 +148,9 @@
 			$(".js-delete").on("click", function () {
 				var button = $(this);
 				var vm = {};
+				var aud = document.getElementById('audit').value;
 				//Если аудита нет
-				if ($('#auditsave').attr("audit") == "True") {
+				if (aud == "True") {
 					bootbox.prompt("Вы уверены, что хотите удалить запись в выездном списке?\nУкажите причину:", function (result) {
 						if (result) {
 							$.ajax({
@@ -166,8 +169,7 @@
 				}
 				else {
 					bootbox.confirm("Вы уверены, что хотите удалить запись в выездном списке?", function (result) {
-						if (result)
-						{
+						if (result) {
 							$.ajax({
 								url: "/api/works/" + button.attr("data-work-id"),
 								method: "DELETE",
@@ -224,8 +226,7 @@
 						$.ajax({
 							url: "/api/squadworks/" + button.attr("data-work-id") + "/" + result,
 							method: "DELETE",
-							success: function ()
-							{
+							success: function () {
 								bootbox.alert("Выговор вынесен", function () {
 									window.location = "/works/allworks"
 								}

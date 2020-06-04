@@ -8,6 +8,10 @@
 {
 	<a class="btn btn-warning" href="/raitings/raitingeventinfoform">Создать</a>
 }
+@if (User.IsInRole("RegionalManager"))
+{
+	<a id="js-makelist" class="btn btn-warning">Составить рейтинг</a>
+}
 <table id="raitingeventinfos" class="table table-bordered table-hover">
 	<thead>
 		<tr>
@@ -68,6 +72,24 @@
 						data: "Status"
 					}
 				]
+			});
+			$("#js-makelist").on("click", function () {
+				var button = $(this);
+				bootbox.confirm("Вы уверены, что хотите составить рейтинг по текущим материалам?", function (result) {
+					if (result) {
+						$.ajax({
+							url: "/api/raitingplaces/",
+							method: "POST",
+							success: function () {
+								bootbox.alert("Рейтинг составлен. Просмотрите его.", function () {
+									window.location = "/raitings/allraitingplaces"
+								}
+								);
+							}
+
+						});
+					}
+				});
 			});
 		});
 	</script>

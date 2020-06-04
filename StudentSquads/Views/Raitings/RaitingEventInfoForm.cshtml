@@ -7,7 +7,8 @@
 @if (User.IsInRole("SquadManager"))
 {
 	<button class="btn btn-warning js-save" data-id="@Model.Id" type="submit">Сохранить</button>
-	<a class="btn btn-warning" href="/raitings/deleteraitingeventinfo/@Model.Id">Удалить</a>
+	if (Model.Id!=Guid.Empty){ <a class="btn btn-default" href="/raitings/deleteraitingeventinfo/@Model.Id">Удалить</a>}
+
 }
 @*<button class="btn btn-warning js-delete" data-id="@Model.Id" type="submit">Удалить</button>*@
 @if (User.IsInRole("RegionalManager"))
@@ -44,7 +45,7 @@
 </div>
 <table id="referencetable" class="table table-bordered table-hover">
 </table>
-@if (Model.ReferenceDescriptions.Count > 0)
+@if (Model.ReferenceDescriptions?.Count > 0)
 {
 	<h4>Добавленные ранее</h4>
 	<table id="oldreferences" class="table table-bordered table-hover">

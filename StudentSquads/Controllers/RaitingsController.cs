@@ -92,6 +92,7 @@ namespace StudentSquads.Controllers
                     DateofBegin = DateTime.Now
                 };
                 raitingId = newraiting.Id;
+                _context.Raitings.Add(newraiting);
             }
             //Иначе берем текущий
             else raitingId = raiting.Id;

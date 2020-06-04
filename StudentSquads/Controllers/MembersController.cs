@@ -147,7 +147,7 @@ namespace StudentSquads.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ApproveEnterApllications(List<ApplicationsListViewModel> applications)
         {
-
+            if (applications == null) return RedirectToAction("EnterApplications", "Members");
             foreach (var member in applications)
             {//Если выбрали для одобрения
                 if (member.Choosen)

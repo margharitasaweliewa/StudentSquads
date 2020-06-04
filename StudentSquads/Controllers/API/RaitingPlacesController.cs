@@ -116,28 +116,32 @@ namespace StudentSquads.Controllers.API
                 int place = 1;
                 //Сортируем Dictionry по значению
                 var groupdict = dict.OrderByDescending(pair => pair.Value).ToList();
-                //Находим количество баллов у первого места
-                double oldpoints = groupdict[0].Value;
-                foreach (var pair in groupdict)
+                if (groupdict.Count != 0) 
                 {
-                    double thispoints = pair.Value;
-                    //Увеличиваем место, если баллы не совпадают
-                    if (thispoints != oldpoints) place++;
-                    //Делаем старыми баллами текущие баллы
-                    oldpoints = thispoints;
-                    //Создаем в базе данных запись с метом в показателе
-                    RaitingPlace newplace = new RaitingPlace
+                    //Находим количество баллов у первого места
+                    double oldpoints = groupdict[0].Value;
+                    foreach (var pair in groupdict)
                     {
-                        Id = Guid.NewGuid(),
-                        Place = place,
-                        Points = pair.Value,
-                        RaitingSectionId = section.Id,
-                        RaitingId = raiting.Id,
-                        SquadId = pair.Key
-                    };
-                    //Добавляем в БД
-                    _context.RaitingPlaces.Add(newplace);
+                        double thispoints = pair.Value;
+                        //Увеличиваем место, если баллы не совпадают
+                        if (thispoints != oldpoints) place++;
+                        //Делаем старыми баллами текущие баллы
+                        oldpoints = thispoints;
+                        //Создаем в базе данных запись с метом в показателе
+                        RaitingPlace newplace = new RaitingPlace
+                        {
+                            Id = Guid.NewGuid(),
+                            Place = place,
+                            Points = pair.Value,
+                            RaitingSectionId = section.Id,
+                            RaitingId = raiting.Id,
+                            SquadId = pair.Key
+                        };
+                        //Добавляем в БД
+                        _context.RaitingPlaces.Add(newplace);
+                    }
                 }
+
             }
             //Сохраняем добавленные места
             _context.SaveChanges();
