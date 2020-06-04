@@ -26,26 +26,25 @@ namespace StudentSquads.Controllers.API
             _context.Dispose();
         }
 
-        [HttpPut]
-        public IHttpActionResult ApplyForExit(string personId)
+        [HttpDelete]
+        public IHttpActionResult ApplyForExit()
         {
             //Если пользователь является командиром отряда, необходимо сначала найти себе замену, потом только выйти из состава организации
             //var headofsquad = GetHeadOfStudentSquads();
             string id = User.Identity.GetUserId();
-            var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
+            var personInDb = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
             //Проверяем 2 условия. В таблице "Руководителей" личность совпадает с текущей, а также должность активна
             var headofsquad = _context.HeadsOfStudentSquads.Include(h => h.MainPosition).Include(h => h.Squad)
                 .Include(h => h.UniversityHeadquarter).Include(h => h.RegionalHeadquarter)
-                .SingleOrDefault(h => (h.PersonId == person.Id) && (h.DateofEnd == null) && (h.DateofBegin != null));
-            //Если активной записи о руководстве не найдено, перенаправляем на главную страницу
-            if (headofsquad != null)
-            {
-                if (headofsquad.MainPositionId != 1) throw new HttpResponseException(HttpStatusCode.NotFound); ;
-            }
+                .Where(h => (h.PersonId == personInDb.Id) && (h.DateofEnd == null) && (h.DateofBegin != null)).ToList();
             //Если является руководителем на данный момент, проставляем дату окончания 
-            if (headofsquad != null) headofsquad.DateofEnd = DateTime.Now;
+            //Для каждого руководителя
+            if (headofsquad != null) 
+            {
+                foreach (var head in headofsquad)
+                head.DateofEnd = DateTime.Now;
+            }
             //ExitDocument(model);
-            var personInDb = _context.People.SingleOrDefault(p => p.Id.ToString() == personId);
             //Сразу ставим дату выхода из организации
             personInDb.DateOfExit = DateTime.Now;
             personInDb.ExitReason = "По собственному желанию";
@@ -65,6 +64,7 @@ namespace StudentSquads.Controllers.API
             _context.SaveChanges();
             return Ok();
         }
+
         [HttpGet]
         public List<ApplicationsListViewModel> GetMembers(string query = null)
         {
@@ -105,7 +105,7 @@ namespace StudentSquads.Controllers.API
         //    return headofsquad;
         //}
 
-        //[HttpPut]
+        [HttpPut]
         public List<Member> LimitMembers(List<Member> allmembers, HeadsOfStudentSquads headofsquad)
         {
          List<Member> members = new List<Member>();

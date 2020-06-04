@@ -99,7 +99,7 @@ else
 			{
 				<tr>
 					<td>Место</td>
-					<td>@leader.MainPosition.Name</td>
+					<td>@leader.Position</td>
 					<td>@leader.DateofBegin</td>
 					<td>@leader.DateofEnd</td>
 				</tr>
@@ -140,14 +140,14 @@ else
 				bootbox.confirm("Вы уверены, что хотите выйти из состава организации?", function (result) {
 					if (result) {
 						$.ajax({
-							url: "/api/Members/applyforexit/" + button.attr("data-id"),
+							url: "/api/members",
 							method: "DELETE",
+							error: toastr.error("Произошла ошибка"),
 							success: function () {
 								button.remove();
 								$(".js-transition").remove();
 								bootbox.alert("Вы вышли из состава организации")
 							}
-
 						});
 					}
 				});
