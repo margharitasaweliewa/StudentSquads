@@ -46,9 +46,7 @@ namespace StudentSquads.Controllers.API
         [HttpPost]
         public IHttpActionResult MakeList()
         {
-            //Всем записям текущего сезона проставляем сезон
             var allworks = _context.Works.Where(w => w.Season == null).ToList();
-            foreach (var work in allworks) work.Season = DateTime.Now.Year;
             //Засчитываем целину всем, кому не был выписан выговор в текущем сезоне и кто не удален из списка
             var groups= allworks.Where(w => w.Removed == null).ToList() 
             .GroupBy(w => w.OriginalWorkId).ToList();
@@ -62,7 +60,7 @@ namespace StudentSquads.Controllers.API
             _context.SaveChanges();
             //Теперь находим только основные записи и группируем их по отрядам
             var works = _context.Works.Include(w => w.Member)
-                .Where(w => (w.Season == DateTime.Now.Year) && (w.Removed == null) && (w.Id == w.OriginalWorkId)&&(w.Approved == true))
+                .Where(w => (w.Season == null) && (w.Removed == null) && (w.Id == w.OriginalWorkId)&&(w.Approved == true))
                 .ToList();
             var squadgroups = works.GroupBy(w => w.Member.SquadId).ToList();
             //Идем по каждому отряду
@@ -98,6 +96,8 @@ namespace StudentSquads.Controllers.API
                 };
                 _context.SquadWorks.Add(squadWork);
             }
+            //Всем записям текущего сезона проставляем сезон
+            foreach (var work in allworks) work.Season = DateTime.Now.Year;
             _context.SaveChanges();
             return Ok();
         }

@@ -24,7 +24,6 @@ namespace StudentSquads.Controllers
         {
             _context.Dispose();
         }
-        [HttpPut]
         public HeadsOfStudentSquads GetHeadOfStudentSquads()
         {
             string id = User.Identity.GetUserId();
@@ -35,7 +34,6 @@ namespace StudentSquads.Controllers
             //Если активной записи о руководстве не найдено, перенаправляем на главную страницу
             return headofsquad;
         }
-        MembersController memberscontr = new MembersController();
         public List<Work> LimitWorks(List<Work> allworks, HeadsOfStudentSquads headofsquads)
         {
             List<Work> works = new List<Work>();
