@@ -22,9 +22,11 @@ namespace StudentSquads.ViewModels
         //Выбранный штаб
         public Guid? UniversityHeadquarterId { get; set; }
         //Для вывода информации о всех отряд, в которых была и есть личность
-        public IEnumerable<Member> AllPersonSquads { get; set; }
+        public IEnumerable<ApplicationsListViewModel> AllPersonSquads { get; set; }
         //Для отображения всех позиций, которые занимала или занимает личность
-        public IEnumerable<HeadsOfStudentSquads> AllPersonPositions { get; set; }
+        public IEnumerable<DesignationViewModel> AllPersonPositions { get; set; }
+        //Для отображения всей трудовой деятельности
+        public IEnumerable<WorkViewModel> AllPersonWorks { get; set; }
         public  bool IsMember { get; set; }
         public  bool InOtherSquad { get; set; }
         public string file { get; set; }

@@ -28,5 +28,7 @@ namespace StudentSquads.ViewModels
         public string Uni { get; set; }
         public string OldFIO { get; set; }
         public string Position { get; set; }
+        public string DateOfExit { get; set; }
+        public string DateOfEnter { get; set; }
     }
 }

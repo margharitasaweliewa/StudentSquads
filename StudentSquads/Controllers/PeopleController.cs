@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using System.Dynamic;
 using System.ComponentModel;
 using Microsoft.AspNet.Identity.EntityFramework;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace StudentSquads.Controllers
 {
@@ -155,6 +156,26 @@ namespace StudentSquads.Controllers
             //Находим все связи с отрядами
             var allsquads = _context.Members.Include(m => m.Squad).Include(m => m.Status)
                 .Where(s => (s.PersonId == personid)).ToList();
+            //Переводим в модели
+            List<ApplicationsListViewModel> listsquads = new List<ApplicationsListViewModel>();
+            if (allsquads != null)
+            {
+                foreach (var member in allsquads)
+                {
+                    string status = "";
+                    if (member.StatusId != null && member.DateOfExit == null) status = member.Status.Name;
+                    else status = member.ApplicationStatus;
+                    ApplicationsListViewModel newMember = new ApplicationsListViewModel
+                    {
+                        Squad = member.Squad.Name,
+                        DateOfEnter = member.DateOfEnter?.ToString("dd.MM.yyyy"),
+                        DateOfExit = member.DateOfExit?.ToString("dd.MM.yyyy"),
+                        Status = status,
+
+                    };
+                    listsquads.Add(newMember);
+                }
+            }
             //Если не отказано, не вышел из отряда и нет одобренной заявки ком. составом, 
             bool ismember = false;
             var squadsforbotton = allsquads.Where(s => s.ApprovedByCommandStaff != false);
@@ -167,9 +188,70 @@ namespace StudentSquads.Controllers
             //Находим все связи с должностями
             var allpositions = _context.HeadsOfStudentSquads.Include(p => p.Squad).Include(p => p.MainPosition)
                 .Where(p => p.PersonId == personid).ToList();
+            List<DesignationViewModel> listpositions= new List<DesignationViewModel>();
+            if (allpositions != null)
+            {
+                foreach (var position in allpositions)
+                {
+                    string place = "";
+                    if (position.SquadId != null) place = position.Squad.Name;
+                    else if (position.UniversityHeadquarterId != null) place = position.UniversityHeadquarter.University;
+                    else if (position.RegionalHeadquarterId != null) place = position.RegionalHeadquarter.Name;
+                    DesignationViewModel newPosition = new DesignationViewModel
+                    {
+                        Position = position.Position,
+                        DateofBegin = position.DateofBegin?.ToString("dd.MM.yyyy"),
+                        DateofEnd = position.DateofEnd?.ToString("dd.MM.yyyy"),
+                        Place = place
+                    };
+                    listpositions.Add(newPosition);
+                }
+            }
+            //Находим трудовую деятельность
+            var allworks = _context.Works.Include(w => w.Member)
+                .Where(w => (w.Member.PersonId == personid)&&(w.Approved==true)&&(w.Removed==null));
+            //Группируем по первоначальной записи
+            var groups = allworks.GroupBy(g => g.OriginalWorkId).ToList();
+            //Очищаем works
+            List<Work>works = new List<Work>();
+            //Добавляем к работам на целине записи с последними неотклоненными изменениями
+            if (groups.Count != 0) 
+            {
+                foreach (var group in groups)
+                {
+                    //Находим максимум по дате создания в группе
+                    var time = group.Max(n => n.CreateTime);
+                    List<Work> groupworks = _context.Works.Include(w => w.Employer).Include(w => w.WorkProject)
+                        .Where(w => (w.OriginalWorkId == group.Key)).ToList();
+                    Work work = groupworks.Single(w => w.CreateTime == time);
+                    //Добавляем только записи с последним изменением
+                    works.Add(work);
+                }
+            }
+            List<WorkViewModel> listworks = new List<WorkViewModel>();
+            if (works.Count != 0) 
+            {
+                foreach (var work in works)
+                {
+                    string affirmed = "Нет решения";
+                    if (work.Affirmed == true) affirmed = "Засчитана";
+                    else if (work.Affirmed == false) affirmed = "Выговор";
+                    WorkViewModel newWork = new WorkViewModel
+                    {
+                        Employer = work.Employer?.Name,
+                        WorkProject = work.WorkProject?.Name,
+                        DateofBeginString = work.DateofBegin.ToString("dd.MM.yyyy"),
+                        DateofEndString = work.DateofEnd.ToString("dd.MM.yyyy"),
+                        Affirmed = affirmed,
+                        Season = work.Season.ToString()
+                    };
+                    listworks.Add(newWork);
+                }
+            }
             //Добавляем в модель
-            newmember.AllPersonSquads = allsquads;
-            newmember.AllPersonPositions = allpositions;
+            newmember.AllPersonSquads = listsquads;
+            newmember.AllPersonPositions = listpositions;
+            newmember.AllPersonWorks = listworks;
             newmember.IsMember = ismember;
             newmember.InOtherSquad = inothersquad;
             return View(newmember);

@@ -19,9 +19,10 @@
 	{<h4>Для использования функций приложения заполните личные данные в разделе "Мои данные".</h4>}
 	else
 	{ @Html.HiddenFor(m => m.Person.Id)
-	<div class="row">
-		@*Проверяем, является ли пользователь членом организации.*@
-		<div class="row">
+<div class="row">
+	@*Проверяем, является ли пользователь членом организации.*@
+	@if (Model.Person.DateOfEnter == null)
+	{<div class="row">
 			<div class="col-xs-3" disabled>
 				@Html.LabelFor(m => m.UniversityHeadquarterId)
 				@Html.DropDownListFor(m => m.UniversityHeadquarterId, new SelectList(Model.UniversityHeadquarters, "Id", "Name"), "", new { @class = "form-control" })
@@ -32,81 +33,105 @@
 			</div>
 		</div>
 		<br>
-		@{ if (!Model.IsMember&&Model.Person.DateOfEnter == null)
-			{
-				<button type="submit" class="btn btn-warning js-apply">Подать заявку на вступление</button>
-			}
-			else if (Model.Person.MembershipNumber!=null&& !Model.InOtherSquad&& Model.Person.DateOfExit == null)
-			{<input type="submit" name="button2" value="Подать заявку на переход" class="btn btn-warning js-transition" formaction="@Url.Action("ApplyForTransition", "Members")" />}
+	}
+	@{ if (!Model.IsMember && Model.Person.DateOfEnter == null)
+		{
+			<button type="submit" class="btn btn-warning js-apply">Подать заявку на вступление</button>
 		}
-	</div>
+		else if (Model.Person.MembershipNumber != null && !Model.InOtherSquad && Model.Person.DateOfExit == null)
+		{<input type="submit" name="button2" value="Подать заявку на переход" class="btn btn-warning js-transition" formaction="@Url.Action("ApplyForTransition", "Members")" />}
+	}
+</div>
 	@Html.AntiForgeryToken()
 }
 }
 @if (Model.Person != null)
 {
-	if(Model.Person.DateOfEnter!=null&&Model.Person.DateOfExit==null)
+	if (Model.Person.DateOfEnter != null && Model.Person.DateOfExit == null)
 	{<button class="btn btn-default js-exclude" data-id="@Model.Person.Id">Выйти из организации</button>}
-<h3>Ваш отряд</h3>
-if (Model.AllPersonSquads.Count() == 0)
-{<h5>Данных о членстве в отрядах не найдено.</h5>}
-else
-{
-	<table class="table table-bordered table-hover">
-		<thead>
-			<tr>
-				<th>Отряд</th>
-				<th>Статус</th>
-				<th>Дата вступления</th>
-				<th>Дата выхода</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var member in Model.AllPersonSquads)
-			{
+	<h3>Ваш отряд</h3>
+	if (Model.AllPersonSquads.Count() == 0)
+	{<h5>Данных о членстве в отрядах не найдено.</h5>}
+	else
+	{
+		<table class="table table-bordered table-hover">
+			<thead>
 				<tr>
-					<td>@member.Squad.Name</td>
-					@if (member.Status != null && member.DateOfExit == null)
-					{
-						<td>@member.Status.Name</td>
-					}
-					else
-					{
-						<td>@member.ApplicationStatus</td>
-					}
-					<td>@member.DateOfEnter</td>
-					<td>@member.DateOfExit</td>
+					<th>Отряд</th>
+					<th>Статус</th>
+					<th>Дата вступления</th>
+					<th>Дата выхода</th>
 				</tr>
-			}
-		</tbody>
-	</table>
-}
-<h3>Ваши должности</h3>
-if (Model.AllPersonPositions.Count() == 0)
-{<h5>Данных о наличии должностей не найдено.</h5>}
-else
-{<table class="table table-bordered table-hover">
-		<thead>
-			<tr>
-				<th>Место</th>
-				<th>Должность</th>
-				<th>Дата назначения</th>
-				<th>Дата снятия</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var leader in Model.AllPersonPositions)
-			{
+			</thead>
+			<tbody>
+				@foreach (var member in Model.AllPersonSquads)
+				{
+					<tr>
+						<td>@member.Squad</td>
+						<td>@member.Status</td>
+						<td>@member.DateOfEnter</td>
+						<td>@member.DateOfExit</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+	<h3>Ваши должности</h3>
+	if (Model.AllPersonPositions.Count() == 0)
+	{<h5>Данных о наличии должностей не найдено.</h5>}
+	else
+	{<table class="table table-bordered table-hover">
+			<thead>
 				<tr>
-					<td>Место</td>
-					<td>@leader.Position</td>
-					<td>@leader.DateofBegin</td>
-					<td>@leader.DateofEnd</td>
+					<th>Место</th>
+					<th>Должность</th>
+					<th>Дата назначения</th>
+					<th>Дата снятия</th>
 				</tr>
-			}
-		</tbody>
-	</table>
-}
+			</thead>
+			<tbody>
+				@foreach (var leader in Model.AllPersonPositions)
+				{
+					<tr>
+						<td>@leader.Place</td>
+						<td>@leader.Position</td>
+						<td>@leader.DateofBegin</td>
+						<td>@leader.DateofEnd</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+	<h3>Ваша трудовая деятельность</h3>
+	if (Model.AllPersonWorks.Count() == 0)
+	{<h5>Данных о наличии выездов на целину не найдено.</h5>}
+	else
+	{<table class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>Сезон</th>
+					<th>Работодатель</th>
+					<th>Трудовой проект</th>
+					<th>Дата начала</th>
+					<th>Дата окончания</th>
+					<th>Целина</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var work in Model.AllPersonWorks)
+				{
+				<tr>
+					<td>@work.Season</td>
+					<td>@work.Employer</td>
+					<td>@work.WorkProject</td>
+					<td>@work.DateofBeginString</td>
+					<td>@work.DateofEndString</td>
+					<td>@work.Affirmed</td>
+				</tr>
+				}
+			</tbody>
+		</table>
+	}
 }
 
 @*Если ты придумаешь, как взять выбранный dropdown, то можешь использовать ajax*@
