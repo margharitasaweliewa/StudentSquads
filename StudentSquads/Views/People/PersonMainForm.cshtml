@@ -26,14 +26,16 @@
 		@*Проверяем, является ли пользователь членом организации.*@
 		@if (Model.Person.DateOfExit == null)
 		{<div class="row">
-				<div class="col-xs-3" disabled>
-					@Html.LabelFor(m => m.UniversityHeadquarterId)
-					@Html.DropDownListFor(m => m.UniversityHeadquarterId, new SelectList(Model.UniversityHeadquarters, "Id", "Name"), "", new { @id = "uni", @class = "form-control" })
-				</div>
-				<div class="col-xs-3" disabled>
-					@Html.LabelFor(m => m.SquadId)
-					@Html.DropDownListFor(m => m.SquadId, new SelectList(new List<StudentSquads.Models.Squad>(), "Id", "Name"), "", new { @id = "squads", @class = "form-control squad" })
-				</div>
+			 <div class="col-xs-3" disabled>
+			 	@Html.LabelFor(m => m.UniversityHeadquarterId)
+			 @Html.DropDownListFor(m => m.UniversityHeadquarterId, new SelectList(Model.UniversityHeadquarters, "Id", "Name"), "", new { @required = "true", @id = "uni", @class = "form-control" })
+			 @Html.ValidationMessageFor(m => m.UniversityHeadquarterId)
+			 </div>
+			 <div class="col-xs-3" disabled>
+			 	@Html.LabelFor(m => m.SquadId)
+			 @Html.DropDownListFor(m => m.SquadId, new SelectList(new List<StudentSquads.Models.Squad>(), "Id", "Name"), "", new { @required = "true", @id = "squads", @class = "form-control squad" })
+			 @Html.ValidationMessageFor(m => m.SquadId)
+			 </div>
 			</div>
 			@*@Html.ListBoxFor(x => x.SelectedCountryIds, new MultiSelectList(ViewBag.Countries, "CountryId", "Name"))
 				@Html.ListBoxFor(x => x.SelectedCityIds, new MultiSelectList(new List<City>(), "CountryId", "Name"))*@

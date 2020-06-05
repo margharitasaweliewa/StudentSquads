@@ -12,38 +12,43 @@
 	<input type="submit" name="button2" value="Удалить" class="btn btn-default" formaction="@Url.Action("Delete", "Positions")" />
 	@Html.HiddenFor(m => m.HeadofStudentSquadsId)
 	@Html.HiddenFor(m => m.PersonId, new { @id = "personId" })
-	<div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.FIO)
-			@Html.TextBoxFor(m => m.FIO, new { @id = "person", @class = "form-control", @readonly = "true" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.Position)
-			@Html.TextBoxFor(m => m.Position, new { @id = "position", @class = "form-control" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.DateofBegin)
-			@Html.TextBoxFor(m => m.DateofBegin, new { @class = "form-control", @readonly = "true" })
-		</div>
-		<div class="form-group">
-			@Html.LabelFor(m => m.DateofEnd)
-			@Html.TextBoxFor(m => m.DateofEnd, new { @class = "form-control", @readonly = "true" })
-		</div>
-		<div class="checkbox">
-			<label>
-				@Html.CheckBoxFor(m => m.HasRole, new { @id = "hasrole" }) Предоставить доступ к управленческим функциям?
-			</label>
-		</div>
-
+<div>
+	<div class="form-group">
+		@Html.LabelFor(m => m.FIO)
+		@Html.TextBoxFor(m => m.FIO, new { @id = "person", @class = "form-control", @readonly = "true" })
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(m => m.DateofBegin)
+		@Html.TextBoxFor(m => m.DateofBegin, new { @class = "form-control", @readonly = "true" })
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(m => m.DateofEnd)
+		@Html.TextBoxFor(m => m.DateofEnd, new { @class = "form-control", @readonly = "true" })
+	</div>
+	<div class="checkbox">
+		<label>
+			@Html.CheckBoxFor(m => m.HasRole, new { @id = "hasrole" }) Предоставить доступ к управленческим функциям?
+		</label>
 	</div>
 
+</div>
+
 }
+<form id="Position">
+	<div class="form-group">
+		@Html.LabelFor(m => m.Position)
+		@Html.TextBoxFor(m => m.Position, new { @id = "position", @class = "form-control" })
+		@Html.ValidationMessageFor(m => m.Position)
+	</div>
+</form>
 @section scripts
 {
 	@Scripts.Render("~/bundles/jqueryval")
 	<script>
 		$(document).ready(function () {
 			$(".js-change").on("click", function () {
+				if ($("#Position").valid())
+				{ 
 				var button = $(this);
 				var vm = {};
 				vm.HeadofStudentSquadsId = button.attr("data-id");
@@ -62,11 +67,12 @@
 					data: vm
 				})
 					.done(function () {
-						toastr.success("Успешно сохранено");
+						window.location = "/positions/allpositions"
 					})
 					.fail(function () {
 						toastr.error("Произошла ошибка сохранения");
 					});
+				}
 
 			});
 		});

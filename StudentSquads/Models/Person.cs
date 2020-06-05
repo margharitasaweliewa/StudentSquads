@@ -50,7 +50,7 @@ namespace StudentSquads.Models
         [Display(Name = "Номер паспорта")]
         public string PassportNumber{ get; set; }
         [Required(ErrorMessage = "Введите, кем выдан паспорт")]
-        [Display(Name = "Кем выдан паспорта")]
+        [Display(Name = "Кем выдан паспорт")]
         public string PassportGiven{ get; set; }
         [Required(ErrorMessage = "Введите дату выдачи паспорта")]
         [Display(Name = "Дата выдачи паспорта")]

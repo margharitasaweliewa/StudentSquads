@@ -30,16 +30,19 @@
 			{
 			<tr>
 				@Html.HiddenFor(m => m[i].Id)
-				@if (User.IsInRole("SquadManager")){<td>@Html.CheckBoxFor(m => m[i].Choosen)</td> }
-					<td><a href='/people/edit/" + @Model[i].Id + "'>@Model[i].FIO</a></td>
-					<td>@Model[i].DateofBirth</td>
-					<td>@Model[i].PhoneNumber</td>
-					<td>@Model[i].MembershipNumber</td>
-					<td>@Model[i].SquadName</td>
-					<td>@Model[i].Uni</td>
-					<td>@Model[i].StatusName</td>
-					<td>@Model[i].LastFee</td>
-				</tr>
+				@if (User.IsInRole("SquadManager"))
+				{
+					<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
+					}
+				<td><a href='/people/edit/@Model[i].Id'>@Model[i].FIO</a></td>
+				<td>@Model[i].DateofBirth</td>
+				<td>@Model[i].PhoneNumber</td>
+				<td>@Model[i].MembershipNumber</td>
+				<td>@Model[i].SquadName</td>
+				<td>@Model[i].Uni</td>
+				<td>@Model[i].StatusName</td>
+				<td>@Model[i].LastFee</td>
+			</tr>
 			}
 		</tbody>
 	</table>
