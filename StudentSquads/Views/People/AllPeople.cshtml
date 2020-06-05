@@ -13,7 +13,8 @@
 	<table id="people" class="table table-bordered table-hover">
 		<thead>
 			<tr>
-				<th></th>
+				
+				@if (User.IsInRole("SquadManager")){<th></th>}
 				<th>ФИО</th>
 				<th>Дата рождения</th>
 				<th>Телефон</th>
@@ -27,9 +28,9 @@
 		<tbody>
 			@for (int i = 0; i < Model.Count; i++)
 			{
-				<tr>
-					@Html.HiddenFor(m => m[i].Id)
-					<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
+			<tr>
+				@Html.HiddenFor(m => m[i].Id)
+				@if (User.IsInRole("SquadManager")){<td>@Html.CheckBoxFor(m => m[i].Choosen)</td> }
 					<td><a href='/people/edit/" + @Model[i].Id + "'>@Model[i].FIO</a></td>
 					<td>@Model[i].DateofBirth</td>
 					<td>@Model[i].PhoneNumber</td>

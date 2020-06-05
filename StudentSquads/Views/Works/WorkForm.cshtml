@@ -5,8 +5,9 @@
 }
 
 <h2>Составление выездного списка</h2>
+@Html.HiddenFor(m => m.Audit, new { @id = "audit" })
 <form id="newWork">
-	<button id ="audit" audit ="@Model.Audit" class="btn btn-warning js-audit" type="submit">Сохранить</button>
+	<button class="btn btn-warning js-audit" type="submit">Сохранить</button>
 
 	<div class="form-group">
 		<label>Работодатель</label>
@@ -33,15 +34,15 @@
 		</div>
 	</div>
 	@*<div class="form-group">
-		@Html.LabelFor(m => m.DateofBegin)
-		@Html.TextBoxFor(m => m.DateofBegin, "{0:dd.MM.yyyy}", new { @id = "dateofbegin", @class = "form-control" })
-	</div>
-	<div class="form-group">
-		@Html.LabelFor(m => m.DateofEnd)
-		<div class="tt-container">
-			@Html.TextBoxFor(m => m.DateofEnd, "{0:dd.MM.yyyy}", new { @id = "dateofend", @class = "form-control" })
+			@Html.LabelFor(m => m.DateofBegin)
+			@Html.TextBoxFor(m => m.DateofBegin, "{0:dd.MM.yyyy}", new { @id = "dateofbegin", @class = "form-control" })
 		</div>
-	</div>*@
+		<div class="form-group">
+			@Html.LabelFor(m => m.DateofEnd)
+			<div class="tt-container">
+				@Html.TextBoxFor(m => m.DateofEnd, "{0:dd.MM.yyyy}", new { @id = "dateofend", @class = "form-control" })
+			</div>
+		</div>*@
 	<div class="form-group">
 		<label>Член отряда</label>
 		<div class="tt-container">
@@ -53,9 +54,10 @@
 			<ul id="members" class="list-group"></ul>
 		</div>
 	</div>
+	@*@Html.CheckBoxFor(m => m.Alternative, new { @id = "alternative" })*@
 	<div class="checkbox">
 		<label>
-			@Html.CheckBoxFor(m => m.Alternative, new { @id = "alternative" }) Альтернативная целина?
+			<input type="checkbox" id="alternative" />Альтернативная целина?
 		</label>
 	</div>
 </form>
@@ -65,7 +67,7 @@
 	<script>
 		$(document).ready(function () {
 
-			var vm = { MembersIds: []};
+			var vm = { MembersIds: [] };
 
 			var members = new Bloodhound({
 				datumTokenizer: Bloodhound.tokenizers.obj.whitespace('FIO'),
@@ -115,8 +117,16 @@
 			//}, "Пожалуйста, выберите члена организации");
 			$("#newWork").submit(function (e) {
 				e.preventDefault();
-				if ($('#audit').attr("audit")=="True") vm.Audit = true;
-				vm.Alternative = document.getElementById('alternative').value;
+				var aud = document.getElementById('audit').value;
+				if (aud == "True") vm.Audit = true;
+				else vm.Audit = false;
+				var check = $('#alternative');
+				if (check.is(':checked')) {
+					vm.Alternative = true;
+				}
+				else {
+					vm.Alternative = false;
+				}
 				vm.DateOfBegin = document.getElementById('dateofbegin').value;
 				vm.DateOfEnd = document.getElementById('dateofend').value;
 				//vm.HasRole = document.getElementById('hasrole').value;

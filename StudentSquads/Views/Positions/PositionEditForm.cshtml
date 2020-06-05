@@ -49,7 +49,13 @@
 				vm.HeadofStudentSquadsId = button.attr("data-id");
 				vm.PersonId = document.getElementById('personId').value;
 				vm.Position = document.getElementById('position').value;
-				vm.HasRole = document.getElementById('hasrole').value;
+				var check = $('#hasrole');
+				if (check.is(':checked')) {
+					vm.HasRole = true;
+				}
+				else {
+					vm.HasRole = false;
+				}
 				$.ajax({
 					url: "/api/Positions",
 					method: "post",

@@ -124,7 +124,15 @@
 				//vm.HeadofStudentSquadsId = button.attr("data-id");
 				//vm.PersonId = document.getElementById('personId').value;
 				//vm.Position = document.getElementById('position').value;
-				vm.Alternative = document.getElementById('alternative').value;
+				var check = $('#alternative');
+				if (check.is(':checked')) {
+					vm.Alternative = true;
+					alert("Checked");
+				}
+				else {
+					vm.Alternative = false;
+					alert("UnChecked");
+				}
 				vm.DateOfBegin = document.getElementById('dateofbegin').value;
 				vm.DateOfEnd = document.getElementById('dateofend').value;
 				vm.Id = document.getElementById('Id').value;

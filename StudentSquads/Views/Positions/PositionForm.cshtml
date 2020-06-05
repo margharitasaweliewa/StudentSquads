@@ -55,8 +55,14 @@
 			}, "Пожалуйста, выберите члена организации");
 			$("#newPosition").submit(function (e) {
 				e.preventDefault();
-			    vm.Position = document.getElementById('position').value;
-				vm.HasRole = document.getElementById('hasrole').value;
+				vm.Position = document.getElementById('position').value;
+				var check = $('#hasrole');
+				if (check.is(':checked')) {
+					vm.HasRole = true;
+				}
+				else {
+					vm.HasRole = false;
+				}
 				if ($("#newPosition").valid()) {
 					$.ajax({
 						url: "/api/Positions",

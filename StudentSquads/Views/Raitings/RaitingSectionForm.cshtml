@@ -5,7 +5,7 @@
 
 <h2>Рейтинговый показатель</h2>
 <button  class="btn btn-warning js-save"  type="submit">Сохранить</button>
-<button class="btn btn-warning js-delete"  data-id = "@Model.Id" type="submit">Удалить</button>
+@if (Model.Id != Guid.Empty) {<button class="btn btn-default js-delete" data-id="@Model.Id" type="submit">Удалить</button> }
 @Html.HiddenFor(m => m.Id, new { @id = "Id" })
 <div class="form-group">
 	<div class="form-group">
