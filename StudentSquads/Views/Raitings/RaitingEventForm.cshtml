@@ -11,7 +11,7 @@
 	if (Model.Id != Guid.Empty) 
 { 
 	<input type="submit" name="button2" value="Удалить" class="btn btn-default" formaction="@Url.Action("DeleteEvent", "Raitings")" />
-	if (User.IsInRole("RegionalManager"))
+	if ((User.IsInRole("RegionalManager"))&&(Model.Id != Guid.Empty))
 	{
 	<input type="submit" name="button3" value="Утвердить" class="btn btn-warning" formaction="@Url.Action("ApproveEvent", "Raitings")" />
 	<input type="submit" name="button4" value="Отклонить" class="btn btn-default" formaction="@Url.Action("RejectEvent", "Raitings")" />
@@ -21,23 +21,26 @@
 	<div>
 		<div class="form-group">
 			@Html.LabelFor(m => m.Name)
-			@Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+			@Html.TextBoxFor(m => m.Name, new { @class = "form-control", @required = "true" })
+			@Html.ValidationMessageFor(m => m.Name)
 		</div>
 		<div class="form-group">
 			@Html.LabelFor(m => m.EventLevelId)
-			@Html.DropDownListFor(m => m.EventLevelId, new SelectList(Model.EventLevels, "Id", "Name"), "", new { @class = "form-control" })
+			@Html.DropDownListFor(m => m.EventLevelId, new SelectList(Model.EventLevels, "Id", "Name"), "", new { @class = "form-control", @required = "true" })
 		</div>
 		<div class="form-group">
 			@Html.LabelFor(m => m.DateofBegin) (@Model.DateofBeginString)
-			@Html.TextBoxFor(m => m.DateofBegin, "{0:dd.MM.yyyy}", new { @type = "date", @class = "form-control" })
+			@Html.TextBoxFor(m => m.DateofBegin, "{0:dd.MM.yyyy}", new { @type = "date", @class = "form-control", @required = "true" })
+			@Html.ValidationMessageFor(m => m.DateofBegin)
 		</div>
 		<div class="form-group">
 			@Html.LabelFor(m => m.DateofEnd) (@Model.DateofEndString)
-			@Html.TextBoxFor(m => m.DateofEnd, "{0:dd.MM.yyyy}", new { @type = "date", @class = "form-control" })
+			@Html.TextBoxFor(m => m.DateofEnd, "{0:dd.MM.yyyy}", new { @type = "date", @class = "form-control", @required = "true" })
+			@Html.ValidationMessageFor(m => m.DateofEnd)
 		</div>
 		<div class="form-group">
 			@Html.LabelFor(m => m.DocumentPath)
-			@Html.TextBoxFor(m => m.DocumentPath, new { @class = "custom-file-input", type = "file", name = "upload" })
+			@Html.TextBoxFor(m => m.DocumentPath, new { @class = "custom-file-input", type = "file", name = "upload", @required = "true" })
 		</div>
 
 	</div>

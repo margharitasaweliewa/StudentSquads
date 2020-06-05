@@ -15,6 +15,7 @@ namespace StudentSquads.ViewModels
         [Display(Name = "Рейтинговое мероприятие")]
         public string Event { get; set; }
         public int FilesCount { get; set; }
+        [Required(ErrorMessage = "Введите количество участников")]
         [Display(Name = "Количество участников")]
         public string MembershipCount { get; set; }
         public string CreateDate { get; set; }
@@ -22,6 +23,7 @@ namespace StudentSquads.ViewModels
         public string RaitingSection { get; set; }
         public Guid EventId { get; set; }
         public string MembershipType { get; set; }
+        [Required(ErrorMessage = "Введите тип участия")]
         [Display(Name = "Тип участия")]
         public string MembershipTypeId { get; set; }
         public List<MembershipType> MembershipTypes { get; set; }

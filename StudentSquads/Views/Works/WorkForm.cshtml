@@ -12,7 +12,7 @@
 	<div class="form-group">
 		<label>Работодатель</label>
 		<div class="tt-container">
-			<input id="employer" type="text" class="form-control" name="" value="" />
+			<input id="employer" data-rule-validEmployer="true" required type="text" class="form-control" name="" value="" />
 		</div>
 	</div>
 	<div class="form-group">
@@ -24,13 +24,13 @@
 	<div class="form-group">
 		<label>Дата начала работы</label>
 		<div class="tt-container">
-			<input id="dateofbegin" type="date" class="form-control">
+			<input id="dateofbegin" type="date" class="form-control" required>
 		</div>
 	</div>
 	<div class="form-group">
 		<label>Дата окончания работы</label>
 		<div class="tt-container">
-			<input id="dateofend" type="date" class="form-control">
+			<input id="dateofend" type="date" class="form-control" required>
 		</div>
 	</div>
 	@*<div class="form-group">
@@ -112,9 +112,11 @@
 			}).on("typeahead:select", function (e, employer) {
 				vm.EmployerId = employer.Id;
 			});
-			//$.validator.addMethod("validPerson", function () {
-			//	return vm.PersonId && vm.PersonId != null;
-			//}, "Пожалуйста, выберите члена организации");
+
+			$.validator.addMethod("validEmployer", function () {
+				return vm.EmployerId && vm.EmployerId != null;
+			}, "Пожалуйста, введите работодателя");
+
 			$("#newWork").submit(function (e) {
 				e.preventDefault();
 				var aud = document.getElementById('audit').value;
@@ -130,7 +132,7 @@
 				vm.DateOfBegin = document.getElementById('dateofbegin').value;
 				vm.DateOfEnd = document.getElementById('dateofend').value;
 				//vm.HasRole = document.getElementById('hasrole').value;
-				if ($("#newWork").valid()) {
+				if ($("#newWork").valid() && vm.MembersIds.length > 0) {
 					$.ajax({
 						url: "/api/works/createnewwork",
 						method: "POST",
@@ -151,6 +153,7 @@
 							toastr.error("Произошла ошибка сохранения");
 						});
 				}
+				else { toastr.error("Введите все необходимые данные"); }
 			})
 		});
 	</script>

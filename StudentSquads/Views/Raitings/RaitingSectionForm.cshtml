@@ -7,18 +7,22 @@
 <button  class="btn btn-warning js-save"  type="submit">Сохранить</button>
 @if (Model.Id != Guid.Empty) {<button class="btn btn-default js-delete" data-id="@Model.Id" type="submit">Удалить</button> }
 @Html.HiddenFor(m => m.Id, new { @id = "Id" })
+<form id="newSection">
 <div class="form-group">
 	<div class="form-group">
 		@Html.LabelFor(m => m.Name)
-		@Html.TextBoxFor(m => m.Name, new { @id = "Name", @class = "form-control" })
+		@Html.TextBoxFor(m => m.Name, new { @id = "Name", @class = "form-control", @required = "true" })
+		@Html.ValidationMessageFor(m => m.Name)
 	</div>
 	<div class="form-group">
 		@Html.LabelFor(m => m.Coef) (В формате 0,5)
-		@Html.TextBoxFor(m => m.Coef, new { @id = "Coef", @class = "form-control" })
+		@Html.TextBoxFor(m => m.Coef, new { @id = "Coef", @class = "form-control", @required = "true" })
+		@Html.ValidationMessageFor(m => m.Coef)
 	</div>
 	<div class="form-group">
 		@Html.LabelFor(m => m.MembershipTypeId)
-		@Html.DropDownListFor(m => m.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "", new { @id = "MembershipId", @class = "form-control" })
+		@Html.DropDownListFor(m => m.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "", new { @id = "MembershipId", @class = "form-control", @required = "true" })
+		@Html.ValidationMessageFor(m => m.MembershipTypeId)
 	</div>
 </div>
 <div class="form-group">
@@ -32,6 +36,7 @@
 		<ul id="levels" class="list-group"></ul>
 	</div>
 </div>
+</form>
 @if (Model.Id != Guid.Empty)
 {
 	<h4>Уровни</h4>
@@ -60,21 +65,22 @@
 		$(document).ready(function () {
 
 			$(".js-leveldown").on("click", function () {
-				var button = $(this);
-				bootbox.confirm("Вы уверены, что хотите удалить уровень?", function (result) {
-					if (result) {
-						$.ajax({
-							url: "/api/raitingsections/" + button.attr("data-id"),
-							method: "Put",
-							success: function () {
-								//Я бы поправила с API контроллером
-								//$("#levels").row(button.parents("tr")).remove().draw();
-								toastr.success("Успешно удалено");
-							}
+					var button = $(this);
+					bootbox.confirm("Вы уверены, что хотите удалить уровень?", function (result) {
+						if (result) {
+							$.ajax({
+								url: "/api/raitingsections/" + button.attr("data-id"),
+								method: "Put",
+								success: function () {
+									//Я бы поправила с API контроллером
+									//$("#levels").row(button.parents("tr")).remove().draw();
+									toastr.success("Успешно удалено");
+								}
 
-						});
-					}
-				});
+							});
+						}
+					});
+
 			});
 			var vm = {
 				LevelIds: [],
@@ -105,25 +111,29 @@
 				vm.LevelIds.push(level.Id);
 			});
 			$(".js-save").on("click", function () {
-				var button = $(this);
-				vm.MembershipIdString  = document.getElementById('MembershipId').value;
-				vm.Coef = document.getElementById('Coef').value;
-				vm.Name = document.getElementById('Name').value;
-				vm.Id = document.getElementById('Id').value;
-				$.ajax({
-					url: "/api/raitingsections",
-					method: "post",
-					data: vm
-				})
-					.done(function () {
-						bootbox.alert("Показатель рейтинга сохранен", function () {
-							window.location = "/raitings/allraitingsections"
-						});
-					
+				if ($("#newSection").valid() && vm.LevelIds.length > 0) {
+					var button = $(this);
+					vm.MembershipIdString = document.getElementById('MembershipId').value;
+					vm.Coef = document.getElementById('Coef').value;
+					vm.Name = document.getElementById('Name').value;
+					vm.Id = document.getElementById('Id').value;
+					$.ajax({
+						url: "/api/raitingsections",
+						method: "post",
+						data: vm
 					})
-					.fail(function () {
-						toastr.error("Произошла ошибка сохранения");
-					});
+						.done(function () {
+							bootbox.alert("Показатель рейтинга сохранен", function () {
+								window.location = "/raitings/allraitingsections"
+							});
+
+						})
+						.fail(function () {
+							toastr.error("Данные введены неправильно");
+						});
+				}
+				else { toastr.error("Введите все необходимые данные"); }
+				
 			});
 			$(".js-delete").on("click", function () {
 				var button = $(this);

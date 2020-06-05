@@ -4,47 +4,52 @@
 }
 
 <h2>Добавление материалов рейтинга</h2>
-@if (User.IsInRole("SquadManager"))
-{
-	<button class="btn btn-warning js-save" data-id="@Model.Id" type="submit">Сохранить</button>
-	if (Model.Id!=Guid.Empty){ <a class="btn btn-default" href="/raitings/deleteraitingeventinfo/@Model.Id">Удалить</a>}
+<form id="newRaitingInfo">
+	@if (User.IsInRole("SquadManager"))
+	{
+		<button class="btn btn-warning js-save" data-id="@Model.Id" type="submit">Сохранить</button>
+		if (Model.Id != Guid.Empty)
+		{ <a class="btn btn-default" href="/raitings/deleteraitingeventinfo/@Model.Id">Удалить</a>}
 
-}
-@*<button class="btn btn-warning js-delete" data-id="@Model.Id" type="submit">Удалить</button>*@
-@if (User.IsInRole("RegionalManager"))
-{
-	<button class="btn btn-warning js-approve" data-id="@Model.Id" type="submit">Принять</button>
-	<button class="btn btn-warning js-reject" data-id="@Model.Id" type="submit">Отклонить</button>
-}
-@Html.HiddenFor(m => m.Id, new { @id = "Id" })
-<div class="form-group">
-	@Html.LabelFor(m => m.Event)
-	<div class="tt-container">
-		@Html.TextBoxFor(m => m.Event, new { @dataId = Model.EventId, @id = "raitingevent", @class = "form-control" })
+	}
+	@*<button class="btn btn-warning js-delete" data-id="@Model.Id" type="submit">Удалить</button>*@
+	@if (User.IsInRole("RegionalManager"))
+	{
+		<button class="btn btn-warning js-approve" data-id="@Model.Id" type="submit">Принять</button>
+		<button class="btn btn-default js-reject" data-id="@Model.Id" type="submit">Отклонить</button>
+	}
+	@Html.HiddenFor(m => m.Id, new { @id = "Id" })
+	<div class="form-group">
+		@Html.LabelFor(m => m.Event)
+		<div class="tt-container">
+			@Html.TextBoxFor(m => m.Event, new { @validEvent = "true", @required="true", @dataId = Model.EventId, @id = "raitingevent", @class = "form-control" })
+		</div>
 	</div>
-</div>
-<div class="form-group">
-	@Html.LabelFor(m => m.MembershipCount)
-	@Html.TextBoxFor(m => m.MembershipCount, new { @id = "MembershipCount", @class = "form-control" })
-</div>
-<div class="form-group">
-	@Html.LabelFor(m => m.MembershipTypeId)
-	@Html.DropDownListFor(m => m.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "", new { @id = "MembershipId", @class = "form-control" })
-</div>
-<h4>Сслыки на материалы</h4>
-<div class="form-group">
-	<label>Ссылка</label>
-	<input id="reference" type="text" class="form-control" name="" value="" />
-</div>
-<div class="form-group">
-	<label>Описание</label>
-	<input id="describe" type="text" class="form-control" name="" value="" />
-</div>
-<div class="form-group">
-	<button class="btn btn-default js-addreference" type="submit">Добавить ссылку</button>
-</div>
-<table id="referencetable" class="table table-bordered table-hover">
-</table>
+	<div class="form-group">
+		@Html.LabelFor(m => m.MembershipCount)
+		@Html.TextBoxFor(m => m.MembershipCount, new { @id = "MembershipCount", @class = "form-control", @required = "true" })
+		@Html.ValidationMessageFor(m => m.MembershipCount)
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(m => m.MembershipTypeId)
+		@Html.DropDownListFor(m => m.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "", new { @id = "MembershipId", @class = "form-control", @required = "true" })
+		@Html.ValidationMessageFor(m => m.MembershipTypeId)
+	</div>
+	<h4>Сслыки на материалы</h4>
+	<div class="form-group">
+		<label>Ссылка</label>
+		<input id="reference" type="text" class="form-control" name="" value="" />
+	</div>
+	<div class="form-group">
+		<label>Описание</label>
+		<input id="describe" type="text" class="form-control" name="" value="" />
+	</div>
+	<div class="form-group">
+		<button class="btn btn-default js-addreference" type="submit">Добавить ссылку</button>
+	</div>
+	<table id="referencetable" class="table table-bordered table-hover">
+	</table>
+</form>
 @if (Model.ReferenceDescriptions?.Count > 0)
 {
 	<h4>Добавленные ранее</h4>
@@ -118,23 +123,30 @@
 					value: describe
 				});
 			});
+			$.validator.addMethod("validEvent", function () {
+				return vm.EventId && vm.EventId != null;
+			}, "Пожалуйста, выберите мероприятие");
 			$(".js-save").on("click", function () {
-				var button = $(this);
-				vm.MembershipTypeId = document.getElementById('MembershipId').value;
-				vm.MembershipCount = document.getElementById('MembershipCount').value;
-				vm.Id = document.getElementById('Id').value;
-				$.ajax({
-					url: "/api/raitingeventinfos",
-					method: "post",
-					data: vm
-				})
-					.done(function () {
-						toastr.success("Успешно сохранено");
-
+				if ($("#newRaitingInfo").valid())
+				{
+					var button = $(this);
+					vm.MembershipTypeId = document.getElementById('MembershipId').value;
+					vm.MembershipCount = document.getElementById('MembershipCount').value;
+					vm.Id = document.getElementById('Id').value;
+					$.ajax({
+						url: "/api/raitingeventinfos",
+						method: "post",
+						data: vm
 					})
-					.fail(function () {
-						toastr.error("Произошла ошибка сохранения");
-					});
+						.done(function () {
+							toastr.success("Успешно сохранено");
+
+						})
+						.fail(function () {
+							toastr.error("Произошла ошибка сохранения");
+						});
+				} 
+
 			});
 			$(".js-approve").on("click", function () {
 				var button = $(this);
