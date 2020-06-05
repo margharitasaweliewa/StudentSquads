@@ -411,6 +411,10 @@
     <Compile Include="Migrations\202006022130515_AddApprovedToFeePayment.Designer.cs">
       <DependentUpon>202006022130515_AddApprovedToFeePayment.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006051710444_MadePersonRequired.cs" />
+    <Compile Include="Migrations\202006051710444_MadePersonRequired.Designer.cs">
+      <DependentUpon>202006051710444_MadePersonRequired.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Direction.cs" />
@@ -892,6 +896,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006022130515_AddApprovedToFeePayment.resx">
       <DependentUpon>202006022130515_AddApprovedToFeePayment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006051710444_MadePersonRequired.resx">
+      <DependentUpon>202006051710444_MadePersonRequired.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

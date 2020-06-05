@@ -7,11 +7,8 @@
 <h2>Личные данные</h2>
 @using (Html.BeginForm("Save", "People", new { enctype = "multipart/form-data" }))
 {
-	@Html.ValidationSummary()
+	@*@Html.ValidationSummary()*@
 	<button type="submit" class="btn btn-warning">Сохранить</button>
-	@*<p>
-			@Html.ActionLink("Сохранить", "New", "Movies", null, new { @class = "btn btn-warning" })
-		</p>*@
 	@Html.HiddenFor(m => m.Id)
 	<div>
 		<div class="col-xs-4" float="left">
@@ -23,6 +20,7 @@
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.FirstName)
 				@Html.TextBoxFor(m => m.Person.FirstName, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.FirstName)
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.PatronymicName)
@@ -31,10 +29,13 @@
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.FIOinGenetiv)
 				@Html.TextBoxFor(m => m.Person.FIOinGenetiv, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.FIOinGenetiv)
+
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.DateofBirth)
 				@Html.TextBoxFor(m => m.Person.DateofBirth, "{0:dd.MM.yyyy}", new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.DateofBirth)
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.PlaceofStudy)
@@ -47,6 +48,7 @@
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.PhoneNumber)
 				@Html.TextBoxFor(m => m.Person.PhoneNumber, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.PhoneNumber)
 			</div>
 			@*Тут лучше поменять на что-то более стоящее*@
 			<div class="checkbox">
@@ -60,30 +62,37 @@
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.PassportSerie)
 				@Html.TextBoxFor(m => m.Person.PassportSerie, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.PassportSerie)
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.PassportNumber)
 				@Html.TextBoxFor(m => m.Person.PassportNumber, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.PassportNumber)
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.PassportGiven)
 				@Html.TextBoxFor(m => m.Person.PassportGiven, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.PassportGiven)
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.DateofIssue)
 				@Html.TextBoxFor(m => m.Person.DateofIssue, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.DateofIssue)
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.DepartmentCode)
 				@Html.TextBoxFor(m => m.Person.DepartmentCode, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.DepartmentCode)
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.CityofBirth)
 				@Html.TextBoxFor(m => m.Person.CityofBirth, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.CityofBirth)
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.RegistrationPlace)
 				@Html.TextBoxFor(m => m.Person.RegistrationPlace, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.RegistrationPlace)
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.file)
@@ -94,43 +103,41 @@
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.INN)
 				@Html.TextBoxFor(m => m.Person.INN, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.INN)
 			</div>
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.Snils)
 				@Html.TextBoxFor(m => m.Person.Snils, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.Snils)
 			</div>
 
 			<div class="form-group">
 				@Html.LabelFor(m => m.Person.Email)
 				@Html.TextBoxFor(m => m.Person.Email, new { @class = "form-control" })
+				@Html.ValidationMessageFor(m => m.Person.Email)
 			</div>
 			@*Тут скорее надо заблокировать, чем не отображать*@
 			@if (Model.Person is null)
 			{<div class="checkbox" id="alreadymember">
 					<label disabled>
-						@Html.CheckBoxFor(m => m.AlreadyMember) Уже являетесь членом организации?
+						@Html.CheckBoxFor(m => m.AlreadyMember, new { @id = "alreadymember" }) Уже являетесь членом организации?
 					</label>
-				</div>
-				<div class="form-group" disabled>
-					@Html.LabelFor(m => m.UniverityId)
-					@Html.DropDownListFor(m => m.UniverityId, new SelectList(Model.UniversityHeadquarters, "Id", "ShortContent"), "", new { @class = "form-control" })
-				</div>
-				<div class="form-group" disabled>
-					@Html.LabelFor(m => m.Member.SquadId)
-					@Html.DropDownListFor(m => m.Member.SquadId, new SelectList(Model.Squads, "Id", "Name"), "", new { @class = "form-control" })
 				</div>
 				<div class="form-group">
 					@Html.LabelFor(m => m.Person.MembershipNumber)
-					@Html.TextBoxFor(m => m.Person.MembershipNumber, new { @class = "form-control" })
+					@Html.TextBoxFor(m => m.Person.MembershipNumber, new { @id ="alreadymem1",  @class = "form-control alredymem", @readonly = "true" })
 				</div>
-				<div class="checkbox" id="ishead">
-					<label disabled>
-						@Html.CheckBoxFor(m => m.AlreadyMember) Являетесь членом ком. состава ЛСО?
-					</label>
+				<div class="form-group" disabled>
+					@Html.LabelFor(m => m.UniverityId)
+					@Html.DropDownListFor(m => m.UniverityId, new SelectList(Model.UniversityHeadquarters, "Id", "ShortContent"), "", new { @id = "uni", @class = "form-control", @readonly = "true" })
+				</div>
+				<div class="form-group" disabled>
+					@Html.LabelFor(m => m.Member.SquadId)
+					@Html.DropDownListFor(m => m.Member.SquadId, new SelectList(new List<StudentSquads.Models.Squad>(), "Id", "Name"), "", new { @id = "squads", @class = "form-control", @readonly = "true" })
 				</div>
 				<div class="form-group" disabled>
 					@Html.LabelFor(m => m.HeadsOfStudentSquads.MainPositionId)
-					@Html.DropDownListFor(m => m.HeadsOfStudentSquads.MainPositionId, new SelectList(Model.MainPositions, "Id", "Name"), "", new { @class = "form-control" })
+					@Html.DropDownListFor(m => m.HeadsOfStudentSquads.MainPositionId, new SelectList(Model.MainPositions, "Id", "Name"), "", new {@id ="position", @class = "form-control", @readonly = "true" })
 				</div>
 			}
 		</div>
@@ -143,5 +150,46 @@
 @section scripts
 {
 	@Scripts.Render("~/bundles/jqueryval")
+	<script>
+		$(document).ready(function () {
+
+				$('#uni').change(function () {
+					var Id = $(this).val();
+					$.ajax({
+						url: '/api/squads/' + Id,
+						type: 'Get',
+						success: function (squads) {
+							$('#squads').empty();
+							$('#squads').append('<option value="' +null+ '">' + "" + '</option>');
+							$(squads).each(function () {
+								$('#squads').append('<option value="' + this.Id + '">' + this.Name + '</option>');
+							});
+
+						}
+					});
+				});
+			$('#alreadymember').change(function () {
+				if (alreadymem1.hasAttribute('readonly'))
+				{
+					alreadymem1.removeAttribute('readonly');
+					uni.removeAttribute('readonly');
+					squads.removeAttribute('readonly');
+					position.removeAttribute("readonly");
+					alreadymem1.setAttribute('required', 'true');
+				}
+				else
+				{
+					document.getElementById("alreadymem1").className = 'form-control valid';
+					$("#alreadymem1").removeAttr('required');
+					alreadymem1.removeAttribute("required");
+					alreadymem1.setAttribute('readonly', "true");
+					uni.setAttribute('readonly', "true");
+					squads.setAttribute('readonly', "true");
+					position.setAttribute('readonly', "true");
+				}
+				
+			});
+			});
+	</script>
 }
 
