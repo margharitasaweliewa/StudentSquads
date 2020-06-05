@@ -201,6 +201,7 @@
     <Compile Include="Controllers\API\RaitingEventsController.cs" />
     <Compile Include="Controllers\API\RaitingPlacesController.cs" />
     <Compile Include="Controllers\API\RaitingSectionsController.cs" />
+    <Compile Include="Controllers\API\SquadsController.cs" />
     <Compile Include="Controllers\API\SquadWorksController.cs" />
     <Compile Include="Controllers\API\WorksAuditController.cs" />
     <Compile Include="Controllers\API\WorksController.cs" />
