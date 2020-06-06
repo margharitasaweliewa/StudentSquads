@@ -42,7 +42,8 @@
 				}
 				@if (!User.IsInRole("SquadManager"))
 				{<td>@Model[i].Squad</td>}
-				<td></td>
+				@if (Model[i].DocumentPath != null) {<td><a href="@("/files/" + Model[i].DocumentPath)" target="_blank">Скачать</a></td> }
+				
 			</tr>
 			}
 		</tbody>

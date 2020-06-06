@@ -18,10 +18,11 @@
 				<th>ФИО</th>
 				<th>Дата рождения</th>
 				<th>Телефон</th>
-				<th>Номер членского билета</th>
+				<th>Членский билет</th>
 				<th>Текущий отряд</th>
 				<th>Новый отряд</th>
 				<th>Статус</th>
+				<th>Заявление</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -39,6 +40,7 @@
 				<td>@Model[i].OldSquad</td>
 				<td>@Model[i].Squad</td>
 				<td>@Model[i].Status</td>
+				<td><a href="@("/files/" + Model[i].DocumentPath)" target="_blank">Скачать</a></td>
 			</tr>
 			}
 		</tbody>

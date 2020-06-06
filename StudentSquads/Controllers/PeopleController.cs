@@ -12,7 +12,6 @@ using System.Dynamic;
 using System.ComponentModel;
 using Microsoft.AspNet.Identity.EntityFramework;
 using DocumentFormat.OpenXml.Wordprocessing;
-using System.Linq;
 
 namespace StudentSquads.Controllers
 {
@@ -189,6 +188,7 @@ namespace StudentSquads.Controllers
             //Если вышел из организации, то не будут кнопки отображаться
             //Находим все связи с должностями
             var allpositions = _context.HeadsOfStudentSquads.Include(p => p.Squad).Include(p => p.MainPosition)
+                .Include(p => p.UniversityHeadquarter).Include(p => p.RegionalHeadquarter)
                 .Where(p => p.PersonId == personid).ToList();
             List<DesignationViewModel> listpositions= new List<DesignationViewModel>();
             if (allpositions != null)
@@ -287,16 +287,7 @@ namespace StudentSquads.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Save(NewPersonViewModel newModel)
-        {//Это надо будет перенести в другое место
-        
-            foreach (string file in Request.Files)
-            {
-                HttpPostedFileBase File = Request.Files[file] as HttpPostedFileBase;
-                // получаем имя файла
-                string fileName = System.IO.Path.GetFileName(File.FileName);
-                // сохраняем файл в папку Files в проекте
-                File.SaveAs(Server.MapPath("~/Files/" + fileName));
-            }
+        {
             if (!ModelState.IsValid)
             {
                 return View("PersonForm", newModel);

@@ -30,5 +30,6 @@ namespace StudentSquads.ViewModels
         public string Position { get; set; }
         public string DateOfExit { get; set; }
         public string DateOfEnter { get; set; }
+        public string DocumentPath { get; set; }
     }
 }

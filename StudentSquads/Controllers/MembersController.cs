@@ -16,6 +16,7 @@ using DocumentFormat.OpenXml.Packaging;
 using System.Xml;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
+using DocumentFormat.OpenXml.Office2013.Word;
 
 namespace StudentSquads.Controllers
 {
@@ -137,7 +138,8 @@ namespace StudentSquads.Controllers
                     PlaceOfStudy = member.Person.PlaceofStudy,
                     Squad = member.Squad.Name,
                     FeePayment = feepayment,
-                    Status = member.ApplicationStatus
+                    Status = member.ApplicationStatus,
+                    DocumentPath = member.Person.EnterDocumentPath
                 };
                 listmodel.Add(newapplication);
             }
@@ -320,7 +322,8 @@ namespace StudentSquads.Controllers
                     PhoneNumber = member.Person.PhoneNumber,
                     Squad = member.Squad.Name,
                     OldSquad = member.FromSquad.Name,
-                    Status = member.ApplicationStatus
+                    Status = member.ApplicationStatus,
+                    DocumentPath = oldmember.TransitionDocumentPath
                 };
                 listmodel.Add(newapplication);
             }
@@ -390,44 +393,11 @@ namespace StudentSquads.Controllers
             return RedirectToAction("TransitionApplications", "Members");
         }
         //Следующие функции для исключения из организации
-        [HttpDelete]
-        [ValidateAntiForgeryToken]
-        public void ApplyForExit(Guid personId)
-        {   
-            //Если пользователь является командиром отряда, необходимо сначала найти себе замену, потом только выйти из состава организации
-            bool ok = true;
-            var headofsquad = GetHeadOfStudentSquads();
-            if (headofsquad != null)
-            {
-                if (headofsquad.MainPositionId != 1) ok=false;
-            }
-            if (ok)
-            {
-                //Если является руководителем на данный момент, проставляем дату окончания 
-                if(headofsquad!=null)headofsquad.DateofEnd = DateTime.Now;
-                //ExitDocument(model);
-                var personInDb = _context.People.SingleOrDefault(p => p.Id == personId);
-                //Сразу ставим дату выхода из организации
-                personInDb.DateOfExit = DateTime.Now;
-                //Если есть в каком-то отряде на данный момент, из него тоже исключаем
-                var memberInDb = _context.Members.SingleOrDefault(p => (p.PersonId == personId) && (p.DateOfEnter != null) && (p.DateOfExit == null));
-                if (memberInDb != null) memberInDb.DateOfExit = DateTime.Now;
-                //Если есть роли, убираем роли
-                if (User.IsInRole("SquadManager") || User.IsInRole("UniManager") || User.IsInRole("RegionalManager") || User.IsInRole("DesantManager"))
-                {
-                    string id = User.Identity.GetUserId();
-                    var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(_context));
-                    if (User.IsInRole("SquadManager"))
-                        userManager.RemoveFromRole(id, "SquadManager");
-                    if (User.IsInRole("UniManager"))
-                        userManager.RemoveFromRole(id, "UniManager");
-                    if (User.IsInRole("RegionalManager"))
-                        userManager.RemoveFromRole(id, "RegionalManager");
-                    if (User.IsInRole("DesantManager"))
-                        userManager.RemoveFromRole(id, "DesantManager");
-                }
-                _context.SaveChanges();
-            }
+        public ActionResult ApplyForExit(PersonMainFormViewModel model)
+        {
+            //Создаем заявление о выходе
+            CreateDocument(model, 3);
+            return RedirectToAction("PersonMainForm", "People");
         }
         [HttpGet]
         public ActionResult ExitApplications()
@@ -465,15 +435,22 @@ namespace StudentSquads.Controllers
                         DateOfBirth = member.Person.DateofBirth.ToString("dd.MM.yyyy"),
                         PhoneNumber = member.Person.PhoneNumber,
                         MembershipNumber = member.Person.MembershipNumber,
-                        Status = status
+                        Status = status,
+                        DocumentPath = member.Person.ExitDocumentPath
                     };
                     listmodel.Add(newapplication);
                 }
             }
              else if (User.IsInRole("RegionalManager"))
             {
+                List<StudentSquads.Models.Person> people = new List<StudentSquads.Models.Person>();
                 //Для рег. отделения получаем всех личностей, у кого ещё нет протокола об исключении
-                var people = _context.People.Where(p => (p.DateOfEnter != null) && (p.DateOfExit != null) && (p.ExitDocumentPath == null)).ToList();
+                var allpeople = _context.People.Where(p => (p.DateOfEnter != null) && (p.DateOfExit != null)).ToList();
+                foreach(var p in allpeople)
+                {
+                    var allmembers = _context.Members.Where(m => (m.PersonId == p.Id) && (m.DateOfEnter != null) && (m.DateOfExit==null)).ToList();
+                    if (allmembers.Count()>0) people.Add(p);
+                }
                 foreach (var person in people)
                 {
                     var memberInDb = _context.Members.Include(m => m.Squad).SingleOrDefault(m => (m.PersonId ==person.Id)&&(m.DateOfEnter!=null)&&(m.DateOfExit==null));
@@ -488,6 +465,7 @@ namespace StudentSquads.Controllers
                             DateOfBirth = person.DateofBirth.ToString("dd.MM.yyyy"),
                             PhoneNumber = person.PhoneNumber,
                             MembershipNumber = person.MembershipNumber,
+                            DocumentPath = person.ExitDocumentPath
                         };
                         listmodel.Add(newapplication);
                 }
@@ -506,9 +484,9 @@ namespace StudentSquads.Controllers
                     var memberInDb = _context.Members.SingleOrDefault(m => m.Id == member.Id);
                     memberInDb.ApplicationStatus = "Исключен";
                     memberInDb.DateOfExit = DateTime.Now;
-                    var personInDb = _context.People.SingleOrDefault(p => p.Id == member.PersonId);
-                    //Здесь нужно составить протокол об исключении
-                    personInDb.ExitDocumentPath = "Путь к документу на исключение";
+                    //var personInDb = _context.People.SingleOrDefault(p => p.Id == member.PersonId);
+                    ////Здесь нужно составить протокол об исключении
+                    //personInDb.DocumentPath = "Путь к документу на исключение";
                 }
 
             }
@@ -534,7 +512,9 @@ namespace StudentSquads.Controllers
                     foreach (var orphanName in unmatched)
                     {
                         if (bEnd.Id == orphanName.Key)
-                            results.Add(orphanName.Value, bEnd);
+                            try { results.Add(orphanName.Value, bEnd); }
+                            catch (Exception) { };
+                            
                     }
                 }
                 FindBookmarks(child, results, unmatched);
@@ -546,7 +526,7 @@ namespace StudentSquads.Controllers
             Squad squad = new Squad();
             Squad tosquad = new Squad();
             Member member = new Member();
-            Person person = _context.People.SingleOrDefault(p => p.Id == model.Person.Id);
+            StudentSquads.Models.Person person = _context.People.SingleOrDefault(p => p.Id == model.Person.Id);
             if (type==1)
                 //Если на вступление, то Squad = это туда, куда вступают
                 squad = _context.Squads.Include(s => s.Direction).SingleOrDefault(s => s.Id == model.SquadId);
@@ -558,27 +538,38 @@ namespace StudentSquads.Controllers
                 //Если переход, то новый отряд также находим
                 if (member.ToSquadId != null) tosquad = _context.Squads.Include(t => t.UniversityHeadquarter).SingleOrDefault(t => t.Id == member.ToSquadId);
             }
+            string name = "";
             string fileName = "";
             string newfileName = "";
             switch (type)
             {
                 //Заявление на вступление
                 case 1:
-                    fileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление_на_вступление_в_РСО.docx";
-                    break;
+                        name = "Заявление_на_вступление_в_РСО.docx";
+                        fileName = Server.MapPath("~/Files/Заявление_на_вступление_в_РСО.docx");
+                        break;
                 //Заявление на переход
                 case 2:
-                    fileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление_о_переходе.docx";
+                    name = "Заявление_о_переходе.docx";
+                    fileName = Server.MapPath("~/Files/Заявление_о_переходе.docx");
                     break;
                 //Заявление на выход
                 case 3:
-                    fileName = "C:/Users/Маргарита/source/repos/StudentSquadsGit2/StudentSquads/Files/Заявление_о_выходе_из_РСО.docx";
+                    name = "Заявление_о_выходе_из_РСО.docx";
+                    fileName = Server.MapPath("~/Files/Заявление_о_выходе_из_РСО.docx");
                     break;
             };
             //Находим штаб, к которому член организации привязан
             UniversityHeadquarter uni = _context.UniversityHeadquarters.Include(u => u.RegionalHeadquarter).SingleOrDefault(u => u.Id == squad.UniversityHeadquarterId);
             var wordDocument= WordprocessingDocument.Open(fileName as string, false);
-            newfileName = fileName +"_"+ person.FIOinGenetiv + "_" + DateTime.Now.ToString("dd.MM.yyyy") + ".docx";
+            var fileId = Guid.NewGuid().ToString();
+            var filePath = Path.Combine(fileId, name+model.Person?.FIO);
+            // сохраняем файл в папку Files в проекте
+            if (!Directory.Exists(Server.MapPath("~/Files/" + fileId)))
+            {
+                Directory.CreateDirectory(Server.MapPath("~/Files/" + fileId));
+            }
+            newfileName = Server.MapPath("~/Files/" + filePath);
             wordDocument.Clone(newfileName, true).Close();
             var newwordDocument = WordprocessingDocument.Open(newfileName as string, true);
             var bookMarks = FindBookmarks(newwordDocument.MainDocumentPart.Document);
@@ -669,17 +660,18 @@ namespace StudentSquads.Controllers
                 end.Value.InsertAfterSelf(runElement);
             }
             newwordDocument.MainDocumentPart.Document.Save();
+            newwordDocument.Close();
             //Добавляем путь к файлу
             switch (type)
             {
                 case 1:
-                    person.EnterDocumentPath = newfileName;
+                    person.EnterDocumentPath = filePath;
                     break;
                 case 2:
-                    member.TransitionDocumentPath = newfileName;
+                    member.TransitionDocumentPath = filePath;
                     break;
                 case 3:
-                    person.ExitDocumentPath = newfileName;
+                    person.ExitDocumentPath = filePath;
                     break;
             }
             _context.SaveChanges();

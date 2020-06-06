@@ -21,13 +21,13 @@
 			<tr>
 				<th></th>
 				<th>ФИО</th>
-				<th>Пол</th>
 				<th>Дата рождения</th>
 				<th>Телефон</th>
 				<th>Место обучения</th>
 				<th>Отряд</th>
 				<th>Статус</th>
 				<th>Взнос</th>
+				<th>Заявление</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -38,13 +38,13 @@
 					@Html.HiddenFor(m => m[i].PersonId)
 					<td>@Html.CheckBoxFor(m => m[i].Choosen)</td>
 					<td>@Model[i].FIO</td>
-					<td>@Model[i].Sex</td>
 					<td>@Model[i].DateOfBirth</td>
 					<td>@Model[i].PhoneNumber</td>
 					<td>@Model[i].PlaceOfStudy</td>
 					<td>@Model[i].Squad</td>
 					<td>@Model[i].Status</td>
 					<td>@Model[i].FeePayment</td>
+					<td><a href="@("/files/" + Model[i].DocumentPath)" target="_blank">Скачать</a></td>
 				</tr>
 			}
 		</tbody>

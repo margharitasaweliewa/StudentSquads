@@ -82,7 +82,6 @@ namespace StudentSquads.Controllers
         public ActionResult SaveEvent(RaitingEventViewModel model)
         {
             var file = Request.Files.OfType<string>().FirstOrDefault();
-
             HttpPostedFileBase File = Request.Files[file] as HttpPostedFileBase;
             // получаем имя файла
             string fileName = Path.GetFileName(File.FileName);

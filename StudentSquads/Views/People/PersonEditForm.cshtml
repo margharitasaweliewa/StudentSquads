@@ -5,7 +5,7 @@
 }
 
 <h2>Личные данные</h2>
-@if (User.IsInRole("RegionalManager") && Model.Member.DateOfExit == null)
+@if (User.IsInRole("RegionalManager") && Model.Member?.DateOfExit == null)
 {
 	<button class="btn btn-warning js-exclude" data-id="@Model.Person.Id">Исключить</button>
 }
