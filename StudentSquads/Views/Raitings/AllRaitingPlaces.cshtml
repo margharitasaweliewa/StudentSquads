@@ -7,7 +7,6 @@
 <table id="raitingplaces" class="table table-bordered table-hover">
 	<thead>
 		<tr>
-			<th></th>
 			<th>Отряд</th>
 			<th>Штаб</th>
 			<th>Сформирован</th>
@@ -28,12 +27,6 @@
 					dataSrc: ""
 				},
 				columns: [
-					{
-						data: "SquadId",
-						render: function (data) {
-							return "<a href ='/raitings//" + data + "'>" + "<img src='https://image.flaticon.com/icons/png/512/62/62319.png' width='25' height='25'>" + "</a>";
-						}
-					},
 					{
 						data: "Squad"
 					},

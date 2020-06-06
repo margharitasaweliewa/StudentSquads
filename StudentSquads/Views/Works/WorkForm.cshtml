@@ -16,12 +16,6 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<label>Трудовой проект</label>
-		<div class="tt-container">
-			<input id="workproject" type="text" class="form-control" name="" value="" />
-		</div>
-	</div>
-	<div class="form-group">
 		<label>Дата начала работы</label>
 		<div class="tt-container">
 			<input id="dateofbegin" type="date" class="form-control" required>
@@ -79,7 +73,7 @@
 			});
 
 			$('#member').typeahead({
-				minLength: 3,
+				minLength: 0,
 				highlight: true
 			}, {
 				name: 'members',
@@ -103,7 +97,7 @@
 			});
 
 			$('#employer').typeahead({
-				minLength: 3,
+				minLength: 0,
 				highlight: true
 			}, {
 				name: 'employers',
