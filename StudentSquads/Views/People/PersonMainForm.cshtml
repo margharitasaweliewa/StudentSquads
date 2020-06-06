@@ -1,20 +1,20 @@
 ﻿@model StudentSquads.ViewModels.PersonMainFormViewModel
 @{
 	ViewBag.Title = "PersonMainForm";
-	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Личный кабинет</h2>
 
 @*<a href="https://docs.google.com/document/d/1tQmeaU5bUpu4j-aAAdIfpOg0Pd_aqtU5e65XFJwriQY/edit" target="_blank" title="Загрузить заявление на вступление">Загрузить заявление на вступление1</a>
-	<p><a href=@Model.Person.EnterDocumentPath target="_blank" download="true">Загрузить заявление на вступление</a></p>
-	<p><a href=@Model.file target="_blank" download="true">Загрузить заявление на вступление</a></p>*@
+	<p><a href=@Model.Person.EnterDocumentPath target="_blank" download="true">Загрузить заявление на вступление</a></p>*@
+	<p><a href = "@("~/files/" + Model.Person.EnterDocumentPath)" download="true">Загрузить заявление на вступление</a></p>
+
 @*Проверяем, есть ли у пользователя личность*@
 
 @using (Html.BeginForm("ApplyForEnter", "Members"))
 {
-	@*if (Model.Person.EnterDocumentPath != null)
-		{<p><a href=@Model.file target="_blank" download="true">Загрузить заявление на вступление</a></p>}*@
+	if (Model.Person.EnterDocumentPath != null)
+		{<p><a href=@Model.Person.EnterDocumentPath target="_blank" download="true">Загрузить заявление на вступление</a></p>}
 
 	@Html.AntiForgeryToken()
 

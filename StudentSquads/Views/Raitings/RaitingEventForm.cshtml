@@ -4,7 +4,7 @@
 }
 
 <h2>Добавление мероприятия</h2>
-@using (Html.BeginForm("SaveEvent", "Raitings", new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("SaveEvent", "Raitings", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
 	@Html.ValidationSummary()
 	<button type="submit" class="btn btn-warning">Сохранить</button>

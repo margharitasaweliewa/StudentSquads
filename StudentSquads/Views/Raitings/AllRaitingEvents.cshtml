@@ -36,7 +36,9 @@
 				<td>@Model[i].EventLevel</td>
 				<td>@Model[i].DateofBeginString</td>
 				<td>@Model[i].DateofEndString</td>
-				<td>@Model[i].DocumentPath</td>
+				<td>
+				<a href="@("/files/" + Model[i].DocumentPath)" target="_blank">Ссылка</a>
+				</td>
 				<td>@Model[i].Approved</td>
 			</tr>
 			}

@@ -12,6 +12,7 @@ using System.Dynamic;
 using System.ComponentModel;
 using Microsoft.AspNet.Identity.EntityFramework;
 using DocumentFormat.OpenXml.Wordprocessing;
+using System.Linq;
 
 namespace StudentSquads.Controllers
 {
@@ -133,19 +134,20 @@ namespace StudentSquads.Controllers
             var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
             //Объявляем файл вступления в РСО
             FilePathResult enterfile = null;
+            string str = "";
             if (person != null)
             {
                 if (person.EnterDocumentPath != null)
                 {
                     enterfile = File(person.EnterDocumentPath, "application/docx", "Заявление на вступление в РСО");
-                    string str = enterfile.FileDownloadName;
+                    str = enterfile.FileDownloadName;
                 }
             }
             //var fileContents = System.IO.File.ReadAllText(Server.MapPath(@person.EnterDocumentPath));
             PersonMainFormViewModel newmember = new PersonMainFormViewModel
             {
 
-                file = "https://vk.com/doc9058999_499015105?hash=fbeb2e184c6b7d11b3&dl=3d0d5c4de610f3032e",
+                file = person.EnterDocumentPath,
                 Person =person,
                 Squads = squads,
                 UniversityHeadquarters = unis,
@@ -286,14 +288,15 @@ namespace StudentSquads.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Save(NewPersonViewModel newModel)
         {//Это надо будет перенести в другое место
-            //foreach (string file in Request.Files)
-            //{
-            //    HttpPostedFileBase File = Request.Files[file] as HttpPostedFileBase;
-            //    // получаем имя файла
-            //    string fileName = System.IO.Path.GetFileName(File.FileName);
-            //    // сохраняем файл в папку Files в проекте
-            //    File.SaveAs(Server.MapPath("~/Files/" + fileName));
-            //}
+        
+            foreach (string file in Request.Files)
+            {
+                HttpPostedFileBase File = Request.Files[file] as HttpPostedFileBase;
+                // получаем имя файла
+                string fileName = System.IO.Path.GetFileName(File.FileName);
+                // сохраняем файл в папку Files в проекте
+                File.SaveAs(Server.MapPath("~/Files/" + fileName));
+            }
             if (!ModelState.IsValid)
             {
                 return View("PersonForm", newModel);

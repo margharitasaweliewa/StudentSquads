@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
@@ -80,6 +81,22 @@ namespace StudentSquads.Controllers
         }
         public ActionResult SaveEvent(RaitingEventViewModel model)
         {
+            var file = Request.Files.OfType<string>().FirstOrDefault();
+
+            HttpPostedFileBase File = Request.Files[file] as HttpPostedFileBase;
+            // получаем имя файла
+            string fileName = Path.GetFileName(File.FileName);
+            var fileId = Guid.NewGuid().ToString();
+            var filePath = Path.Combine(fileId, fileName);
+            // сохраняем файл в папку Files в проекте
+         
+            if (!Directory.Exists(Server.MapPath("~/Files/" + fileId )))
+            {
+                Directory.CreateDirectory(Server.MapPath("~/Files/" + fileId));
+            }
+
+            File.SaveAs(Server.MapPath("~/Files/" + filePath));
+
             Guid raitingId = Guid.Empty;
             //Проверяем, создан ли текйщий рейтинг
             var raiting = _context.Raitings.SingleOrDefault(r => r.DateofCreation == null);
@@ -110,7 +127,8 @@ namespace StudentSquads.Controllers
                     Name = model.Name,
                     DateofBegin = model.DateofBegin,
                     DateofEnd = model.DateofEnd,
-                    SquadId = headofsquads.SquadId,
+                    DocumentPath = filePath,
+                SquadId = headofsquads.SquadId,
                     UniversityHeadquarterId = headofsquads.UniversityHeadquarterId,
                     RegionalHeadquarterId = headofsquads.RegionalHeadquarterId,
                     Approved = approved,
