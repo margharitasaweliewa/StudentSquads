@@ -16,6 +16,10 @@
 		}
 		<input type="submit" name="button2" value="Отклонить" class="btn btn-default" formaction="@Url.Action("RejectEnterApplications", "Members")" />
 	}
+	if (User.IsInRole("SquadManager"))
+	{
+<input type="submit" name="button4" value="Внести информацию о взносе" class="btn btn-default" formaction="@Url.Action("AddFeeInfo", "Members")" />
+	}
 	<table id="enterapplications" class="table table-bordered table-hover">
 		<thead>
 			<tr>

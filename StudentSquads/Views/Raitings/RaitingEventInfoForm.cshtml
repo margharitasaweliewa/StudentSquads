@@ -35,6 +35,7 @@
 		@Html.DropDownListFor(m => m.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "", new { @id = "MembershipId", @class = "form-control", @required = "true" })
 		@Html.ValidationMessageFor(m => m.MembershipTypeId)
 	</div>
+</form>
 	<h4>Сслыки на материалы</h4>
 	<div class="form-group">
 		<label>Ссылка</label>
@@ -49,7 +50,6 @@
 	</div>
 	<table id="referencetable" class="table table-bordered table-hover">
 	</table>
-</form>
 @if (Model.ReferenceDescriptions?.Count > 0)
 {
 	<h4>Добавленные ранее</h4>
@@ -58,18 +58,14 @@
 			<tr>
 				<th>Ссылка</th>
 				<th>Описание</th>
-				@if ((User.IsInRole("SquadManager")))
-				{
-					<th>Удалить</th>
-				}
 			</tr>
 		</thead>
 		<tbody>
 			@foreach (KeyValuePair<string, string> keyValue in Model.ReferenceDescriptions)
 			{
-				<tr>
-					<td>@keyValue.Key</td>
-					<td>@keyValue.Value</td>
+			<tr>
+				<td>@keyValue.Key</td>
+				<td>@keyValue.Value</td>
 				</tr>
 			}
 		</tbody>
@@ -118,10 +114,12 @@
 				//Очищаем значение списка
 				$("#reference").val("");
 				$("#describe").val("");
-				vm.ReferenceDescriptions.push({
-					key: reference,
-					value: describe
-				});
+				if (reference != null && describe != null) {
+					vm.ReferenceDescriptions.push({
+						key: reference,
+						value: describe
+					});
+				}
 			});
 			$.validator.addMethod("validEvent", function () {
 				return vm.EventId && vm.EventId != null;

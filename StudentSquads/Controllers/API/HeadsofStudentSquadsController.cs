@@ -32,7 +32,9 @@ namespace StudentSquads.Controllers.API
             List<DesignationViewModel> listofheads = new List<DesignationViewModel>();
             var heads = _context.HeadsOfStudentSquads.Include(h => h.Person).Include(h => h.MainPosition).Include(h => h.Squad)
                 .Include(h => h.UniversityHeadquarter)
-                .Where(h => (h.MainPositionId != null)).ToList();
+                .Where(h => (h.MainPositionId != null))
+                .OrderBy(p => p.DateofEnd).ThenByDescending(p => p.DateofBegin)
+                .ToList();
             //Находим текущего пользователя
             string id = User.Identity.GetUserId();
             var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
@@ -49,7 +51,8 @@ namespace StudentSquads.Controllers.API
             //Убираем руководителей рег.отделения, если работники рег. отделения
             else if(headofsquad.RegionalHeadquarterId!= null)
             {
-                heads = heads.Where(h => h.RegionalHeadquarterId==null).ToList();
+                heads = heads.Where(h => h.RegionalHeadquarterId==null)
+                    .ToList();
             }
             foreach (var head in heads)
             {
@@ -82,13 +85,16 @@ namespace StudentSquads.Controllers.API
             //var manager = _context.HeadsOfStudentSquads
             //    .SingleOrDefault(m => (m.MainPositionId.ToString()==head.MainPosition)&&(m.DateofBegin!=null)&&(m.DateofEnd==null)&&(m.SquadId ==headofsquad.SquadId));
             //if(manager)
+            int main = Convert.ToInt32(head.MainPosition);
+            var mainposition = _context.MainPositions.Single(m => m.Id == main);
             HeadsOfStudentSquads newhead = new HeadsOfStudentSquads
             {
                 Id = Guid.NewGuid(),
                 PersonId = head.PersonId,
-                MainPositionId = Convert.ToInt32(head.MainPosition),
+                MainPositionId = main,
                 SquadId = headofsquad.SquadId,
-                HasRole = true
+                HasRole = true,
+                Position = mainposition.Name + " " + headofsquad.Squad.Name
             };
             _context.HeadsOfStudentSquads.Add(newhead);
             _context.SaveChanges();

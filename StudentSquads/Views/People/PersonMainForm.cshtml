@@ -74,6 +74,7 @@
 					<th>Статус</th>
 					<th>Дата вступления</th>
 					<th>Дата выхода</th>
+					<th>Заявление<th>
 				</tr>
 			</thead>
 			<tbody>
@@ -84,6 +85,7 @@
 						<td>@member.Status</td>
 						<td>@member.DateOfEnter</td>
 						<td>@member.DateOfExit</td>
+						@if (member.DocumentPath!=null) {<td><a href="@("/files/" + member.DocumentPath)" target="_blank">Скачать</a></td>}
 					</tr>
 				}
 			</tbody>

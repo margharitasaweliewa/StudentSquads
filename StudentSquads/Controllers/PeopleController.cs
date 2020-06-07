@@ -172,6 +172,7 @@ namespace StudentSquads.Controllers
                         DateOfEnter = member.DateOfEnter?.ToString("dd.MM.yyyy"),
                         DateOfExit = member.DateOfExit?.ToString("dd.MM.yyyy"),
                         Status = status,
+                        DocumentPath = member.TransitionDocumentPath
 
                     };
                     listsquads.Add(newMember);
@@ -310,6 +311,8 @@ namespace StudentSquads.Controllers
                     //Если является ком. составом отряда,создаем запись в таблице "HeadsofStudentSquads"
                     if (newModel.HeadsOfStudentSquads.MainPositionId != null)
                     {
+                        //Находим главную позицию
+                        var mainposition = _context.MainPositions.Single(m => m.Id == newModel.HeadsOfStudentSquads.MainPositionId);
                         //И добавляем пользователю Роль "Руководитель отряда"
                         var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(_context));
                         newModel.HeadsOfStudentSquads.Id = Guid.NewGuid();
@@ -317,14 +320,18 @@ namespace StudentSquads.Controllers
                         //Если заполнен отряд, тогда делаем его руководителем отряда
                         if (newModel.Member.SquadId != null)
                         {
+                            var squad = _context.Squads.Single(s => s.Id == newModel.Member.SquadId);
                             newModel.HeadsOfStudentSquads.SquadId = newModel.Member.SquadId;
                             userManager.AddToRole(id, "SquadManager");
+                            newModel.HeadsOfStudentSquads.Position = mainposition.Name + " " + squad.Name;
                         }
                         //Если выбран штаб и руководящая роль
                         else if (newModel.UniverityId != null)
                         {
+                            var uni = _context.UniversityHeadquarters.Single(u => u.Id == newModel.UniverityId);
                             newModel.HeadsOfStudentSquads.UniversityHeadquarterId = newModel.UniverityId;
                             userManager.AddToRole(id, "UniManager");
+                            newModel.HeadsOfStudentSquads.Position = mainposition.Name + " " + uni.ShortContent;
                         }
                         newModel.HeadsOfStudentSquads.DateofBegin = DateTime.Now;
                         _context.HeadsOfStudentSquads.Add(newModel.HeadsOfStudentSquads);
@@ -445,6 +452,29 @@ namespace StudentSquads.Controllers
                     _context.FeePayments.Add(newPayment);
                 }
 
+            }
+            _context.SaveChanges();
+            return RedirectToAction("AllPeople", "People");
+        }
+        public ActionResult Actualize(List<NewPersonViewModel> people)
+        {
+            //Если таковой был более двух лет назад, исключаем члена из организации
+            var allpeople = _context.People.Where(a => (a.DateOfEnter!=null)&&(a.DateOfExit==null)).ToList();
+            foreach(var person in allpeople)
+            {
+                //У всех активных членов организации проверяем последний внесенный взнос
+                var fees = _context.FeePayments.Where(f => f.PersonId==person.Id).ToList();
+                if (fees.Count != 0) 
+                { 
+                //Находим максимум по дате
+                var time = fees.Max(f => f.DateofPayment);
+                    var difference = (DateTime.Now - time).Days;
+                    if (difference > 830) 
+                    {
+                        person.ExitReason = "Неуплата взносов";
+                        person.DateOfExit = DateTime.Now; 
+                    }
+                }
             }
             _context.SaveChanges();
             return RedirectToAction("AllPeople", "People");

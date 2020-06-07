@@ -69,9 +69,12 @@ namespace StudentSquads.Controllers.API
         [HttpPut]
         public IHttpActionResult DeleteSectionLevel(Guid id)
         {
-            var raitinglevel = _context.RaitingSectionLevels.Single(r => r.Id == id);
+            var raitinglevel = _context.RaitingSectionLevels.SingleOrDefault(r => r.Id == id);
+            if (raitinglevel != null) 
+            { 
             _context.RaitingSectionLevels.Remove(raitinglevel);
             _context.SaveChanges();
+            }
             return Ok();
         }
         [HttpDelete]

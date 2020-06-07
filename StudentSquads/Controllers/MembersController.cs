@@ -810,6 +810,28 @@ namespace StudentSquads.Controllers
             _context.SaveChanges();
             return RedirectToAction("ChangeSquadManagerApplications", "Members");
         }
+        public ActionResult AddFeeInfo(List<ApplicationsListViewModel> members)
+        {
+            if (members== null) return RedirectToAction("EnterApplications", "Members");
+            foreach (var member in members)
+            {//Если выбрали для одобрения
+                if (member.Choosen)
+                {
+                    var person = _context.People.Single(p => p.Id == member.PersonId);
+                    FeePayment newPayment = new FeePayment
+                    {
+                        DateofPayment = DateTime.Now,
+                        Id = Guid.NewGuid(),
+                        PersonId = person.Id,
+                        SumofPayment = 300
+                    };
+                    _context.FeePayments.Add(newPayment);
+                }
+
+            }
+            _context.SaveChanges();
+            return RedirectToAction("EnterApplications", "Members");
+        }
 
     }
 }
