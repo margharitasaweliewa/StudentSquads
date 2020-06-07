@@ -9,7 +9,7 @@
 @using (Html.BeginForm("Dismiss", "Positions"))
 {
 	<button type="submit" class="btn btn-default">Снять с должности</button>
-	<input type="submit" name="button2" value="Удалить" class="btn btn-default" formaction="@Url.Action("Delete", "Positions")" />
+	@*<input type="submit" name="button2" value="Удалить" class="btn btn-default" formaction="@Url.Action("Delete", "Positions")" />*@
 	@Html.HiddenFor(m => m.HeadofStudentSquadsId)
 	@Html.HiddenFor(m => m.PersonId, new { @id = "personId" })
 <div>

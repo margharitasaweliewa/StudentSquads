@@ -311,6 +311,7 @@ namespace StudentSquads.Controllers
                     //Если является ком. составом отряда,создаем запись в таблице "HeadsofStudentSquads"
                     if (newModel.HeadsOfStudentSquads.MainPositionId != null)
                     {
+                        newModel.HeadsOfStudentSquads.HasRole = true;
                         //Находим главную позицию
                         var mainposition = _context.MainPositions.Single(m => m.Id == newModel.HeadsOfStudentSquads.MainPositionId);
                         //И добавляем пользователю Роль "Руководитель отряда"

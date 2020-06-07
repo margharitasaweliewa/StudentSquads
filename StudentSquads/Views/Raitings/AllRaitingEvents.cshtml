@@ -26,11 +26,15 @@
 			{
 			<tr>
 				@Html.HiddenFor(m => m[i].Id)
-				<th>
+				@if (@Model[i].Approved != "Утверждено" || User.IsInRole("RegionalManager"))
+				{
+				<td>
 					<a href="/raitings/editevent/@Model[i].Id">
 						<img src='https://icons.iconarchive.com/icons/icons8/windows-8/512/Editing-Edit-icon.png' width='25' height='25'>
 					</a>
-				</th>
+				</td>
+				}
+				else { <td></td>}
 				<td>@Model[i].Name</td>
 				<td>@Model[i].CreatedBy</td>
 				<td>@Model[i].EventLevel</td>
