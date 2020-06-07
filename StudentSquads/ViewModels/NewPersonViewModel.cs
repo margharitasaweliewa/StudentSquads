@@ -28,7 +28,7 @@ namespace StudentSquads.ViewModels
         public string DateofBirth { get; set; }
         public string PhoneNumber { get; set; }
         public string MembershipNumber { get; set; }
-        public Guid SquadId { get; set; }
+        public Guid? SquadId { get; set; }
         public string SquadName { get; set; }
         public string StatusName { get; set; }
         public bool AlreadyMember{ get; set; }

@@ -61,6 +61,7 @@ namespace StudentSquads.Controllers.API
                 else if (head.UniversityHeadquarterId != null) place = head.UniversityHeadquarter.University;
                    DesignationViewModel newModel = new DesignationViewModel
                     {
+                        PersonId = head.PersonId,
                         FIO = head.Person.FIO,
                         Position = head.MainPosition.Name,
                         DateofBegin = head.DateofBegin?.ToString("dd.MM.yyyy"),

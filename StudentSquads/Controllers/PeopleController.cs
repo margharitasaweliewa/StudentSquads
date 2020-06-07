@@ -289,10 +289,10 @@ namespace StudentSquads.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Save(NewPersonViewModel newModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return View("PersonForm", newModel);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return View("PersonForm", newModel);
+            //}
             //Проверяем, есть ли личность у пользователя. Если нет, добавляем
             if (Convert.ToString(newModel.Id) == "00000000-0000-0000-0000-000000000000")
             {
@@ -418,10 +418,6 @@ namespace StudentSquads.Controllers
         [HttpPost]
         public ActionResult ChangeStatus(NewPersonViewModel newModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return View("PersonEditForm", newModel);
-            }
             var memberInDb = _context.Members.Single(m => m.Id == newModel.Member.Id);
             //Изменяю поля персональных данных
             memberInDb.StatusId = newModel.Member.Status.Id;

@@ -26,7 +26,7 @@ namespace StudentSquads.ViewModels
         public bool HasRole { get; set; }
         public string HasRoleString { get; set; }
         [Required(ErrorMessage = "Введите члена организации")]
-        public Guid PersonId { get; set; }
+        public Guid? PersonId { get; set; }
         public List<Person> People { get; set; }
         public List<MainPosition> MainPositions { get; set; }
         [Display(Name = "Основная должность")]
