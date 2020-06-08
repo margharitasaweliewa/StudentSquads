@@ -59,6 +59,10 @@ namespace StudentSquads.Controllers.API
         public List<WorkViewModel> AllWorks(Guid? squadId = null, int? season = null)
         {
             bool audit = false;
+            var worksaudit = _context.Works
+                .Where(w => (w.Season == null) && (w.Approved!=null)).ToList();
+            //Включаем аудит, если утвержден
+            if (worksaudit.Count() > 0) audit = true;
             List<WorkViewModel> listworks = new List<WorkViewModel>();
             string id = User.Identity.GetUserId();
             var person = _context.People.SingleOrDefault(u => u.ApplicationUserId == id);
@@ -108,8 +112,7 @@ namespace StudentSquads.Controllers.API
             string affirmed = "";
             //Проверяем, утвержден ли список
             var worksapproved = works.Where(w => w.Approved != null).ToList();
-            //Включаем аудит, если утвержден
-            if (worksapproved.Count()>0) audit = true;
+            
             //Если ведется Аудит
             if (audit)
             {
@@ -217,6 +220,8 @@ namespace StudentSquads.Controllers.API
                         work.DateofBegin = workInDb.DateofBegin;
                     if (work.DateofEnd.ToString("dd.MM.yyyy") == "01.01.0001")
                         work.DateofEnd = workInDb.DateofEnd;
+                    if (work.EmployerId.ToString() == "00000000-0000-0000-0000-000000000000")
+                        work.EmployerId = workInDb.EmployerId;
                     Work newwork = new Work
                         {
                             //DateTime2 нельзя ковертировать в DateTime, когда ты пытаещься нулевую дату вставить, когда nullable = false
